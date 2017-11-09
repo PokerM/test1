@@ -95,7 +95,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
      */
     public MySurfaceView(Context context){
         super(context);
-        if (D)  Log.e(TAG, "MySurfaceView(Context context)被调用");
+        if (D) {
+            Log.e(TAG, "MySurfaceView(Context context)被调用");
+        }
         holder = getHolder();
         holder.addCallback(this);
 
@@ -111,7 +113,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     public MySurfaceView(Context context,AttributeSet attrs)
     {   
         super(context,attrs);
-        if (D)  Log.e(TAG, "MySurfaceView(Context context,AttributeSet attrs)被调用");
+        if (D) {
+            Log.e(TAG, "MySurfaceView(Context context,AttributeSet attrs)被调用");
+        }
         holder = getHolder();
         holder.addCallback(this);
 
@@ -124,7 +128,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
      * 初始化SurfaceView画笔
      */
     private void initializeViews(){
-        if (D)  Log.e(TAG, "initView()被调用");
+        if (D) {
+            Log.e(TAG, "initView()被调用");
+        }
         
         markerWidth = tractorMarker.getWidth();
         markerHeight = tractorMarker.getHeight();
@@ -200,7 +206,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
      * @param y 当前点地理Y坐标
      */
     public void setCurentPoint(int n,double x,double y) {
-        if (D) Log.e(TAG, "setCurentPoint(int n,double x,double y)被调用");
+        if (D) {
+            Log.e(TAG, "setCurentPoint(int n,double x,double y)被调用");
+        }
         
     	this.pointNo = n;
     	this.fieldX = x;
@@ -214,7 +222,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
      * @param df 是否绘制田地轮廓
      */
     public void setViewFieldBoundary(HashMap<Integer,Double> xMap, HashMap<Integer,Double> yMap, boolean df) {
-        if (D)  Log.e(TAG, "setFieldViewSize(HashMap<Integer,Double> xMap, HashMap<Integer,Double> yMap, boolean df)被调用");
+        if (D) {
+            Log.e(TAG, "setFieldViewSize(HashMap<Integer,Double> xMap, HashMap<Integer,Double> yMap, boolean df)被调用");
+        }
         
         //      double[] xx = {Math.abs(xMap.get(1)-xMap.get(2)), 
         //      Math.abs(xMap.get(1)-xMap.get(3)), 
@@ -246,7 +256,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     	
 //    	//刷新地图比例尺
     	scale = calculateScale(fieldLength, fieldWidth, canvasHeight - canvasMargin, canvasWidth - canvasMargin);
-    	 if (D) Log.e(TAG, "比例尺：" + scale);
+    	 if (D) {
+             Log.e(TAG, "比例尺：" + scale);
+         }
         
     	this.isDrawingField = df;
     	
@@ -275,8 +287,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
      * @param df 是否绘制田地轮廓
      */
     public void setViewFieldBoundary(ArrayList<GeoPoint> fieldVertex, boolean df) {
-        if (D)
+        if (D) {
             Log.e(TAG, "setViewFieldBoundary(ArrayList<GeoPoint> fieldVertex, boolean df)被调用");
+        }
 
         double[] xx = new double[fieldVertex.size()];
         for (int i = 0; i < fieldVertex.size(); i++) {
@@ -299,8 +312,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         // 刷新地图比例尺
         scale = calculateScale(fieldLength, fieldWidth, canvasHeight - canvasMargin, canvasWidth - canvasMargin);
-        if (D)
+        if (D) {
             Log.e(TAG, "比例尺：" + scale);
+        }
 
         this.isDrawingField = df;
 
@@ -351,7 +365,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
      * @param oY 原点地理Y坐标
      */
     public void setOrigin(double oX, double oY) {
-        if (D) Log.e(TAG, "setOrigin(double oX, double oY)被调用");
+        if (D) {
+            Log.e(TAG, "setOrigin(double oX, double oY)被调用");
+        }
         
     	this.originX = oX;
     	this.originY = oY;
@@ -368,7 +384,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
      * @param isDrawingAB
      */
     public void drawABline(double ApX, double ApY, double BpX, double BpY, boolean isDrawingAB) {
-        if(D) Log.e(TAG, "drawABline()被调用");
+        if(D) {
+            Log.e(TAG, "drawABline()被调用");
+        }
         
     	this.isDrawingAB = isDrawingAB;
     	this.APointX =  ApX;
@@ -394,7 +412,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     
     //计算AB线在画布中起始点的坐标
     public float[] calculateABline(float aX, float aY, float bX, float bY) {
-        if(D)  Log.e(TAG, "calculateABline(float aX, float aY, float bX, float bY)被调用");
+        if(D) {
+            Log.e(TAG, "calculateABline(float aX, float aY, float bX, float bY)被调用");
+        }
         
     	float startX, startY, endX, endY;
     	if (aY == bY) {
@@ -419,7 +439,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
      * @param isDrawingPath 是否绘制轨迹
      */
     public void drawPath(int pathPointsNo, boolean isDrawingPath) {
-        if(D) Log.e(TAG, "drawPath(int pathPointsNo, boolean isDrawingPath)被调用");
+        if(D) {
+            Log.e(TAG, "drawPath(int pathPointsNo, boolean isDrawingPath)被调用");
+        }
         
     	this.pathPointNo = pathPointsNo;
     	this.isDrawingPath = isDrawingPath;
@@ -435,7 +457,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
      * @return 比例尺
      */
     private double calculateScale(double fl, double fw, float vh, float vw) {
-        if(D)  Log.e(TAG, "calculateScale(double fl, double fw, float vh, float vw)被调用");
+        if(D) {
+            Log.e(TAG, "calculateScale(double fl, double fw, float vh, float vw)被调用");
+        }
         
         if ((fl / fw) < (vh / vw)) {
             return (vw / fw);
@@ -476,7 +500,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void run() {     
-        if(D) Log.e(TAG, "run()被调用");
+        if(D) {
+            Log.e(TAG, "run()被调用");
+        }
         
         
         while(isDrawing){
@@ -491,7 +517,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
                     mPath.reset();
                     mPath.moveTo(viewX, viewY);        	
                 }
-                else mPath.lineTo(viewX, viewY); 
+                else {
+                    mPath.lineTo(viewX, viewY);
+                }
                 pathPointNo++;
                 lastPath = mPath;
             } 
@@ -553,8 +581,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-          if (canvas != null)
-             holder.unlockCanvasAndPost(canvas);
+          if (canvas != null) {
+              holder.unlockCanvasAndPost(canvas);
+          }
         }
     }
     

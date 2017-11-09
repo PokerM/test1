@@ -173,16 +173,18 @@ public class NaviActivityOldVersion extends Activity implements android.view.Vie
 		CheckBox checkBox1 = (CheckBox) findViewById(R.id.starTopLeft);
 		checkBox1.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if (((CheckBox) v).isChecked())
-					isBoundP1Set = true;
+				if (((CheckBox) v).isChecked()) {
+                    isBoundP1Set = true;
+                }
 			}
 		});
 
 		CheckBox checkBox2 = (CheckBox) findViewById(R.id.starTopRight);
 		checkBox2.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if (((CheckBox) v).isChecked())
-					isBoundP2Set = true;
+				if (((CheckBox) v).isChecked()) {
+                    isBoundP2Set = true;
+                }
 				writeDataToOutputStream("#0,50001,*\n");
 
 			}
@@ -191,8 +193,9 @@ public class NaviActivityOldVersion extends Activity implements android.view.Vie
 		CheckBox checkBox3 = (CheckBox) findViewById(R.id.starBottomRight);
 		checkBox3.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if (((CheckBox) v).isChecked())
-					isBoundP3Set = true;
+				if (((CheckBox) v).isChecked()) {
+                    isBoundP3Set = true;
+                }
 				writeDataToOutputStream("#0,50002,*\n");
 
 			}
@@ -201,8 +204,9 @@ public class NaviActivityOldVersion extends Activity implements android.view.Vie
 		CheckBox checkBox4 = (CheckBox) findViewById(R.id.starBottomLeft);
 		checkBox4.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if (((CheckBox) v).isChecked())
-					isBoundP4Set = true;
+				if (((CheckBox) v).isChecked()) {
+                    isBoundP4Set = true;
+                }
 			}
 		});
 
@@ -219,10 +223,11 @@ public class NaviActivityOldVersion extends Activity implements android.view.Vie
 
 					// 如果 ","的个数不为8，或者字符串开始和结束字符不是指定的，则数据无效
 					if (!((countCharacter(recDataString, SEPARATOR) == 8) && (recDataString.charAt(0) == START)
-							&& (recDataString.charAt(recDataString.length() - 1) == END)))
-						recDataString.delete(0, recDataString.length());
-					else
-						dataNo++;
+							&& (recDataString.charAt(recDataString.length() - 1) == END))) {
+                        recDataString.delete(0, recDataString.length());
+                    } else {
+                        dataNo++;
+                    }
 
 					int endOfLineIndex = recDataString.indexOf(String.valueOf(END)); // 找到结束标识符
 					if (endOfLineIndex > 0) {
@@ -284,7 +289,9 @@ public class NaviActivityOldVersion extends Activity implements android.view.Vie
 							txtDistance2Bound1.setText("距离1：" + distance1);
 							txtDistance2Bound2.setText("距离2：" + distance2);
 							
-							if (dataNo % 20 == 0) formerDidstance = distance1;
+							if (dataNo % 20 == 0) {
+                                formerDidstance = distance1;
+                            }
 							
 							
 							if (stopBit == 10020) {
@@ -423,8 +430,9 @@ public class NaviActivityOldVersion extends Activity implements android.view.Vie
 		btnDrawAB.setOnClickListener(this);
 		btnPlot.setOnClickListener(this);
 
-		if (D)
-			Log.e(TAG, "+++ ON CREATE +++");
+		if (D) {
+            Log.e(TAG, "+++ ON CREATE +++");
+        }
 
 		// 获取蓝牙设备适配器
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -568,8 +576,9 @@ public class NaviActivityOldVersion extends Activity implements android.view.Vie
 			if (APointY == BPointY && APointX == BPointX) {
 				displayToast("B点不能和A点重合!请重新设置B点!");
 				return;
-			} else
-				myView.drawABline(APointX, APointY, BPointX, BPointY, true);
+			} else {
+                myView.drawABline(APointX, APointY, BPointX, BPointY, true);
+            }
 				currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
 				String fileABPoints = currentTime + "_AB_Points.txt";
 				// 保存田地顶点坐标到外部文件
@@ -625,8 +634,9 @@ public class NaviActivityOldVersion extends Activity implements android.view.Vie
 					txtSpace.setText("行间距:" + settingDataArray[5] + "m");
 					
 					lineSpace = (float) settingDataArray[5];
-				} else
-					displayToast("请完成所有参数输入！");
+				} else {
+                    displayToast("请完成所有参数输入！");
+                }
 			}
 			break;
 			
@@ -755,13 +765,14 @@ public class NaviActivityOldVersion extends Activity implements android.view.Vie
 	public void onDestroy() {
 		super.onDestroy();
 		// 关闭socket
-		if (btSocket != null)
-			try {
-				btSocket.close();
-				btSocket = null;
-				btnConnect.setText("打开连接");
-			} catch (IOException e) {
-			}
+		if (btSocket != null) {
+            try {
+                btSocket.close();
+                btSocket = null;
+                btnConnect.setText("打开连接");
+            } catch (IOException e) {
+            }
+        }
 //		// 关闭蓝牙
 //		mBluetoothAdapter.disable();
 		if (D) {
@@ -797,8 +808,9 @@ public class NaviActivityOldVersion extends Activity implements android.view.Vie
 	public int countCharacter(StringBuilder str, char ch) {
 		int count = 0;
 		for (int i = 0; i < str.length(); i++) {
-			if (str.charAt(i) == ch)
-				count++;
+			if (str.charAt(i) == ch) {
+                count++;
+            }
 		}
 		return count;
 	}

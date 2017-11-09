@@ -61,12 +61,16 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (D) Log.e(TAG, "++++ ON CREATE ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON CREATE ++++");
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (D) Log.e(TAG, "++++ ON CREATE VIEW ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON CREATE VIEW ++++");
+        }
         View view = inflater.inflate(R.layout.home_fragment_field_setting, container, false);
         initViews(view);
         return view;
@@ -75,8 +79,9 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (D)
+        if (D) {
             Log.e(TAG, "++++ ON ACTIVITY CREATE ++++");
+        }
 
         // 获取Application全局变量
         mApp = (MyApplication) getActivity().getApplication();
@@ -90,7 +95,9 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
     @Override
     public void onStart() {
         super.onStart();
-        if (D) Log.e(TAG, "++++ ON START ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON START ++++");
+        }
         
         notifyDataChange();
     }
@@ -98,25 +105,33 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
     @Override
     public void onResume() {
         super.onResume();
-        if (D) Log.e(TAG, "++++ ON RESUME ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON RESUME ++++");
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (D) Log.e(TAG, "++++ ON PAUSE ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON PAUSE ++++");
+        }
     }
     
     @Override
     public void onStop() {
         super.onStop();
-        if (D) Log.e(TAG, "++++ ON STOP ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON STOP ++++");
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (D) Log.e(TAG, "++++ ON DESTROY ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON DESTROY ++++");
+        }
     }
 
     private void initViews(View view) {
@@ -235,13 +250,17 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (D)   Log.e(TAG, "++++ ON CREATE LOADER ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON CREATE LOADER ++++");
+        }
         return loader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (D)   Log.e(TAG, "++++ ON LOAD FINISHED ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON LOAD FINISHED ++++");
+        }
         
         fieldList = updateListData(data);
         fieldListAdapter = new FieldListAdapter(getActivity(), fieldList);
@@ -254,7 +273,9 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        if (D)   Log.e(TAG, "++++ ON LOAD RESET ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON LOAD RESET ++++");
+        }
     }
     
     public List<Map<String, String>> updateListData(Cursor cursor) {

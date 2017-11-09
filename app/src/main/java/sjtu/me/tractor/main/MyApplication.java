@@ -105,8 +105,9 @@ public class MyApplication extends Application{
          */
         List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager
                 .getRunningAppProcesses();
-        if (appProcesses == null)
+        if (appProcesses == null) {
             return false;
+        }
         for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
             // The name of the process that this object is associated with.
             if (appProcess.processName.equals(packageName)
@@ -159,8 +160,9 @@ public class MyApplication extends Application{
             OutputStream out = new FileOutputStream(f2);
             byte[] buf = new byte[1024];
             int len;
-            while ((len = in.read(buf)) > 0)
+            while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
+            }
             out.flush();
             in.close();
             out.close();

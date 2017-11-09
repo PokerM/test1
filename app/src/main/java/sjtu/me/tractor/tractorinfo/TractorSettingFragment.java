@@ -56,14 +56,16 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (D)
+        if (D) {
             Log.e(TAG, "++++ ON CREATE ++++");
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (D)
+        if (D) {
             Log.e(TAG, "++++ ON CREATE VIEW ++++");
+        }
         View view = inflater.inflate(R.layout.home_fragment_tractor_setting, container, false);
         initViews(view);
         return view;
@@ -72,8 +74,9 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (D)
+        if (D) {
             Log.e(TAG, "++++ ON ACTIVITY CREATE ++++");
+        }
 
         // 获取Application全局变量
         mApp = (MyApplication) getActivity().getApplication();
@@ -95,36 +98,41 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
     @Override
     public void onStart() {
         super.onStart();
-        if (D)
+        if (D) {
             Log.e(TAG, "++++ ON START ++++");
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (D)
+        if (D) {
             Log.e(TAG, "++++ ON RESUME ++++");
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (D)
+        if (D) {
             Log.e(TAG, "++++ ON PAUSE ++++");
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (D)
+        if (D) {
             Log.e(TAG, "++++ ON STOP ++++");
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (D)
+        if (D) {
             Log.e(TAG, "++++ ON DESTROY ++++");
+        }
     }
 
     private void initViews(View v) {
@@ -225,16 +233,18 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (D)
+        if (D) {
             Log.e(TAG, "++++ ON CREATE LOADER ++++");
+        }
 
         return loader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (D)
+        if (D) {
             Log.e(TAG, "++++ ON LOAD FINISHED ++++");
+        }
 
         tractorList = updateListData(data);
         tractorListAdapter = new TractorListAdapter(getActivity(), tractorList);
@@ -246,8 +256,9 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        if (D)
+        if (D) {
             Log.e(TAG, "++++ ON LOAD RESET ++++");
+        }
     }
 
     public List<Map<String, String>> updateListData(Cursor cursor) {

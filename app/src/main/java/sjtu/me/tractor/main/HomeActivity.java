@@ -29,7 +29,7 @@ import sjtu.me.tractor.util.ToastUtil;
  */
 public class HomeActivity extends Activity implements OnClickListener {
 
-    private String TAG = "HomeActivity";
+    private static final String TAG = "HomeActivity";
     private static final boolean D = false; // 日志入口开关
     
     private boolean isExitApplication = false;  //是否退出应用程序标志
@@ -59,8 +59,9 @@ public class HomeActivity extends Activity implements OnClickListener {
         selectFragment(0);
 
         
-        if (D)
+        if (D) {
             Log.e(TAG, "+++ ON CREATE +++");
+        }
     }
 
     @Override
@@ -68,7 +69,9 @@ public class HomeActivity extends Activity implements OnClickListener {
       
         super.onStart();
         
-        if (D)    Log.e(TAG, "+++ ON START +++");
+        if (D) {
+            Log.e(TAG, "+++ ON START +++");
+        }
     }
 
     @Override
@@ -83,7 +86,9 @@ public class HomeActivity extends Activity implements OnClickListener {
 //            myApp.getBluetoothService().startConnection(myApp.getBluetoothAddress());
 //        }
         
-        if (D)   Log.e(TAG, "+++ ON RESTART +++");
+        if (D) {
+            Log.e(TAG, "+++ ON RESTART +++");
+        }
     }
 
     @Override
@@ -100,7 +105,9 @@ public class HomeActivity extends Activity implements OnClickListener {
 //		        myApp.getBluetoothService().stopConnection();
 //		    }
 		}
-		 if (D)   Log.e(TAG, "+++ ON STOP +++");
+		 if (D) {
+             Log.e(TAG, "+++ ON STOP +++");
+         }
 	}
 
 	@Override
@@ -108,7 +115,9 @@ public class HomeActivity extends Activity implements OnClickListener {
       
         super.onResume();
         
-        if (D)   Log.e(TAG, "+++ ON RESUME +++");
+        if (D) {
+            Log.e(TAG, "+++ ON RESUME +++");
+        }
     }
 
     @Override
@@ -116,7 +125,9 @@ public class HomeActivity extends Activity implements OnClickListener {
       
         super.onPause();
         
-        if (D)   Log.e(TAG, "+++ ON PAUSE +++");
+        if (D) {
+            Log.e(TAG, "+++ ON PAUSE +++");
+        }
     }
 
     @Override
@@ -124,7 +135,9 @@ public class HomeActivity extends Activity implements OnClickListener {
       
         super.onDestroy();
         
-        if (D)   Log.e(TAG, "+++ ON DESTROY +++");
+        if (D) {
+            Log.e(TAG, "+++ ON DESTROY +++");
+        }
     }
 
     @Override

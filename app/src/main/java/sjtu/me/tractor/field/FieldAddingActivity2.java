@@ -105,9 +105,9 @@ public class FieldAddingActivity2 extends Activity implements View.OnClickListen
                     // 如果 ","的个数不为8，或者字符串开始和结束字符不是指定的，则数据无效
                     if (!((MyApplication.countCharacter(readMessageSB, SEPARATOR) == 10)
                             && (readMessageSB.charAt(0) == START)
-                            && (readMessageSB.charAt(readMessageSB.length() - 1) == END)))
+                            && (readMessageSB.charAt(readMessageSB.length() - 1) == END))) {
                         readMessageSB.delete(0, readMessageSB.length());
-                    else {
+                    } else {
                         dataString = readMessageSB.substring(1, readMessageSB.length() - 1); // 提取字符串
                         String[] dataArray = dataString.split(",", 11);
                         try {
@@ -205,8 +205,9 @@ public class FieldAddingActivity2 extends Activity implements View.OnClickListen
         // 设置蓝牙连接的消息处理器为当前界面处理器
         myApp.getBluetoothService().setHandler(mFieldHandler);
 
-        if (D)
+        if (D) {
             Log.e(TAG, "+++ setHandler: mFieldHandler +++");
+        }
 
     }
 
@@ -498,15 +499,17 @@ public class FieldAddingActivity2 extends Activity implements View.OnClickListen
     @Override
     protected void onStart() {
         super.onStart();
-        if (D)
+        if (D) {
             Log.e(TAG, "*** ON START ***");
+        }
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        if (D)
+        if (D) {
             Log.e(TAG, "*** ON RESTART ***");
+        }
 
         // 重新进入界面时设置消息处理器为当前处理器
         myApp.getBluetoothService().setHandler(mFieldHandler);
@@ -519,16 +522,18 @@ public class FieldAddingActivity2 extends Activity implements View.OnClickListen
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
         mapView.onResume();
-        if (D)
+        if (D) {
             Log.e(TAG, "*** ON RESUME ***");
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mapView.onPause();
-        if (D)
+        if (D) {
             Log.e(TAG, "*** ON PAUSE ***");
+        }
     }
 
     @Override
@@ -555,8 +560,9 @@ public class FieldAddingActivity2 extends Activity implements View.OnClickListen
         polyLines.clear();
         fieldVertices.clear();
 
-        if (D)
+        if (D) {
             Log.e(TAG, "*** ON STOP ***");
+        }
     }
 
     @Override

@@ -200,7 +200,9 @@ public class BluetoothService {
      * 返回值：void
      */
     public synchronized void startConnection(String address) {
-        if (D) Log.e(TAG, "startConnection");
+        if (D) {
+            Log.e(TAG, "startConnection");
+        }
         
         mDevice = mAdapter.getRemoteDevice(address);
 
@@ -279,7 +281,9 @@ public class BluetoothService {
      * 方法名：stop() 功能：停止所有线程 参数：无 返回值：void
      */
     public synchronized void stopConnection() {
-        if (D) Log.e(TAG, "stopConnection");
+        if (D) {
+            Log.e(TAG, "stopConnection");
+        }
 
         // 先停止所有正在通信的线程
         if (mSendingThread != null) {
@@ -317,7 +321,9 @@ public class BluetoothService {
     }
     
     private synchronized void communicate() {
-        if (D) Log.e(TAG, "communicate");
+        if (D) {
+            Log.e(TAG, "communicate");
+        }
 
         if (getState() == STATE_CONNECTED) {
 
@@ -542,7 +548,9 @@ public class BluetoothService {
         private final InputStream mmInStream; // 蓝牙接收数据字节流
 
         public ReceivingThread() {
-            if(D) Log.e(TAG, "*** create a ReceivingThread ***");
+            if(D) {
+                Log.e(TAG, "*** create a ReceivingThread ***");
+            }
             
             InputStream tmpIn = null;
             try {
@@ -554,9 +562,12 @@ public class BluetoothService {
             mmInStream = tmpIn;
         }
 
+        @Override
         public void run() {
 
-            if(D) Log.e(TAG, "接收数据线程已经启动！");
+            if(D) {
+                Log.e(TAG, "接收数据线程已经启动！");
+            }
 
             byte[] readBuffer = new byte[1024];
             int bytes = 0;
@@ -651,8 +662,11 @@ public class BluetoothService {
             mmOutStream = tmpOut;
         }
 
+        @Override
         public void run() {
-            if(D) Log.e(TAG, "发送数据线程已经启动！");
+            if(D) {
+                Log.e(TAG, "发送数据线程已经启动！");
+            }
 
             String sendingMessage;
             byte[] writeBuffer;

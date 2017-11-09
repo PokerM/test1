@@ -2,18 +2,14 @@ package sjtu.me.tractor.database;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import sjtu.me.tractor.database.MyDatabaseHelper;
 import sjtu.me.tractor.field.FieldInfo;
 import sjtu.me.tractor.tractorinfo.TractorInfo;
 
@@ -68,7 +64,9 @@ public class DatabaseManager {
     public void connectDatabase() {
         myDatabase = dbHelper.getReadableDatabase();
 
-        if (D) Log.e(TAG, "CONNECTING DATABASE --> $$GET READABLE DATABASE$$");
+        if (D) {
+            Log.e(TAG, "CONNECTING DATABASE --> $$GET READABLE DATABASE$$");
+        }
     }
 
     /**
@@ -378,12 +376,12 @@ public class DatabaseManager {
         while (cursor.moveToNext()) {
             int columnNum = cursor.getColumnCount();
             for (int i = 0; i < columnNum; i++) {
-                String cols_name = cursor.getColumnName(i);
-                String cols_values = cursor.getString(cursor.getColumnIndex(cols_name));
-                if (cols_values == null) {
-                    cols_values = "";
+                String columnName = cursor.getColumnName(i);
+                String columnValue = cursor.getString(cursor.getColumnIndex(columnName));
+                if (columnValue == null) {
+                    columnValue = "";
                 }
-                map.put(cols_name, cols_values);
+                map.put(columnName, columnValue);
             }
         }
         return map;
@@ -416,15 +414,12 @@ public class DatabaseManager {
             int columnNum = cursor.getColumnCount();
             Map<String, String> map = new HashMap<String, String>();
             for (int i = 0; i < columnNum; i++) {
-                switch (cursor.getType(i)) {
-
+                String columnName = cursor.getColumnName(i);
+                String columnValue = cursor.getString(cursor.getColumnIndex(columnName));
+                if (columnValue == null) {
+                    columnValue = "";
                 }
-                String cols_name = cursor.getColumnName(i);
-                String cols_values = cursor.getString(cursor.getColumnIndex(cols_name));
-                if (cols_values == null) {
-                    cols_values = "";
-                }
-                map.put(cols_name, cols_values);
+                map.put(columnName, columnValue);
             }
             list.add(map);
         }
@@ -444,12 +439,12 @@ public class DatabaseManager {
             int columnNum = cursor.getColumnCount();
             Map<String, String> map = new HashMap<String, String>();
             for (int i = 0; i < columnNum; i++) {
-                String cols_name = cursor.getColumnName(i);
-                String cols_values = cursor.getString(cursor.getColumnIndex(cols_name));
-                if (cols_values == null) {
-                    cols_values = "";
+                String columnName = cursor.getColumnName(i);
+                String columnValue = cursor.getString(cursor.getColumnIndex(columnName));
+                if (columnValue == null) {
+                    columnValue = "";
                 }
-                map.put(cols_name, cols_values);
+                map.put(columnName, columnValue);
             }
             // 增加条目序号
             map.put("listNumber", Integer.toString(listNumber));

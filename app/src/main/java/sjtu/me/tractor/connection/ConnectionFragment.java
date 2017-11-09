@@ -157,13 +157,17 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        if (D) Log.e(TAG, "++++ ON CREATE ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON CREATE ++++");
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        if (D) Log.e(TAG, "++++ ON CREATE VIEW ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON CREATE VIEW ++++");
+        }
 
         View view = inflater.inflate(R.layout.home_fragment_connection, container, false);
         initViews(view);
@@ -174,7 +178,9 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
     public void onActivityCreated(Bundle savedInstanceState) {
 
         super.onActivityCreated(savedInstanceState);
-        if (D) Log.e(TAG, "++++ ON CREATE VIEW ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON CREATE VIEW ++++");
+        }
 
         // 获取Application全局变量
         myApp = (MyApplication) getActivity().getApplication();
@@ -229,7 +235,9 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
 
         super.onPause();
 
-        if (D) Log.e(TAG, "++++ ON PAUSE ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON PAUSE ++++");
+        }
     }
 
     @Override
@@ -239,7 +247,9 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
 
         myApp.getBluetoothService().setHandler(mHomeHandler);
 
-        if (D) Log.e(TAG, "++++ ON START ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON START ++++");
+        }
     }
 
 
@@ -248,7 +258,9 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
 
         super.onResume();
 
-        if (D) Log.e(TAG, "++++ ON RESUME ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON RESUME ++++");
+        }
     }
 
 
@@ -257,7 +269,9 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
 
         super.onStop();
 
-        if (D) Log.e(TAG, "++++ ON STOP ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON STOP ++++");
+        }
     }
 
 
@@ -276,14 +290,18 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
 
         myApp.getBluetoothService().stopConnection();
 
-        if (D) Log.e(TAG, "++++ ON DESTROY ++++");
+        if (D) {
+            Log.e(TAG, "++++ ON DESTROY ++++");
+        }
     }
 
     /**
      * 开始服务和设备查找
      */
     private void doDiscovery() {
-        if (D) Log.d(TAG, "doDiscovery()");
+        if (D) {
+            Log.d(TAG, "doDiscovery()");
+        }
 
         // 关闭正在进行的查找服务
         if (mBluetoothAdapter.isDiscovering()) {
@@ -404,12 +422,14 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
 
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
                     // 添加到新设备列表中，如果已添加则忽略
-                    if (!isDuplicate(device.getName() + "\n" + device.getAddress(), mNewDevicesArrayAdapter))
+                    if (!isDuplicate(device.getName() + "\n" + device.getAddress(), mNewDevicesArrayAdapter)) {
                         mNewDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                    }
                 } else {
                     // 添加到已配对设备列表，如果已添加则忽略
-                    if (!isDuplicate(device.getName() + "\n" + device.getAddress(), mPairedDevicesArrayAdapter))
+                    if (!isDuplicate(device.getName() + "\n" + device.getAddress(), mPairedDevicesArrayAdapter)) {
                         mPairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                    }
                 }
 
                 // 搜索完成action
@@ -419,8 +439,9 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
                     String noNewDevices = getString(R.string.no_new_devices);
                     mNewDevicesArrayAdapter.add(noNewDevices);
                 }
-                if (mPairedDevicesArrayAdapter.getCount() > 0)
+                if (mPairedDevicesArrayAdapter.getCount() > 0) {
                     pairedListView.setVisibility(View.VISIBLE);
+                }
             }
         }
     };

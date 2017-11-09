@@ -149,7 +149,9 @@ public class NaviActivity extends Activity implements OnClickListener{
       
         super.onCreate(savedInstanceState);
         setContentView(R.layout.navi_activity);
-        if (D)   Log.e(TAG, "+++ ON CREATE +++");
+        if (D) {
+            Log.e(TAG, "+++ ON CREATE +++");
+        }
         
         //实例化地块顶点列表对象
         fieldVertex = new ArrayList<GeoPoint>();
@@ -158,7 +160,9 @@ public class NaviActivity extends Activity implements OnClickListener{
         myApp = (MyApplication) getApplication();
         //设置蓝牙连接的消息处理器为当前界面处理器
         myApp.getBluetoothService().setHandler(mNaviHandler);
-        if (D) Log.e(TAG, "+++ setHandler: mNaviHandler +++");
+        if (D) {
+            Log.e(TAG, "+++ setHandler: mNaviHandler +++");
+        }
         
         initViews();
         
@@ -186,16 +190,18 @@ public class NaviActivity extends Activity implements OnClickListener{
         CheckBox checkBox4 = (CheckBox) findViewById(R.id.starBottomRight2);
         checkBox4.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (((CheckBox) v).isChecked())
+                if (((CheckBox) v).isChecked()) {
                     isBoundP3Set = true;
+                }
             }
         });
 
         CheckBox checkBox3 = (CheckBox) findViewById(R.id.starBottomLeft2);
         checkBox3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (((CheckBox) v).isChecked())
+                if (((CheckBox) v).isChecked()) {
                     isBoundP4Set = true;
+                }
             }
         });
         
@@ -215,7 +221,9 @@ public class NaviActivity extends Activity implements OnClickListener{
     @Override
     protected void onStart() {
         super.onStart();
-        if (D) Log.e(TAG, "+++ ON START +++");
+        if (D) {
+            Log.e(TAG, "+++ ON START +++");
+        }
         
         if (myApp.getBluetoothService().getState() == BluetoothService.STATE_NONE) {
             txtCommunicationState.setText(R.string.comm_off);
@@ -227,21 +235,27 @@ public class NaviActivity extends Activity implements OnClickListener{
     @Override
     protected void onResume() {
         super.onResume();
-        if (D) Log.e(TAG, "+++ ON RESUME +++");
+        if (D) {
+            Log.e(TAG, "+++ ON RESUME +++");
+        }
     }
 
     @Override
     protected void onPause() {
       
         super.onPause();
-        if (D) Log.e(TAG, "+++ ON PAUSE +++");
+        if (D) {
+            Log.e(TAG, "+++ ON PAUSE +++");
+        }
     }
 
     @Override
     protected void onRestart() {
       
         super.onRestart();
-        if (D) Log.e(TAG, "+++ ON RESTART +++");
+        if (D) {
+            Log.e(TAG, "+++ ON RESTART +++");
+        }
         
         // 重新进入界面时设置消息处理器为当前处理器
         myApp.getBluetoothService().setHandler(mNaviHandler);
@@ -257,14 +271,18 @@ public class NaviActivity extends Activity implements OnClickListener{
 	protected void onStop() {
 		
 		super.onStop();
-		 if (D)   Log.e(TAG, "+++ ON STOP +++");
+		 if (D) {
+             Log.e(TAG, "+++ ON STOP +++");
+         }
 	}
 
 	@Override
     protected void onDestroy() {
       
         super.onDestroy();
-        if (D) Log.e(TAG, "+++ ON DESTROY +++");
+        if (D) {
+            Log.e(TAG, "+++ ON DESTROY +++");
+        }
     }
 
     @Override
@@ -353,8 +371,9 @@ public class NaviActivity extends Activity implements OnClickListener{
                 //弹出AB点重合警告
                 ToastUtil.showToast(getString(R.string.ab_overlay_error_warning), true);
                 return;
-            } else
+            } else {
                 myView.drawABline(APointX, APointY, BPointX, BPointY, true);
+            }
                 currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
                 String fileABPoints = currentTime + "_AB_Points.txt";
                 // 保存田地顶点坐标到外部文件
@@ -522,9 +541,9 @@ public class NaviActivity extends Activity implements OnClickListener{
 
 				// 如果 ","的个数不为8，或者字符串开始和结束字符不是指定的，则数据无效
 				if (!((MyApplication.countCharacter(readMessageSB, SEPARATOR) == 8) && (readMessageSB.charAt(0) == START)
-						&& (readMessageSB.charAt(readMessageSB.length() - 1) == END)))
-					readMessageSB.delete(0, readMessageSB.length());
-				else {
+						&& (readMessageSB.charAt(readMessageSB.length() - 1) == END))) {
+                    readMessageSB.delete(0, readMessageSB.length());
+                } else {
 					dataNo++;
 					dataString = readMessageSB.substring(1, readMessageSB.length() - 1); // 提取字符串
 					// 将收到的数据保存到外部存储器
@@ -586,7 +605,9 @@ public class NaviActivity extends Activity implements OnClickListener{
 						txtDistance2Bound1.setText(getString(R.string.border_distance_1) + distance1);
 						txtDistance2Bound2.setText(getString(R.string.border_distance_2) + distance2);
 						
-						if (dataNo % 20 == 0) formerDidstance = distance1;
+						if (dataNo % 20 == 0) {
+                            formerDidstance = distance1;
+                        }
 						
 //						if (isStartNavi == true && stopBit != 10020
 //						        && distance1 - 10 <= 0.25 && distance1 < formerDidstance) {

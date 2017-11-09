@@ -127,14 +127,16 @@ public class DeviceListActivity extends Activity {
         this.unregisterReceiver(mReceiver);
     }
     
-    public void OnCancel(View v){
+    public void onCancel(View v){
     	finish();
     }
     /**
      * 开始服务和设备查找
      */
     private void doDiscovery() {
-        if (D) Log.d(TAG, "doDiscovery()");
+        if (D) {
+            Log.d(TAG, "doDiscovery()");
+        }
 
         // 在窗口显示查找中信息        
         setTitle(getString(R.string.scan_for_new_bluetooth));
@@ -195,8 +197,9 @@ public class DeviceListActivity extends Activity {
                     String noDevices = "No new devices are found!";
                     mNewDevicesArrayAdapter.add(noDevices);
                 }
-                if(mPairedDevicesArrayAdapter.getCount() > 0)
-                	findViewById(R.id.title_paired_devices).setVisibility(View.VISIBLE);
+                if(mPairedDevicesArrayAdapter.getCount() > 0) {
+                    findViewById(R.id.title_paired_devices).setVisibility(View.VISIBLE);
+                }
             }
         }
     };

@@ -75,8 +75,9 @@ public class FieldAddingActivity extends Activity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        if (D)
+        if (D) {
             Log.e(TAG, "*** ON CREATE ***");
+        }
 
         setContentView(R.layout.field_adding_activity);
 
@@ -89,8 +90,9 @@ public class FieldAddingActivity extends Activity implements OnClickListener {
         myApp = (MyApplication) getApplication();
         // 设置蓝牙连接的消息处理器为当前界面处理器
         myApp.getBluetoothService().setHandler(mFieldHandler);
-        if (D)
+        if (D) {
             Log.e(TAG, "+++ setHandler: mFieldHandler +++");
+        }
 
         initViews();
 
@@ -100,16 +102,18 @@ public class FieldAddingActivity extends Activity implements OnClickListener {
     protected void onStart() {
         // TODO Auto-generated method stub
         super.onStart();
-        if (D)
+        if (D) {
             Log.e(TAG, "*** ON START ***");
+        }
     }
 
     @Override
     protected void onRestart() {
         // TODO Auto-generated method stub
         super.onRestart();
-        if (D)
+        if (D) {
             Log.e(TAG, "*** ON RESTART ***");
+        }
 
         // 重新进入界面时设置消息处理器为当前处理器
         myApp.getBluetoothService().setHandler(mFieldHandler);
@@ -119,32 +123,36 @@ public class FieldAddingActivity extends Activity implements OnClickListener {
     protected void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        if (D)
+        if (D) {
             Log.e(TAG, "*** ON RESUME ***");
+        }
     }
 
     @Override
     protected void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
-        if (D)
+        if (D) {
             Log.e(TAG, "*** ON PAUSE ***");
+        }
     }
 
     @Override
     protected void onStop() {
         // TODO Auto-generated method stub
         super.onStop();
-        if (D)
+        if (D) {
             Log.e(TAG, "*** ON STOP ***");
+        }
     }
 
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
-        if (D)
+        if (D) {
             Log.e(TAG, "*** ON DESTROY ***");
+        }
 
         myApp.getDatabaseManager().releaseDataBase();
     }
@@ -172,8 +180,9 @@ public class FieldAddingActivity extends Activity implements OnClickListener {
 //        chkBoxFieldTopLeft.setOnClickListener(this);
         chkBoxFieldTopLeft.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (((CheckBox) v).isChecked())
+                if (((CheckBox) v).isChecked()) {
                     isBoundP1Set = true;
+                }
             }
         });
 
@@ -181,8 +190,9 @@ public class FieldAddingActivity extends Activity implements OnClickListener {
 //        chkBoxFieldTopRight.setOnClickListener(this);
         chkBoxFieldTopRight.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (((CheckBox) v).isChecked())
+                if (((CheckBox) v).isChecked()) {
                     isBoundP2Set = true;
+                }
             }
         });
 
@@ -190,8 +200,9 @@ public class FieldAddingActivity extends Activity implements OnClickListener {
 //        chkBoxFieldBottomRight.setOnClickListener(this);
         chkBoxFieldBottomRight.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (((CheckBox) v).isChecked())
+                if (((CheckBox) v).isChecked()) {
                     isBoundP3Set = true;
+                }
             }
         });
 
@@ -199,8 +210,9 @@ public class FieldAddingActivity extends Activity implements OnClickListener {
 //        chkBoxFieldBottomLeft.setOnClickListener(this);
         chkBoxFieldBottomLeft.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (((CheckBox) v).isChecked())
+                if (((CheckBox) v).isChecked()) {
                     isBoundP4Set = true;
+                }
                 Log.e(TAG, "CHECK BOX 4 IS CHECKED");
             }
         });
@@ -331,9 +343,9 @@ public class FieldAddingActivity extends Activity implements OnClickListener {
                 // 如果 ","的个数不为8，或者字符串开始和结束字符不是指定的，则数据无效
                 if (!((MyApplication.countCharacter(readMessageSB, SEPARATOR) == 8)
                         && (readMessageSB.charAt(0) == START)
-                        && (readMessageSB.charAt(readMessageSB.length() - 1) == END)))
+                        && (readMessageSB.charAt(readMessageSB.length() - 1) == END))) {
                     readMessageSB.delete(0, readMessageSB.length());
-                else {
+                } else {
                     dataString = readMessageSB.substring(1, readMessageSB.length() - 1); // 提取字符串
                     String[] dataArray = dataString.split(",", 9);
                     try {
