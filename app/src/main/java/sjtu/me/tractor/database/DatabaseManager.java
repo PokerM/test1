@@ -389,8 +389,8 @@ public class DatabaseManager {
 
     /**
      * 遍历Cursor的内容转存到ArrayList里面
-     * @param cursor
-     * @return
+     * @param cursor 游标
+     * @return 列表
      */
     public static ArrayList<Map<String, String>> cursorToList(Cursor cursor) {
         ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
