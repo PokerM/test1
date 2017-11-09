@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:baselineAligned="false">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/layout_center_left"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/title_paired_devices"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="#666"
+            android:paddingLeft="15dp"
+            android:gravity="center_vertical|left"
+            android:text="@string/carlist_title"
+            android:textColor="#fff"
+            android:textSize="25sp" />
+
+
+            <ListView
+                android:id="@+id/lstTractor"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginLeft="10dp"
+                >
+            </ListView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+             >
+
+            <Button
+                android:id="@+id/btnAddTractorInfo"
+                style="@style/carmessage_buttonstyle.huge"
+                android:background="@drawable/imgbtn_tractorinfo_more" />
+
+            <Button
+                android:id="@+id/btnEditTractorInfo"
+                style="@style/carmessage_buttonstyle.huge"
+                android:layout_toRightOf="@id/btnAddTractorInfo"
+                android:background="@drawable/imgbtn_tractorinfo_edit" />
+
+            <Button
+                android:id="@+id/btnRemoveTractorInfo"
+                style="@style/carmessage_buttonstyle.huge"
+                android:layout_toRightOf="@id/btnEditTractorInfo"
+                android:background="@drawable/imgbtn_tractorinfo_remove" />
+
+            <Button
+                android:id="@+id/btnClearTractorInfo"
+                style="@style/carmessage_buttonstyle.huge"
+                android:layout_toRightOf="@id/btnRemoveTractorInfo"
+                android:background="@drawable/imgbtn_tractorinfo_clear" />
+
+            <Button
+                android:id="@+id/btnSaveTractorInfo"
+                style="@style/carmessage_buttonstyle.huge"
+                android:layout_toRightOf="@id/btnClearTractorInfo"
+                android:background="@drawable/imgbtn_tractorinfo_save" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fadingEdge="vertical"
+        android:scrollbars="vertical"
+        android:background="@drawable/textview_border_4" >
+
+        <LinearLayout
+            android:id="@+id/content_left"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/layout_center_right"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <TextView
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_1"
+                    android:text="@string/tractor_name" />
+
+                <TextView
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_2"
+                    android:text="@string/tractor_wheelbase" />
+
+                <TextView
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_3"
+                    android:text="@string/tractor_antenna_lateral" />
+
+                <TextView
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_2"
+                    android:text="@string/tractor_antenna_rear" />
+
+                <TextView
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_3"
+                    android:text="@string/tractor_antenna_height" />
+
+                <TextView
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_2"
+                    android:text="@string/tractor_min_turning_radius" />
+
+                <TextView
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_3"
+                    android:text="@string/tractor_angle_correction" />
+
+                <TextView
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_2"
+                    android:text="@string/tractor_implement_width" />
+
+                <TextView
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_3"
+                    android:text="@string/tractor_implement_length" />
+
+                <TextView
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_2"
+                    android:text="@string/tractor_implement_offset" />
+
+                <TextView
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_3"
+                    android:text="@string/tractor_operation_linespcing" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/cellTextTractorName"
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_1"
+                    android:text="SJTU00" />
+
+                <TextView
+                    android:id="@+id/txtWheelbase"
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_2"
+                    android:text="2.250m" />
+
+                <TextView
+                    android:id="@+id/txtAntennaLateral"
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_3"
+                    android:text="0.005m" />
+
+                <TextView
+                    android:id="@+id/txtAntennaRear"
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_2"
+                    android:text="+0.025m" />
+
+                <TextView
+                    android:id="@+id/txtAntennaHeight"
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_3"
+                    android:text="2.500m" />
+
+                <TextView
+                    android:id="@+id/txtMinTurningRadius"
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_2"
+                    android:text="2.100m" />
+
+                <TextView
+                    android:id="@+id/txtAngleCorrection"
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_3"
+                    android:text="0.02" />
+
+                <TextView
+                    android:id="@+id/txtImplementWidth"
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_2"
+                    android:text="2.650m" />
+
+                <TextView
+                    android:id="@+id/txtImplementLength"
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_3"
+                    android:text="0.800m" />
+
+                <TextView
+                    android:id="@+id/txtImplementOffset"
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_2"
+                    android:text="0.005m" />
+
+                <TextView
+                    android:id="@+id/txtOperationLineSpacing"
+                    style="@style/tractorinfo_list_textstyle"
+                    android:background="@drawable/textview_border_3"
+                    android:text="2.700m" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

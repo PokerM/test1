@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+
+
+
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/title_paired_devices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#666"
+            android:paddingLeft="5dp"
+            android:text="@string/added_fields"
+            android:textColor="#fff"
+            android:textSize="25sp"
+            android:visibility="visible" />
+
+        <ListView
+            android:id="@+id/lstFields"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+        </ListView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="120dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/layout_center_right"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/btnAddField"
+            style="@style/fragment_field_button"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/imgbtn_field_adding_add" />
+
+        <TextView
+            style="@style/fragment_field_text"
+            android:text="新增地块" />
+
+        <Button
+            android:id="@+id/btnRemoveField"
+            style="@style/fragment_field_button"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/imgbtn_field_adding_remove" />
+
+        <TextView
+            style="@style/fragment_field_text"
+            android:text="移除地块" />
+
+        <Button
+            android:id="@+id/btnClearAllFields"
+            style="@style/fragment_field_button"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/imgbtn_field_adding_clear" />
+
+        <TextView
+            style="@style/fragment_field_text"
+            android:text="清空数据" />
+
+        <Button
+            android:id="@+id/btnImportField"
+            style="@style/fragment_field_button"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/imgbtn_field_adding_import" />
+
+        <TextView
+            style="@style/fragment_field_text"
+            android:text="导入地块" />
+
+        <Button
+            android:id="@+id/btnExportField"
+            style="@style/fragment_field_button"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/imgbtn_field_adding_export" />
+
+        <TextView
+            style="@style/fragment_field_text"
+            android:text="导出地块" />
+    </LinearLayout>
+
+</LinearLayout>

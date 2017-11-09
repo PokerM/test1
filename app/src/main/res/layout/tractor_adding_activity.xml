@@ -1,0 +1,365 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/screen"
+    android:orientation="vertical"
+    tools:context="sjtu.me.tractor.tractorinfo.TractorAddingActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btnExitTractorAdding"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/arrow_left" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="3dp"
+            android:gravity="center_vertical"
+            android:text="@string/back_to_recent"
+            android:textColor="#CCCCCC"
+            android:textSize="25sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/management_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_weight="15">
+
+        <LinearLayout
+            android:id="@+id/content_left"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="@drawable/layout_center_left"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/imgPagerCircles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:visibility="invisible">
+
+                <ImageView
+                    android:id="@+id/page1"
+                    style="@style/circle_page.first" />
+
+                <ImageView
+                    android:id="@+id/page2"
+                    style="@style/circle_page.after" />
+
+                <ImageView
+                    android:id="@+id/page3"
+                    style="@style/circle_page.after" />
+
+                <ImageView
+                    android:id="@+id/page4"
+                    style="@style/circle_page.after" />
+
+                <ImageView
+                    android:id="@+id/page5"
+                    style="@style/circle_page.after" />
+
+                <ImageView
+                    android:id="@+id/page6"
+                    style="@style/circle_page.after" />
+
+                <ImageView
+                    android:id="@+id/page7"
+                    style="@style/circle_page.after" />
+
+                <ImageView
+                    android:id="@+id/page8"
+                    style="@style/circle_page.after" />
+
+                <ImageView
+                    android:id="@+id/page9"
+                    style="@style/circle_page.after" />
+
+                <ImageView
+                    android:id="@+id/page10"
+                    style="@style/circle_page.after" />
+
+            </LinearLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </android.support.v4.view.ViewPager>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/content_right"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:background="@drawable/layout_center_right"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@drawable/tractor" />
+
+                <TextView
+                    style="@style/tractor_adding_textstyle.big"
+                    android:layout_width="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/tractor_info_title" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="1dp"
+                android:background="#ACBEFF"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtTractorNameTitle"
+                    style="@style/tractor_adding_textstyle.normal"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/tractor_name" />
+
+                <EditText
+                    android:id="@+id/editTextTractorName"
+                    android:layout_width="200dp"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@id/txtTractorNameTitle"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:hint="@string/tractor_name_input_hint"
+                    android:maxLength="20"
+                    android:textColor="#999999"
+                    android:textColorHint="@color/red"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/cellTextTractorName"
+                    style="@style/tractor_adding_textstyle.normal"
+                    android:layout_width="200dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/txtTractorNameTitle"
+                    android:visibility="invisible" />
+
+                <Button
+                    android:id="@+id/btnAffirmTractorName"
+                    style="@style/carmessage_buttonstyle.normal"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/tractor_affirm" />
+
+                <Button
+                    android:id="@+id/btnTractorNameEdit"
+                    style="@style/carmessage_buttonstyle.normal"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="3dp"
+                    android:layout_toLeftOf="@id/btnAffirmTractorName"
+                    android:text="@string/tractor_edit" />
+            </RelativeLayout>
+
+            <!-- 类型选择部分，共四个单元 ，两行两列-->
+            <LinearLayout
+                android:id="@+id/layoutSetTractorType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="invisible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFBEAC">
+                    <!-- 车辆类型布局 -->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/txtTractorTypeAttr"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="5dp"
+                            android:text="@string/tractor_type_name"
+                            android:textColor="#999999"
+                            android:textSize="20dp" />
+
+                        <TextView
+                            android:id="@+id/txtTractorTypeValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/txtTractorTypeAttr"
+                            android:textColor="#999999"
+                            android:textSize="20dp" />
+
+                        <Button
+                            android:id="@+id/btnSelectType"
+                            style="@style/carmessage_buttonstyle.small"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="5dp"
+                            android:text="@string/select" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutSetTractorMade"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFBEAC"
+                    android:visibility="invisible">
+                    <!-- 车辆制造商布局 -->
+                    <RelativeLayout
+                        android:layout_width="396dp"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/txtTractorMadeAttr"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="5dp"
+                            android:text="@string/tractor_made_name"
+                            android:textColor="#999999"
+                            android:textSize="20dp" />
+
+                        <TextView
+                            android:id="@+id/txtTractorMadeValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/txtTractorMadeAttr"
+                            android:textColor="#999999"
+                            android:textSize="20dp" />
+
+                        <Button
+                            android:id="@+id/btnSelectMade"
+                            style="@style/carmessage_buttonstyle.small"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="5dp"
+                            android:text="@string/select"
+                            />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutSetTractorTypeNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFBEAC"
+                    android:visibility="invisible">
+                    <!-- 车辆型号布局 -->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/txtTractorTypeNumberAttr"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="5dp"
+                            android:text="@string/tractor_type_number_name"
+                            android:textColor="#999999"
+                            android:textSize="20dp" />
+
+                        <TextView
+                            android:id="@+id/txtTractorTypeNumberValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/txtTractorTypeNumberAttr"
+                            android:textColor="#999999"
+                            android:textSize="20dp" />
+
+                        <Button
+                            android:id="@+id/btnSelectTypeNumber"
+                            style="@style/carmessage_buttonstyle.small"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="5dp"
+                            android:text="@string/select" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:orientation="vertical">
+
+                <ListView
+                    android:id="@+id/lstTractorInfoInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:divider="#00000000"></ListView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:id="@+id/btnAffirmAddingTractor"
+                    style="@style/carmessage_buttonstyle.big"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="105dp"
+                    android:text="@string/tractor_affirm"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/btnExitAddingTractor"
+                    style="@style/carmessage_buttonstyle.big"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/button_bluebackground"
+                    android:text="@string/exit"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5dp"
+        android:text="@string/copyright"
+        android:textSize="18sp" />
+
+
+</LinearLayout>

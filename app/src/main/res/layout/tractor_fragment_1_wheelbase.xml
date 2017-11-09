@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:id='@+id/fragment1'>
+    
+    <!-- 小车设置页面1：轴距 -->
+    <LinearLayout 
+         android:layout_width="wrap_content"
+         android:layout_height="0dp"
+         android:layout_weight="2"
+         android:layout_marginTop="10dp"
+         android:layout_gravity="center"
+         android:layout_marginLeft="10dp">
+         <TextView 
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_gravity="center"
+             android:text="@string/info_fragment1_wheelbase"
+             android:textSize="32sp"
+             android:textColor="#999999"/>
+     </LinearLayout>
+    
+     <RelativeLayout 
+         android:layout_width="wrap_content"
+         android:layout_height="0dp"
+         android:layout_weight="15">
+         
+         <ImageView 
+             android:layout_width="500dp"
+             android:layout_height="400dp"
+             android:layout_marginLeft="100dp"
+             android:src="@drawable/tractor_info_wheelbase"
+             android:layout_centerInParent="true"/>
+		
+         <LinearLayout 
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentBottom="true"
+             android:layout_centerHorizontal="true"
+             >
+             
+             <EditText 
+	             android:id="@+id/editTractorWheelbase"
+	             android:maxLength="6"
+	             android:layout_width="wrap_content"
+	             android:layout_height="wrap_content"
+	             android:layout_gravity="center_vertical"
+	             android:layout_marginLeft="60dp"
+	             android:hint="@string/carmessage_editHint"
+	             android:numeric="decimal|signed"
+	             android:textSize="24sp"
+	             android:textColor="#999999"/>
+	         
+	         <TextView 
+	             android:layout_width="wrap_content"
+	             android:layout_height="wrap_content"
+	             android:layout_gravity="center_vertical"
+	             android:layout_marginBottom="3dp"
+	             android:textSize="24sp"
+	             android:text="@string/meter"
+	             android:textColor="#999999"/>
+         </LinearLayout>
+         
+     </RelativeLayout>
+     
+     <LinearLayout 
+         android:layout_width="match_parent"
+         android:layout_height="0dp"
+         android:layout_weight="3"
+         android:layout_margin="10dp"
+         android:layout_gravity="center">
+         
+         <ImageButton 
+             android:id="@+id/help_tractor_info_wheelbase"
+             style="@style/carmessage_helpstyle"/>
+     </LinearLayout>
+
+</LinearLayout>

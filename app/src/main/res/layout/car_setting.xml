@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="385dp"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    android:padding="2dp"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="180dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:text="输入车身长度(mm)："
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/editText01"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ems="10"
+            android:inputType="number"
+            android:maxLength="4"
+            android:textSize="15sp" />
+
+            <requestFocus />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/TextView2"
+            android:layout_width="180dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:text="天线安装高度(mm):"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/editText02"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ems="10"
+            android:inputType="number"
+            android:maxLength="4"
+            android:textSize="15sp" >
+        </EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/TextView3"
+            android:layout_width="180dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:text="天线到中轴距离(mm):"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/editText03"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+           android:layout_gravity="center"
+            android:ems="10"
+            android:inputType="number"
+            android:maxLength="4"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/TextView4"
+            android:layout_width="180dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:text="天线到后轮距离(mm):"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/editText04"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ems="10"
+            android:inputType="number"
+            android:maxLength="4"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/TextView5"
+            android:layout_width="180dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:text="作业行间距(m):"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/editText05"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            android:maxLength="4"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/TextView6"
+            android:layout_width="180dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:text="设置速度(km/h):"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/editText06"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            android:maxLength="4"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:onClick="onClick"
+        android:text="设置完成"
+        android:textSize="15sp" />
+
+</LinearLayout>

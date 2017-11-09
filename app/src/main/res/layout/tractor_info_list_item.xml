@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 自定义listView每一行的布局 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="right">
+            
+      <TextView 
+	       android:id="@+id/txtLabelName"
+	       android:layout_gravity="center_vertical"
+	       android:layout_marginLeft="5dp"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:textColor="#999999"
+	       android:textSize="20sp"
+      	   />
+   
+	  <TextView 
+	       android:id="@+id/txtLabelDetail"
+	       android:layout_gravity="center_vertical"
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:textColor="#999999"
+	       android:textSize="20sp"
+	       />
+   
+	  <LinearLayout 
+    	   android:layout_width="match_parent"
+    	   android:layout_height="wrap_content"
+    	   android:orientation="horizontal"
+    	   android:gravity="right">
+            
+		   <Button 
+		       style="@style/carmessage_buttonstyle.small"
+		       android:id="@+id/btnEditLabel"
+		       android:layout_marginRight="5dp"
+		       android:text="@string/tractor_edit"
+		       />
+	  </LinearLayout>
+</LinearLayout>

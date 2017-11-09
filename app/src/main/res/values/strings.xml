@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="copyright">CopyRight 版本：v1.0</string>
+
+    <!-- 蓝牙列表选择页面的所有字符 -->
+    <string name="app_name">AutoTractor</string>
+    <string name="action_settings">设置</string>
+    <string name="connection_setting">请选择连接设备</string>
+    <string name="car_settings">参数设置</string>
+    <string name="paired_devices">已配对设备</string>
+    <string name="unpaired_devices">未配对设备</string>
+    <string name="scan_for_new_devices">搜索新设备…</string>
+    <string name="scanning_cancel">取消搜索</string>
+    <string name="alert_title">警告</string>
+    <string name="affirm">确定</string>
+    <string name="cancel">取消</string>
+
+    <!-- 车辆设置页面的所有字符 -->
+
+    <string name="back_to_recent">返回上一层</string>
+    <string name="exit_application">退出程序</string>
+    <string name="select">选择</string>
+    <string name="exit">退出</string>
+    <string name="back">返回</string>
+    <string name="car1">创建车辆</string>
+    <string name="car2">管理车辆</string>
+    <string name="car3">自动校准</string>
+    <string name="car4">倾角校准</string>
+    <string name="car5">转向调整</string>
+    <string name="car6">转向组件</string>
+    <string name="system1">系统健康状态</string>
+    <string name="system2">管理设置</string>
+    <string name="system3">配件</string>
+    <string name="system4">技术人员</string>
+    <string name="system5">软件升级</string>
+    <string name="system6">系统设置</string>
+    <string name="gps1">GPS诊断</string>
+    <string name="gps2">GPS设置</string>
+    <string name="gps3">精度设置</string>
+    <string name="gps4">NMEA输出</string>
+    <string name="account1">详细信息</string>
+    <string name="account2">功能代码</string>
+
+    <string name="alert_dialog_title_in_tractorinfo">温馨提示</string>
+    <string name="alert_dialog_message_add_tractor">\t\t\点击确定进入添加车辆信息界面以\n\n便进行下一步的操作</string>
+    <string name="alert_dialog_message_edit_remove">\t\t\请长按你要删除或者修改的车辆所\n\n在一行以便进行下一步的操作</string>
+    <string name="alert_dialog_message_clear_all">\t\t您确定要清空整个车辆信息数据库吗？\n\n清空之后将无法恢复！您确定要删除吗？！</string>
+    <string name="alert_dialog_title_edit_tractor">进入修改页面</string>
+    <string name="alert_dialog_message_warning">\t\t您还没有保存数据到库中，强制退\n\n出会导致未保存的数据丢失！您确定要退出吗？</string>
+    <string name="alert_dialog_title_tractorinfo_setting">进入车辆设置界面</string>
+    <string name="alert_dialog_message_tractorinfo_setting">\t\t您已进入车辆设置主界面，请根据实\n\n际情况设置车辆类型和参数</string>
+
+
+    <string name="carmessage_detail">详细信息：</string>
+    <string name="carmessage_detail1">详细信息</string>
+
+    <string name="tractor_info_title">车辆信息</string>
+    <string name="tractor_name">名称：</string>
+    <string name="tractor_name_input_hint">20字符以内(禁止空格)</string>
+    <string name="tractor_wheelbase">轴距：</string>
+    <string name="tractor_antenna_lateral">天线横向偏差：</string>
+    <string name="tractor_antenna_rear">天线到后轴距离：</string>
+    <string name="tractor_antenna_height">天线安装高度：</string>
+    <string name="tractor_min_turning_radius">最小拐弯半径：</string>
+    <string name="tractor_angle_correction">角度传感器校正：</string>
+    <string name="tractor_implement_width">农具幅宽：</string>
+    <string name="tractor_implement_length">农具长度：</string>
+    <string name="tractor_implement_offset">农具中心安装偏移： </string>
+    <string name="tractor_operation_linespcing">作业行间距： </string>
+    <string name="tractor_type_name">类型：</string>
+    <string name="tractor_made_name">制造商：</string>
+    <string name="tractor_type_number_name">型号：</string>
+    <string name="tractor_edit">修改</string>
+    <string name="tractor_affirm">确认</string>
+    <string name="tractor_name_null_alert">\t\t\t\t车辆名称不可为空或者包含空格，请重新输入\n</string>
+    <string name="tractor_type_null_alert">\t\t\t\t车辆类型/制造商/型号/控制器类型不可为空，请先输入\n</string>
+
+    <string name="info_fragment1_wheelbase">轴距</string>
+    <string name="info_fragment1_tips">\t\t\t\t请测量车辆后轴中心到前轴中心的垂直距离</string>
+    <string name="info_fragment2_tips">\t\t\t\t请输入前端/后端天线距离车辆的控制点的距离</string>
+    <string name="info_fragment3_tips">\t\t\t\t请输入从车辆后方观察车辆时天线距离车辆中心线的位置</string>
+    <string name="info_fragment2_antenna_lateral">天线横向偏差</string>
+    <string name="info_fragment3_antenna_rear">天线到后轴距离</string>
+    <string name="meter">米</string>
+    <string name="carmessage_tip">温馨提示</string>
+    <string name="info_fragment4_antenna_height">天线高度</string>
+    <string name="info_fragment4_tips">\t\t\t\t请输入从GPS天线顶端罩到车辆停车位置所在地面的垂直距离</string>
+    <string name="info_fragment5_min_turning">最小拐弯半径</string>
+    <string name="info_fragment5_tips">\t\t\t\t请输入拖拉机的最小拐弯半径</string>
+    <string name="info_fragment6_angle_correction">角度传感器校正值</string>
+    <string name="info_fragment6_tips">\t\t\t\t请输入角度传感器校正值</string>
+    <string name="info_fragment7_implement_width">农具幅宽</string>
+    <string name="info_fragment7_tips">\t\t\t\t请输入拖拉机的农具宽度</string>
+    <string name="info_fragment8_implement_offset">农具安装偏移</string>
+    <string name="info_fragment8_tips">\t\t\t\t请输入拖拉机的农具水平安装偏移</string>
+    <string name="info_fragment9_implement_length">农具长度</string>
+    <string name="info_fragment9_tips">\t\t\t\t请输入拖拉机的农具沿拖拉机中轴方向的尺寸</string>
+    <string name="info_fragment10_linespacing">作业行间距</string>
+    <string name="info_fragment10_tips">\t\t\t\t请输入拖拉机的作业行间距</string>
+
+
+    <string name="carmessage_editHint">请输入数据</string>
+    <string name="carmessage_ecu3">ECU高度</string>
+    <string name="carmessage_ecu4">ECU方向</string>
+    <string name="carmessage_info_ecu3">\t\t\t\t请输入从ECU单元的中点到车辆停车位置所在地面的垂直距离</string>
+    <string name="carmessage_info_ecu4">\t\t\t\t请务必输入正确的ECU方向以便成功进行自动转向</string>
+    <string name="left">左</string>
+    <string name="right">右</string>
+    <string name="below">后</string>
+    <string name="above">前</string>
+    <string name="carmessage_tip_info">\t\t\t\t您确定要把车辆数据存储到数据库吗？\n\t</string>
+    <string name="carmessage_orientation_hint">\t\t\t\t此类车型的ECU默认方向为右、前，若与实际方向不同，请自行选择当前ECU方向或者将当前ECU方向更改为默认方向</string>
+    <string name="carmessage_errormessage">\t\t\t\t数据库存在同名车辆，若点击确定则会覆盖掉原数据\n\n若不希望覆盖原数据请点击返回按钮更改车辆名称</string>
+    <string name="carmessage_errortitle">重名警告</string>
+    <string name="carmessage_errorsure">确认覆盖</string>
+    <string name="carmessage_errorcansel">返回重命名</string>
+
+    <!-- 车辆数据库信息表页面的所有字符 -->
+    <string name="add_tractor">添加数据</string>
+    <string name="delete_tractor">删除数据</string>
+    <string name="edit_tractor">修改数据</string>
+    <string name="clear_tractors">清空数据</string>
+    <string name="alert_title_tractor_longpress">请选择操作</string>
+    <string name="carlist_title">车辆数据库列表</string>
+    <string name="tractor_alert_info_longpressinfo_1">\t\t\t\t您选择的车辆名称为：\"</string>
+    <string name="tractor_alert_info_longpressinfo_2">\"\n\n请选择您要对其进行的操作</string>
+    <string name="carset_delete">删除数据</string>
+    <string name="carset_edit">修改数据</string>
+    <string name="carset_cansel">取消操作</string>
+    <string name="alert_title_tractor_tip">温馨提示</string>
+
+    <string name="carset_tipsure">知道了</string>
+
+    <string name="alert_info_clear_all_tractors_affirm">\t\t\t\t数据库清空之后将无法恢复！！\n\n您真的要删除吗？！</string>
+
+
+    <!-- 车辆修改信息时弹出来的对话框，以便直接取得所有对象 -->
+
+    <string name="carsetback_alertmessage">\t\t\t\t请根据需要修改参数，若不修改名称则提交时可覆盖原车辆\n\n数据；若修改名称，则会保存为新的车辆</string>
+    <string name="carsetback_alertsure">知道了</string>
+    <string name="currentDevice">当前选择设备：</string>
+    <string name="currentReceviedString">当前接收数据：</string>
+    <string name="receivedStringNo">数据序号：</string>
+    <string name="currentSentString">当前发送数据：</string>
+    <string name="startConnection">打开连接</string>
+
+    <!-- 地块数据库信息表页面的所有字符 -->
+    <string name="added_fields">已添加地块</string>
+    <string name="add_field">添加地块</string>
+    <string name="delete_field">删除地块</string>
+    <string name="edit_field">修改地块</string>
+    <string name="clear_all_fields">清空地块</string>
+    <string name="alert_title_field_tip">温馨提示</string>
+    <string name="alert_dialog_message_add_field">\t\t\点击确定进入新建地块界面以\n\n便进行下一步的操作</string>
+    <string name="alert_info_field_tip">\t\t\t\t请长按你要删除或者修改的地块所在一行\n\n以便进行下一步的操作</string>
+    <string name="alert_message_field_import">\t\t\t\t请打开可以导入的资源的文件目录并选择文件\n\n以便进行下一步的操作</string>
+    <string name="alert_message_field_export">\t\t\t\t请选择将地图文件导出文件目录\n\n以便进行下一步的操作</string>
+    <string name="alert_title_affirm">再次警告</string>
+    <string name="alert_info_clear_all_fields">\t\t\t\t您确定要清空整个地块信息数据库吗？清空之后将无法恢复！\n\n您确定要删除吗？！</string>
+    <string name="alert_info_clear_all_fields_affirm">\t\t\t\t数据库清空之后将无法恢复！！\n\n您真的要删除吗？！</string>
+    <string name="alert_title_field_longpress">请选择操作</string>
+    <string name="field_alert_info_longpressinfo_1">\t\t\t\t您选择的地块名称为：\"</string>
+    <string name="field_alert_info_longpressinfo_2">\"\n\n请选择您要对其进行的操作</string>
+
+    <!--导航界面XML文件和JAVA文件所有中文字符-->
+    <string name="set_field">设置田地</string>
+    <string name="turn_left">左转</string>
+    <string name="turn_right">右转</string>
+    <string name="set_a_point">设置A点</string>
+    <string name="set_b_poing">设置B点</string>
+    <string name="draw_ab">画AB线</string>
+    <string name="history_ab">历史AB线</string>
+    <string name="start_navi">启动导航</string>
+    <string name="plot_path">绘制轨迹</string>
+    <string name="save_path">保存轨迹</string>
+    <string name="history_path">历史轨迹</string>
+    <string name="border_distance_1">距离边界1：</string>
+    <string name="border_distance_2">距离边界2：</string>
+    <string name="gps_sign">GPS标志</string>
+    <string name="stop_bit">停止位：</string>
+    <string name="north_angle">真北方向：</string>
+    <string name="x_coordinate">X坐标：</string>
+    <string name="y_coordinate">Y坐标：</string>
+    <string name="direction_angle">航向角：</string>
+    <string name="speed">地面速度：</string>
+    <string name="lateral_deviation">横向偏差：</string>
+    <string name="turning_angle">转向角：</string>
+    <string name="comm_state">通信状态：</string>
+    <string name="command_receive">接收数据：</string>
+    <string name="commend_send">发送数据：</string>
+    <string name="comm_off">通信状态：断开</string>
+    <string name="comm_on">通信状态：连接</string>
+    <string name="ab_overlay_error_warning">B点不能和A点重合!请重新设置B点!</string>
+    <string name="length">长度：</string>
+    <string name="number">序号：</string>
+    <string name="speed_unit">km/h</string>
+    <string name="a_point_already_set">A点已设置!</string>
+    <string name="b_point_already_set">B点已设置!</string>
+    <string name="received_data_type_error">传入数据类型错误!</string>
+    <string name="stop_navi">停止导航</string>
+    <string name="stop_plot_path">停止绘制</string>
+    <string name="scan_for_new_bluetooth">搜索蓝牙设备中…</string>
+    <string name="select_a_bluetooth_device_to_connect">选择一个设备进行连接</string>
+    <string name="affirm_submit">确定提交</string>
+    <string name="back_to_edit">返回编辑</string>
+    <string name="open_connection">打开连接</string>
+    <string name="close_connection">断开连接</string>
+    <string name="select_an_available_device">请选择一个可用的蓝牙设备！</string>
+    <string name="stop_receiving">停止接收</string>
+    <string name="stop_sending">停止发送</string>
+    <string name="bluetooth_is_on">设备蓝牙已经打开！</string>
+    <string name="bluetooth_is_off">蓝牙未打开，无法连接！</string>
+    <string name="bluetooth_device_is_not_available">蓝牙设备选择错误！</string>
+    <string name="reselect_a_bluetooth_device_to_connect">请重新选择一个蓝牙设备进行连接！</string>
+    <string name="bluetooth_is_not_supported">设备不支持蓝牙！</string>
+    <string name="dialog_title_select_tractor_type">选择拖拉机类型</string>
+    <string name="dialog_title_select_tractor_made">选择拖拉机制造商</string>
+    <string name="dialog_title_select_tractor_type_number">选择拖拉机型号</string>
+    <string name="no_paired_devices">没有已配对蓝牙设备！</string>
+    <string name="no_new_devices">没有找到新蓝牙设备！</string>
+    <string name="touch_again_and_exit">再按一次退出程序</string>
+    <string name="receiving_data_format_error">传入数据类型错误!</string>
+    <string name="input_field_name">输入地块名</string>
+    <string name="save">保存</string>
+    <string name="field_name_should_not_be_null">文件名不能为空！</string>
+    <string name="field_vertices_are_not_enough">未标定足够的点，无法规划区域</string>
+    <string name="start_to_set_field">确定开始设置田地？</string>
+    <string name="please_input_field_name">请输入地块名字!</string>
+
+
+    <drawable name="color_normal">#69541b</drawable>
+    <drawable name="color_pressed">#b2d235</drawable>
+
+</resources>

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/title_new_devices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#666"
+            android:gravity="center"
+            android:paddingLeft="5dp"
+            android:text="@string/unpaired_devices"
+            android:textColor="#fff"
+            android:textSize="25sp" />
+
+        <ListView
+            android:id="@+id/new_devices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stackFromBottom="true" >
+        </ListView>
+
+        <Button
+            android:id="@+id/button_scan"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/button_skin"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:text="@string/scan_for_new_devices"
+             >
+        </Button>
+
+        <Button
+            android:id="@+id/button_cancel"
+             android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+           	android:background="@drawable/button_skin"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:text="@string/cancel" 
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+       android:layout_marginBottom="8dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/title_paired_devices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#666"
+            android:gravity="center"
+            android:paddingLeft="5dp"
+            android:text="@string/paired_devices"
+            android:textColor="#fff"
+            android:textSize="25sp" />
+
+        <ListView
+            android:id="@+id/paired_devices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stackFromBottom="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#666"
+            android:paddingLeft="5dp"
+            android:text="@string/currentDevice"
+            android:textColor="#fff"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/txtCurrentDevice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textview_border_with_cornor"
+            android:padding="5dp"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="3.0"
+            android:textColor="#ff000000"
+            android:textSize="24sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:background="#666"
+            android:paddingLeft="5dp"
+            android:text="@string/currentReceviedString"
+            android:textColor="#fff"
+            android:textSize="25sp" />
+        
+        <TextView
+            android:id="@+id/txtReceivedMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textview_border_with_cornor"
+            android:padding="5dp"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="3.0"
+            android:textColor="#ff000000"
+            android:textSize="20sp" />
+
+         <TextView
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="2dp"
+             android:background="#666"
+             android:paddingLeft="5dp"
+             android:text="@string/receivedStringNo"
+             android:textColor="#fff"
+             android:textSize="25sp" />
+         
+        <TextView
+            android:id="@+id/txtReceivedMessageNum"
+             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textview_border_with_cornor"
+            android:padding="5dp"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="3.0"
+            android:textColor="#ff000000"
+            android:textSize="24sp" />
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:background="#666"
+            android:paddingLeft="5dp"
+            android:text="@string/currentSentString"
+            android:textColor="#fff"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/txtSentMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textview_border_with_cornor"
+            android:padding="5dp"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="3.0"
+            android:textColor="#ff000000"
+            android:textSize="24sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:orientation="horizontal" >
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnStartConnection"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/button_skin"
+            android:textColor="#fff"
+            android:textSize="25sp"
+            android:text="@string/startConnection" />
+
+    </LinearLayout>
+
+</LinearLayout>

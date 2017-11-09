@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:id='@+id/fragment1'>
+    
+    <!-- 小车设置页面8：ECU方向 -->
+    <LinearLayout 
+         android:layout_width="wrap_content"
+         android:layout_height="0dp"
+         android:layout_weight="2"
+         android:layout_marginTop="10dp"
+         android:layout_gravity="center"
+         android:layout_marginLeft="10dp">
+         <TextView 
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_gravity="center"
+             android:text="@string/carmessage_ecu4"
+             android:textSize="32sp"
+             android:textColor="#999999"/>
+     </LinearLayout>
+    
+     <RelativeLayout 
+         android:layout_width="wrap_content"
+         android:layout_height="0dp"
+         android:layout_weight="15">
+         
+         <RadioGroup 
+             android:id="@+id/left_right"
+             android:layout_width="wrap_content"
+         	 android:layout_height="wrap_content"
+         	 android:orientation="horizontal"
+         	 android:layout_marginLeft="300dp"
+         	 android:layout_marginTop="200dp">
+             
+             <RadioButton 
+                 android:id="@+id/left"
+                 android:layout_width="wrap_content"
+         	 	 android:layout_height="wrap_content"
+         	 	 android:text="@string/left"
+         	 	 android:textSize="24sp"
+         	 	 android:textColor="#999999"/>
+             <RadioButton 
+                 android:id="@+id/right"
+                 android:layout_width="wrap_content"
+         	 	 android:layout_height="wrap_content"
+         	 	 android:layout_marginLeft="10dp"
+         	 	 android:text="@string/right"
+         	 	 android:textSize="24sp"
+         	 	 android:textColor="#999999"/>
+         </RadioGroup>
+         <RadioGroup 
+             android:id="@+id/above_below"
+             android:layout_alignLeft="@id/left_right"
+             android:layout_below="@id/left_right"
+             android:layout_width="wrap_content"
+         	 android:layout_height="wrap_content"
+         	 android:orientation="horizontal">
+             
+             <RadioButton 
+                 android:id="@+id/above"
+                 android:layout_width="wrap_content"
+         	 	 android:layout_height="wrap_content"
+         	 	 android:text="@string/above"
+         	 	 android:textSize="24sp"
+         	 	 android:textColor="#999999"/>
+             <RadioButton 
+                 android:id="@+id/below"
+                 android:layout_width="wrap_content"
+         	 	 android:layout_height="wrap_content"
+         	 	 android:layout_marginLeft="10dp"
+         	 	 android:text="@string/below"
+         	 	 android:textSize="24sp"
+         	 	 android:textColor="#999999"/>
+         </RadioGroup>
+         <ImageView 
+             android:layout_width="500dp"
+             android:layout_height="400dp"
+             android:layout_marginLeft="100dp"
+             android:src="@drawable/xy"
+             android:layout_centerInParent="true"/>
+		
+         <LinearLayout 
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_alignParentTop="true"
+             android:layout_centerHorizontal="true"
+             >
+	         <TextView 
+	             android:layout_width="wrap_content"
+	             android:layout_height="wrap_content"
+	             android:layout_marginBottom="3dp"
+	             android:textSize="24sp"
+	             android:text="@string/carmessage_orientation_hint"
+	             android:textColor="#999999"/>
+         </LinearLayout>
+         
+     </RelativeLayout>
+     
+     <LinearLayout 
+         android:layout_width="match_parent"
+         android:layout_height="0dp"
+         android:layout_weight="3"
+         android:layout_margin="10dp"
+         android:layout_gravity="center">
+         
+         <ImageButton 
+             android:id="@+id/help8"
+             style="@style/carmessage_helpstyle"/>
+     </LinearLayout>
+
+</LinearLayout>
