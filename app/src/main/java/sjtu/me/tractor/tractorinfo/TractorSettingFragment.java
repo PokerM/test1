@@ -1,40 +1,38 @@
 package sjtu.me.tractor.tractorinfo;
 
-import java.util.List;
-import java.util.Map;
-
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.AsyncTaskLoader;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.icu.text.DateFormat.Field;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
+
+import java.util.List;
+import java.util.Map;
+
 import sjtu.me.tractor.R;
 import sjtu.me.tractor.database.DatabaseManager;
 import sjtu.me.tractor.main.MyApplication;
 import sjtu.me.tractor.util.AlertDialogUtil;
 
 /**
- * @author BillHu 连接Fragment视图
+ * @author BillHu 车辆信息Fragment视图
  */
 public class TractorSettingFragment extends Fragment implements OnClickListener, LoaderCallbacks<Cursor> {
 
@@ -47,10 +45,10 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
     private List<Map<String, String>> tractorList;
     private TractorListAdapter tractorListAdapter;
     private ListView lstTractor;
+    private String[] tractorInfo;
 
     public TractorSettingFragment() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -91,7 +89,30 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
         Intent intent = getActivity().getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
-
+            tractorInfo = bundle.getStringArray("tractorInfo");
+            String tractorName = tractorInfo[0];
+            // 查询信息，若存在重名车辆会覆盖原数据，否则新建数据
+            Cursor resultCursor = mApp.getDatabaseManager().queryTractorByName(tractorName);
+            Map<String, String> map = DatabaseManager.cursorToMap(resultCursor);
+            if (map != null && map.size() != 0) {
+                final ContentValues values = new ContentValues();
+                values.put(TractorInfo.T_TYPE, tractorInfo[1]);
+                values.put(TractorInfo.T_MADE, tractorInfo[2]);
+                values.put(TractorInfo.T_TYPE_NUMBER, tractorInfo[3]);
+                values.put(TractorInfo.T_WHEELBASE, tractorInfo[4]);
+                values.put(TractorInfo.T_ANTENNA_LATERAL, tractorInfo[5]);
+                values.put(TractorInfo.T_ANTENNA_REAR, tractorInfo[6]);
+                values.put(TractorInfo.T_ANTENNA_HEIGHT, tractorInfo[7]);
+                values.put(TractorInfo.T_ANGLE_CORRECTION, tractorInfo[8]);
+                values.put(TractorInfo.T_MIN_TURNING_RADIUS, tractorInfo[9]);
+                values.put(TractorInfo.T_IMPLEMENT_WIDTH, tractorInfo[10]);
+                values.put(TractorInfo.T_IMPLEMENT_OFFSET, tractorInfo[11]);
+                values.put(TractorInfo.T_IMPLEMENT_LENGTH, tractorInfo[12]);
+                values.put(TractorInfo.T_OPERATION_LINESPACING, tractorInfo[13]);
+                mApp.getDatabaseManager().updateTractorByName(tractorName, values);
+            } else {
+                mApp.getDatabaseManager().insertDataToTractor();
+            }
         }
     }
 
@@ -149,84 +170,84 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-        case R.id.btnAddTractorInfo:
-            AlertDialog dialogAdd = new AlertDialog.Builder(getActivity())
-                    .setTitle(getString(R.string.alert_dialog_title_in_tractorinfo))
-                    .setMessage(getString(R.string.alert_dialog_message_add_tractor))
-                    .setIcon(R.drawable.alert)
-                    .setPositiveButton(getString(R.string.affirm),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    startActivity(new Intent("sjtu.me.tractor.tractorinfo.TractorAddingActivity"));
-                                }
-                            })
-                    .setNegativeButton(getString(R.string.cancel),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                    .create();
-            dialogAdd.show();
-            AlertDialogUtil.changeDialogTheme(dialogAdd);
-            break;
+            case R.id.btnAddTractorInfo:
+                AlertDialog dialogAdd = new AlertDialog.Builder(getActivity())
+                        .setTitle(getString(R.string.alert_dialog_title_in_tractorinfo))
+                        .setMessage(getString(R.string.alert_dialog_message_add_tractor))
+                        .setIcon(R.drawable.alert)
+                        .setPositiveButton(getString(R.string.affirm),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        startActivity(new Intent("sjtu.me.tractor.tractorinfo.TractorAddingActivity"));
+                                    }
+                                })
+                        .setNegativeButton(getString(R.string.cancel),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                        .create();
+                dialogAdd.show();
+                AlertDialogUtil.changeDialogTheme(dialogAdd);
+                break;
 
-        case R.id.btnRemoveTractorInfo:
-        case R.id.btnEditTractorInfo:
-            AlertDialog dialogEdit = new AlertDialog.Builder(getActivity())
-                    .setTitle(getString(R.string.alert_dialog_title_in_tractorinfo))
-                    .setMessage(getString(R.string.alert_dialog_message_edit_remove))
-                    .setIcon(R.drawable.alert)
-                    .setPositiveButton(getString(R.string.affirm), null).create();
-            dialogEdit.show();
-            AlertDialogUtil.changeDialogTheme(dialogEdit);
-            break;
+            case R.id.btnRemoveTractorInfo:
+            case R.id.btnEditTractorInfo:
+                AlertDialog dialogEdit = new AlertDialog.Builder(getActivity())
+                        .setTitle(getString(R.string.alert_dialog_title_in_tractorinfo))
+                        .setMessage(getString(R.string.alert_dialog_message_edit_remove))
+                        .setIcon(R.drawable.alert)
+                        .setPositiveButton(getString(R.string.affirm), null).create();
+                dialogEdit.show();
+                AlertDialogUtil.changeDialogTheme(dialogEdit);
+                break;
 
-        case R.id.btnClearTractorInfo:
-            AlertDialog dialogClear = new AlertDialog.Builder(getActivity())
-                    .setTitle(getString(R.string.alert_dialog_title_in_tractorinfo))
-                    .setMessage(getString(R.string.alert_dialog_message_clear_all))
-                    .setIcon(R.drawable.alert)
-                    .setPositiveButton("确定删除", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            AlertDialog dialogClearAgain = new AlertDialog.Builder(TractorSettingFragment.this.getActivity())
-                                    .setTitle(getString(R.string.alert_title_affirm))
-                                    .setMessage(getString(R.string.alert_info_clear_all_tractors_affirm))
-                                    .setIcon(R.drawable.alert)
-                                    .setPositiveButton("再次确认删除", new android.content.DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            mApp.getDatabaseManager().clearAllTractorData();
-                                            notifyDataChange();
-                                        }
-                                    }).setNegativeButton("取消删除", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                        }
-                                    }).create();
-                            dialogClearAgain.show();
-                            AlertDialogUtil.changeDialogTheme(dialogClearAgain);
-                        }
-                    }).setNegativeButton("取消删除", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    }).create();
+            case R.id.btnClearTractorInfo:
+                AlertDialog dialogClear = new AlertDialog.Builder(getActivity())
+                        .setTitle(getString(R.string.alert_dialog_title_in_tractorinfo))
+                        .setMessage(getString(R.string.alert_dialog_message_clear_all))
+                        .setIcon(R.drawable.alert)
+                        .setPositiveButton("确定删除", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                AlertDialog dialogClearAgain = new AlertDialog.Builder(TractorSettingFragment.this.getActivity())
+                                        .setTitle(getString(R.string.alert_title_affirm))
+                                        .setMessage(getString(R.string.alert_info_clear_all_tractors_affirm))
+                                        .setIcon(R.drawable.alert)
+                                        .setPositiveButton("再次确认删除", new android.content.DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                mApp.getDatabaseManager().clearAllTractorData();
+                                                notifyDataChange();
+                                            }
+                                        }).setNegativeButton("取消删除", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                            }
+                                        }).create();
+                                dialogClearAgain.show();
+                                AlertDialogUtil.changeDialogTheme(dialogClearAgain);
+                            }
+                        }).setNegativeButton("取消删除", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        }).create();
 
-            dialogClear.show();
-            AlertDialogUtil.changeDialogTheme(dialogClear);
-            
-            break;
+                dialogClear.show();
+                AlertDialogUtil.changeDialogTheme(dialogClear);
 
-        case R.id.btnSaveTractorInfo:
-            break;
+                break;
 
-        default:
-            break;
+            case R.id.btnSaveTractorInfo:
+                break;
+
+            default:
+                break;
         }
 
     }

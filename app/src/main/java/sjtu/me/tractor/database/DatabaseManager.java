@@ -41,7 +41,7 @@ import sjtu.me.tractor.tractorinfo.TractorInfo;
 
 /**
  * @author billhu
- * 专门管理数据库的管理器，此处封装了工具类，同时拥有多种方法对数据库进行操作
+ *         专门管理数据库的管理器，此处封装了工具类，同时拥有多种方法对数据库进行操作
  */
 public class DatabaseManager {
 
@@ -83,7 +83,8 @@ public class DatabaseManager {
 
     /**
      * 插入数据
-     * @param table 执行插入数据的表名
+     *
+     * @param table  执行插入数据的表名
      * @param values 键值对，用于规定插入的列名和列值，若没有放入所有列名则没有放入的列值为Null
      * @return flag 标志（对数据库产生影响时返回true）
      */
@@ -98,13 +99,14 @@ public class DatabaseManager {
 
     /**
      * 查询数据
-     * @param table 执行查询数据的表名
-     * @param columns 要查询出来的列名
-     * @param whereClause 查询条件子句，允许使用占位符“?”
+     *
+     * @param table         执行查询数据的表名
+     * @param columns       要查询出来的列名
+     * @param whereClause   查询条件子句，允许使用占位符“?”
      * @param selectionArgs 用于为whereClause子句中占位符传入参数值
-     * @param groupBy 用于控制分组
-     * @param having 用于对分组进行过滤
-     * @param orderBy 用于对记录进行排序
+     * @param groupBy       用于控制分组
+     * @param having        用于对分组进行过滤
+     * @param orderBy       用于对记录进行排序
      * @return 查询结果游标
      */
     public Cursor queryCursor(String table, String[] columns, String whereClause, String[] selectionArgs,
@@ -117,9 +119,10 @@ public class DatabaseManager {
 
     /**
      * 查询满足特定过滤条件的数据
-     * @param table 执行查询数据的表名
-     * @param columns 要查询出来的列名
-     * @param whereClause 查询条件子句，允许使用占位符“?”
+     *
+     * @param table         执行查询数据的表名
+     * @param columns       要查询出来的列名
+     * @param whereClause   查询条件子句，允许使用占位符“?”
      * @param selectionArgs 用于为whereClause子句中占位符传入参数值
      * @return 查询结果游标
      */
@@ -132,6 +135,7 @@ public class DatabaseManager {
 
     /**
      * 根据名字查询数据
+     *
      * @param table 执行查询数据的表名
      * @param names 名称/类型/制造商/型号/控制器
      * @return 查询结果
@@ -147,6 +151,7 @@ public class DatabaseManager {
 
     /**
      * 查询整表的指定列
+     *
      * @param table
      * @param columns
      * @return
@@ -160,6 +165,7 @@ public class DatabaseManager {
 
     /**
      * 查询整表
+     *
      * @param table
      * @return
      */
@@ -173,7 +179,8 @@ public class DatabaseManager {
 
     /**
      * 根据名称更新表
-     * @param values 属性值
+     *
+     * @param values      属性值
      * @param tractorName 拖拉机名称
      * @return
      */
@@ -187,6 +194,13 @@ public class DatabaseManager {
     }
 
 
+    /**
+     * MethodName: updateBySQL
+     * Description:
+     * @param sql
+     * @param bindArgs
+     * @return boolean
+    */
     public boolean updateBySQL(String sql, Object[] bindArgs) {
         connectDatabase();
         boolean flag = false;
@@ -202,36 +216,40 @@ public class DatabaseManager {
     /**
      * 封装直接删除拖拉机整表的方法。
      * （慎用，调用前务必启用提示框）
-     * @return
+     *
+     * @return 成功标志
      */
     public boolean clearAllTractorData() {
         connectDatabase();
-        boolean flag = false;
+        boolean flag;
         int count = myDatabase.delete(MyDatabaseHelper.TABLE_TRACTOR, null, null);
-        flag = (count > 0 ? true : false);
+        flag = (count > 0);
         return flag;
     }
 
     /**
      * 向拖拉机表中插入一行数据
-     * @param tName 名称
-     * @param tType 类型
-     * @param tMade 制造商
-     * @param tTypeNumber 型号
-     * @param wheelbase 轴距
-     * @param antennaLateral 天线横向偏差
-     * @param antennaRear 天线到后轮轴偏差
-     * @param antennaHeight 天线安装高度
-     * @param minTurning 最小拐弯半径
-     * @param angleCorrection 角度校正值
-     * @param implementWidth 农具幅宽
-     * @param implementOffset 农具安装偏移
-     * @param implementLength 农具长度
-     * @param lineSpacing 作业行间距
+     *
+     * @param tractorInfo 参数信息
      */
-    public void insertDataToTractor(String tName, String tType, String tMade, String tTypeNumber, String wheelbase, String antennaLateral, String antennaRear,
-                                    String antennaHeight, String minTurning, String angleCorrection, String implementWidth, String implementOffset,
-                                    String implementLength, String lineSpacing) {
+    public void insertDataToTractor(String[] tractorInfo) {
+        if (tractorInfo == null || tractorInfo.length <= 14) {
+            return;
+        }
+        String tName = tractorInfo[0];
+        String tType = tractorInfo[1];
+        String tMade = tractorInfo[2];
+        String tTypeNumber = tractorInfo[3];
+        String wheelbase = tractorInfo[4];
+        String antennaLateral = tractorInfo[5];
+        String antennaRear = tractorInfo[6];
+        String antennaHeight = tractorInfo[7];
+        String minTurning = tractorInfo[8];
+        String angleCorrection = tractorInfo[9];
+        String implementWidth = tractorInfo[10];
+        String implementOffset = tractorInfo[11];
+        String implementLength = tractorInfo[12];
+        String lineSpacing = tractorInfo[13];
         connectDatabase();
         myDatabase.execSQL("insert into " + MyDatabaseHelper.TABLE_TRACTOR + " values(null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 new String[]{tName, tType, tMade, tTypeNumber, wheelbase, antennaLateral, antennaRear, antennaHeight, minTurning, angleCorrection
@@ -241,6 +259,7 @@ public class DatabaseManager {
     /**
      * 根据名称删除数据
      * （不允许多辆车辆使用同一个名称）
+     *
      * @param name 待删除拖拉机名称
      * @return 标志
      */
@@ -253,6 +272,7 @@ public class DatabaseManager {
 
     /**
      * 根据名称查询车辆参数信息
+     *
      * @param queryName 查询名称
      * @return
      */
@@ -281,6 +301,7 @@ public class DatabaseManager {
     /**
      * 清空地块整表数据的方法。
      * （慎用，调用前务必启用提示框）
+     *
      * @return
      */
     public boolean clearAllFieldData() {
@@ -293,6 +314,7 @@ public class DatabaseManager {
 
     /**
      * 向地块表中插入条目
+     *
      * @param fNo
      * @param fName
      * @param fDate
@@ -309,6 +331,7 @@ public class DatabaseManager {
     /**
      * 根据名字查询地块
      * (仅查询地块名称，不查询地块顶点）
+     *
      * @param queryName
      * @return
      */
@@ -333,6 +356,7 @@ public class DatabaseManager {
     /**
      * 根据名字查询地块
      * （返回值中包含满足查询的地块的所有顶点数据）
+     *
      * @param queryName
      * @return
      */
@@ -354,6 +378,7 @@ public class DatabaseManager {
     /**
      * 根据名称删除地块
      * （不允许两个地块名称相同）
+     *
      * @param name 删除地块名称
      * @return
      */
@@ -368,6 +393,7 @@ public class DatabaseManager {
 
     /**
      * 遍历Cursor的内容转存到Map里面
+     *
      * @param cursor
      * @return
      */
@@ -389,6 +415,7 @@ public class DatabaseManager {
 
     /**
      * 遍历Cursor的内容转存到ArrayList里面
+     *
      * @param cursor 游标
      * @return 列表
      */
@@ -428,6 +455,7 @@ public class DatabaseManager {
 
     /**
      * 遍历Cursor的内容转存到ArrayList里面，并添加列表条目序号
+     *
      * @param cursor
      * @return
      */

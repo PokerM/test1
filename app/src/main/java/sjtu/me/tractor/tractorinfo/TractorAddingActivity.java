@@ -556,20 +556,7 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
                                             Cursor cursor = mApp.getDatabaseManager().queryTractorByName(tractorName);
                                             Map<String, String> map = DatabaseManager.cursorToMap(cursor);
                                             if (map.size() != 0) {
-//                                                final ContentValues values = new ContentValues();
-//                                                values.put(TractorInfo.T_TYPE, txtTractorType.toString());
-//                                                values.put(TractorInfo.T_MADE, txtTractorMade.toString());
-//                                                values.put(TractorInfo.T_TYPE_NUMBER, txtTractorTypeNumber.toString());
-//                                                values.put(TractorInfo.T_WHEELBASE, txtWheelbase.toString());
-//                                                values.put(TractorInfo.T_ANTENNA_LATERAL, txtAntennaLateral.toString());
-//                                                values.put(TractorInfo.T_ANTENNA_REAR, txtAntennaRear.toString());
-//                                                values.put(TractorInfo.T_ANTENNA_HEIGHT, txtAntennaHeight.toString());
-//                                                values.put(TractorInfo.T_ANGLE_CORRECTION, txtAngleCorrection.toString());
-//                                                values.put(TractorInfo.T_MIN_TURNING_RADIUS, txtMinTurning.toString());
-//                                                values.put(TractorInfo.T_IMPLEMENT_WIDTH, txtImplementWidth.toString());
-//                                                values.put(TractorInfo.T_IMPLEMENT_OFFSET, txtImplementOffset.toString());
-//                                                values.put(TractorInfo.T_IMPLEMENT_LENGTH, txtImplementLength.toString());
-//                                                values.put(TractorInfo.T_OPERATION_LINESPACING, txtLineSpacing.toString());
+//
 
                                                 AlertDialog dialogNameDuplicate = new AlertDialog.Builder(TractorAddingActivity.this)
                                                         .setTitle(getString(R.string.carmessage_errortitle))
@@ -580,7 +567,6 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
                                                             @Override
                                                             public void onClick(DialogInterface dialog, int which) {
                                                                 // 更新数据库文件中的车辆信息条目
-//                                                                mApp.getDatabaseManager().updateTractorByName(tractorName, values);
                                                                 turnPage();
                                                             }
                                                         })
