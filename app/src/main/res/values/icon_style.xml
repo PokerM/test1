@@ -14,33 +14,9 @@
     <style name="icon_above.marginLeft2">
         <item name="android:layout_marginLeft">12dp</item>
     </style>
-    
-    <style name="icon_home">
-        <item name="android:layout_width">120dp</item>
-        <item name="android:layout_height">90dp</item>
-        <item name="android:layout_centerVertical">true</item>
-    </style>
-    
-    <style name="icon_below">
-        <item name="android:layout_width">210dp</item>
-        <item name="android:layout_height">140dp</item>
-        <item name="android:textColor">#EEEEEE</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:paddingBottom">10dp</item>
-        <item name="android:gravity">center</item>
-    </style>
-    
-    <style name="icon_below.first">
-        <item name="android:layout_marginLeft">20dp</item>
-        <item name="android:layout_marginTop">20dp</item>
-    </style>
-    
-    <style name="icon_below.right">
-        <item name="android:layout_marginLeft">18dp</item>
-    </style>
-    
-    
-     <!-- icon风格，用于显示主页的button风格 -->
+
+
+    <!-- icon风格，用于显示主页的button风格 -->
     <style name="fragment_field_button">
         <item name="android:layout_width">75dp</item>
         <item name="android:layout_height">75dp</item>
@@ -95,14 +71,7 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">#1d1626</item>
     </style>
-    
-    <style name="tractor_adding_textstyle.list_title">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:textSize">28sp</item>
-        <item name="android:paddingLeft">10dp</item>
-        <item name="android:gravity">center_vertical|left</item>
-    </style>
-    
+
     <style name="tractor_adding_textstyle.big">
         <item name="android:textSize">25sp</item>
     </style>
@@ -112,20 +81,7 @@
         <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="tractor_adding_textstyle.small">
-        <item name="android:textSize">18sp</item>
-    </style>
 
-    
-    
-    <style name="tractor_adding_textstyle.listmessage">
-        <item name="android:textSize">18sp</item>
-        <item name="android:layout_marginTop">2dp</item>
-        <item name="android:layout_marginBottom">2dp</item>
-        <item name="android:gravity">center</item>
-        
-    </style>
-    
     <!-- 车辆设置主页面的小按钮和提示按钮风格 -->
     <style name="carmessage_helpstyle">
         <item name="android:layout_width">70dp</item>

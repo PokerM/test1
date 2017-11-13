@@ -42,9 +42,9 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
     private LoaderManager loaderManager;
     private Loader<Cursor> loader;
     private List<Map<String, String>> tractorList;
-    private TractorListAdapter tractorListAdapter;
+
     private ListView lstTractor;
-    private String[] tractorInfo;
+    private TractorListAdapter tractorListAdapter;
 
     public TractorSettingFragment() {
         super();
@@ -82,43 +82,25 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
         loaderManager = getActivity().getLoaderManager();
         Log.e(TAG, "is loaderManager not null? " + (loaderManager != null));
         loaderManager.initLoader(1002, null, this);
-        notifyDataChange();
 
 //        // 通过intent对象先得到传过来的车辆数据（修改车身参数时回传过来数据）
 //        Intent intent = getActivity().getIntent();
 //        Bundle bundle = intent.getExtras();
 //        if (bundle != null) {
-//            tractorInfo = bundle.getStringArray("tractorInfo");
-//            for (String i : tractorInfo) {
-//                Log.e(TAG, i);
-//            }
+//            String[] tractorInfo = bundle.getStringArray("tractorInfo");
 //            String tractorName = tractorInfo[0];
 //            // 查询信息，若存在重名车辆会覆盖原数据，否则新建数据
 //            Cursor resultCursor = mApp.getDatabaseManager().queryTractorByName(tractorName);
 //            Map<String, String> map = DatabaseManager.cursorToMap(resultCursor);
 //            if (map != null && map.size() != 0) {
-//                final ContentValues values = new ContentValues();
-//                values.put(TractorInfo.T_TYPE, tractorInfo[1]);
-//                values.put(TractorInfo.T_MADE, tractorInfo[2]);
-//                values.put(TractorInfo.T_TYPE_NUMBER, tractorInfo[3]);
-//                values.put(TractorInfo.T_WHEELBASE, tractorInfo[4]);
-//                values.put(TractorInfo.T_ANTENNA_LATERAL, tractorInfo[5]);
-//                values.put(TractorInfo.T_ANTENNA_REAR, tractorInfo[6]);
-//                values.put(TractorInfo.T_ANTENNA_HEIGHT, tractorInfo[7]);
-//                values.put(TractorInfo.T_ANGLE_CORRECTION, tractorInfo[8]);
-//                values.put(TractorInfo.T_MIN_TURNING_RADIUS, tractorInfo[9]);
-//                values.put(TractorInfo.T_IMPLEMENT_WIDTH, tractorInfo[10]);
-//                values.put(TractorInfo.T_IMPLEMENT_OFFSET, tractorInfo[11]);
-//                values.put(TractorInfo.T_IMPLEMENT_LENGTH, tractorInfo[12]);
-//                values.put(TractorInfo.T_OPERATION_LINESPACING, tractorInfo[13]);
-//                mApp.getDatabaseManager().updateTractorByName(tractorName, values);
+//                mApp.getDatabaseManager().updateTractorByName(tractorName, tractorInfo);
 //            } else {
 //                mApp.getDatabaseManager().insertDataToTractor(tractorInfo);
 //            }
 //        }
-//
-//        // 更新数据
-//        notifyDataChange();
+
+        // 更新数据
+        notifyDataChange();
     }
 
     @Override
@@ -127,6 +109,9 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
         if (D) {
             Log.e(TAG, "++++ ON START ++++");
         }
+
+        // 更新数据
+        notifyDataChange();
     }
 
     @Override
@@ -246,10 +231,18 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
 
                 dialogClear.show();
                 AlertDialogUtil.changeDialogTheme(dialogClear);
-
                 break;
 
             case R.id.btnSaveTractorInfo:
+                AlertDialog saveDialog = new AlertDialog.Builder(getActivity())
+                        .setTitle(getString(R.string.alert_dialog_title_in_tractorinfo))
+                        .setMessage(getString(R.string.alert_message_save_tractorinfo))
+                        .setIcon(R.drawable.alert)
+                        .setPositiveButton(getString(R.string.affirm), null)
+                        .setNegativeButton(getString(R.string.cancel), null)
+                        .create();
+                saveDialog.show();
+                AlertDialogUtil.changeDialogTheme(saveDialog);
                 break;
 
             default:
@@ -289,7 +282,7 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
     }
 
     public List<Map<String, String>> updateListData(Cursor cursor) {
-        return DatabaseManager.cursorToListAddListNumber(cursor);
+        return DatabaseManager.cursorToList(cursor);
     }
 
     public void notifyDataChange() {

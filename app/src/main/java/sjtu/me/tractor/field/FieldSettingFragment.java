@@ -38,20 +38,19 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
 
     public static final String TAG = "FieldSettingFragment";
     public static final boolean D = true;
-    
-    private ListView lstField;
-    
+
     private Button btnImportField;
     private Button btnExportField;
     private Button btnAddField;
     private Button btnRemoveField;
     private Button btnClearAllFields;
-    public AlertDialog.Builder alertBuilderClearFields,alertBuilderClearFieldsAffirm;
-    
+
     public static MyApplication mApp;
     private LoaderManager loaderManager;
     private Loader<Cursor> loader;
     private List<Map<String, String>> fieldList;
+
+    private ListView lstField;
     private FieldListAdapter fieldListAdapter;
 
     public FieldSettingFragment() {
@@ -85,20 +84,23 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
 
         // 获取Application全局变量
         mApp = (MyApplication) getActivity().getApplication();
-        
+
         loader = new MyAsyncLoader(this.getActivity());
         loaderManager = getActivity().getLoaderManager();
         loaderManager.initLoader(1001, null, this);
+
+        // 更新数据
         notifyDataChange();
     }
-    
+
     @Override
     public void onStart() {
         super.onStart();
         if (D) {
             Log.e(TAG, "++++ ON START ++++");
         }
-        
+
+        // 更新数据
         notifyDataChange();
     }
 
@@ -117,7 +119,7 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
             Log.e(TAG, "++++ ON PAUSE ++++");
         }
     }
-    
+
     @Override
     public void onStop() {
         super.onStop();
@@ -137,113 +139,128 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
     private void initViews(View view) {
         lstField = (ListView) view.findViewById(R.id.lstFields);
         lstField.setOnCreateContextMenuListener(longPressListener);
-        
+
         btnImportField = (Button) view.findViewById(R.id.btnImportField);
         btnImportField.setOnClickListener(this);
-        
+
         btnExportField = (Button) view.findViewById(R.id.btnExportField);
         btnExportField.setOnClickListener(this);
-        
+
         btnAddField = (Button) view.findViewById(R.id.btnAddField);
         btnAddField.setOnClickListener(this);
-        
+
         btnRemoveField = (Button) view.findViewById(R.id.btnRemoveField);
         btnRemoveField.setOnClickListener(this);
-       
+
         btnClearAllFields = (Button) view.findViewById(R.id.btnClearAllFields);
         btnClearAllFields.setOnClickListener(this);
-        
+
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-        case R.id.btnImportField:
-            new AlertDialog.Builder(getActivity())
-            .setTitle(getString(R.string.alert_title_field_tip))
-            .setMessage(getString(R.string.alert_message_field_import))
-            .setPositiveButton("确定", null)
-            .show();
-            break;
-            
-        case R.id.btnExportField:
-            new AlertDialog.Builder(getActivity())
-            .setTitle(getString(R.string.alert_title_field_tip))
-            .setMessage(getString(R.string.alert_message_field_export))
-            .setPositiveButton("确定", null)
-            .show();
-            break;
-            
-        case R.id.btnAddField:
-            AlertDialog dialogAdd = new AlertDialog.Builder(getActivity())
-                    .setTitle(getString(R.string.alert_title_field_tip))
-                    .setMessage(getString(R.string.alert_dialog_message_add_field))
-                    .setIcon(R.drawable.alert)
-                    .setPositiveButton(getString(R.string.affirm),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    startActivity(new Intent("sjtu.me.tractor.field.FieldAddingActivity"));
-                                }
-                            })
-                    .setNegativeButton(getString(R.string.cancel),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                    .create();
-            dialogAdd.show();
-            AlertDialogUtil.changeDialogTheme(dialogAdd);
-            break;
-            
-        case R.id.btnRemoveField:
-            new AlertDialog.Builder(getActivity())
-            .setTitle(getString(R.string.alert_title_field_tip))
-            .setMessage(getString(R.string.alert_info_field_tip))
-            .setPositiveButton("确定", null)
-            .show();
-            break;
-            
-        case R.id.btnClearAllFields:
-            alertBuilderClearFields = new AlertDialog.Builder(getActivity());
-            alertBuilderClearFields.setTitle(getString(R.string.alert_title));
-            alertBuilderClearFields.setMessage(getString(R.string.alert_info_clear_all_fields));
-            alertBuilderClearFields.setIcon(R.drawable.alert);
-            alertBuilderClearFields.setPositiveButton("确定删除",new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    alertBuilderClearFieldsAffirm = new AlertDialog.Builder(FieldSettingFragment.this.getActivity());
-                    alertBuilderClearFieldsAffirm.setTitle(getString(R.string.alert_title_affirm));
-                    alertBuilderClearFieldsAffirm.setMessage(getString(R.string.alert_info_clear_all_fields_affirm));
-                    alertBuilderClearFieldsAffirm.setIcon(R.drawable.alert);
-                    alertBuilderClearFieldsAffirm.setPositiveButton("再次确认删除",new android.content.DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mApp.getDatabaseManager().clearAllFieldData();
-                            notifyDataChange();
-                        }
-                    });
-                    alertBuilderClearFieldsAffirm.setNegativeButton("取消删除",new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    });
-                    alertBuilderClearFieldsAffirm.show();
-                }
-            });
-            alertBuilderClearFields.setNegativeButton("取消删除",new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            });
-            alertBuilderClearFields.show();
-            break;
+            case R.id.btnImportField:
+                AlertDialog importDialog = new AlertDialog.Builder(getActivity())
+                        .setTitle(getString(R.string.alert_title_field_tip))
+                        .setMessage(getString(R.string.alert_message_field_import))
+                        .setIcon(R.drawable.alert)
+                        .setPositiveButton(getString(R.string.affirm), null)
+                        .setNegativeButton(getString(R.string.cancel), null)
+                        .create();
+                importDialog.show();
+                AlertDialogUtil.changeDialogTheme(importDialog);
+                break;
 
-        default:
-            break;
+            case R.id.btnExportField:
+                AlertDialog exportDialog = new AlertDialog.Builder(getActivity())
+                        .setTitle(getString(R.string.alert_title_field_tip))
+                        .setMessage(getString(R.string.alert_message_field_export))
+                        .setIcon(R.drawable.alert)
+                        .setPositiveButton(getString(R.string.affirm), null)
+                        .setNegativeButton(getString(R.string.cancel), null)
+                        .create();
+                exportDialog.show();
+                AlertDialogUtil.changeDialogTheme(exportDialog);
+                break;
+
+            case R.id.btnAddField:
+                AlertDialog dialogAdd = new AlertDialog.Builder(getActivity())
+                        .setTitle(getString(R.string.alert_title_field_tip))
+                        .setMessage(getString(R.string.alert_dialog_message_add_field))
+                        .setIcon(R.drawable.alert)
+                        .setPositiveButton(getString(R.string.affirm),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        startActivity(new Intent("sjtu.me.tractor.field.FieldAddingActivity"));
+                                    }
+                                })
+                        .setNegativeButton(getString(R.string.cancel),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                        .create();
+                dialogAdd.show();
+                AlertDialogUtil.changeDialogTheme(dialogAdd);
+                break;
+
+            case R.id.btnRemoveField:
+                AlertDialog removeDialog = new AlertDialog.Builder(getActivity())
+                        .setTitle(getString(R.string.alert_title_field_tip))
+                        .setMessage(getString(R.string.alert_info_field_tip))
+                        .setIcon(R.drawable.alert)
+                        .setPositiveButton("确定", null)
+                        .setNegativeButton(getString(R.string.cancel), null)
+                        .create();
+                removeDialog.show();
+                AlertDialogUtil.changeDialogTheme(removeDialog);
+                break;
+
+            case R.id.btnClearAllFields:
+                AlertDialog clearDialog = new AlertDialog.Builder(getActivity())
+                        .setTitle(getString(R.string.alert_title))
+                        .setMessage(getString(R.string.alert_info_clear_all_fields))
+                        .setIcon(R.drawable.alert)
+                        .setPositiveButton("确定删除", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                AlertDialog affirmDialog = new AlertDialog.Builder(FieldSettingFragment.this.getActivity())
+                                        .setTitle(getString(R.string.alert_title_affirm)).setMessage(getString(R.string.alert_info_clear_all_fields_affirm))
+                                        .setIcon(R.drawable.alert)
+                                        .setPositiveButton("再次确认删除", new android.content.DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                mApp.getDatabaseManager().clearAllFieldData();
+                                                notifyDataChange();
+                                            }
+                                        })
+                                        .setNegativeButton("取消删除", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                            }
+                                        })
+                                        .create();
+                                affirmDialog.show();
+                                AlertDialogUtil.changeDialogTheme(affirmDialog);
+                            }
+                        })
+                        .setNegativeButton("取消删除", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .create();
+                clearDialog.show();
+                AlertDialogUtil.changeDialogTheme(clearDialog);
+                break;
+
+            default:
+                break;
         }
 
     }
@@ -261,14 +278,14 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
         if (D) {
             Log.e(TAG, "++++ ON LOAD FINISHED ++++");
         }
-        
+
         fieldList = updateListData(data);
         fieldListAdapter = new FieldListAdapter(getActivity(), fieldList);
         lstField.setAdapter(fieldListAdapter);
         fieldListAdapter.notifyDataSetChanged();
         // 每次loader完毕之后便可以释放database资源以减轻数据库压力
         mApp.getDatabaseManager().releaseDataBase();
-        
+
     }
 
     @Override
@@ -277,32 +294,32 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
             Log.e(TAG, "++++ ON LOAD RESET ++++");
         }
     }
-    
+
     public List<Map<String, String>> updateListData(Cursor cursor) {
         return DatabaseManager.cursorToListAddListNumber(cursor);
     }
-    
+
     public void notifyDataChange() {
         loaderManager.getLoader(1001).onContentChanged();
     }
-    
-  //长按删除数据监听器，重写监听方法
+
+    //长按删除数据监听器，重写监听方法
     OnCreateContextMenuListener longPressListener = new OnCreateContextMenuListener() {
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v,
-                ContextMenuInfo menuInfo) {
+                                        ContextMenuInfo menuInfo) {
             //设置窗口提示，info可以表示此时点击的菜单的位置，据此可以查询数据库对应名字的车辆信息
-            final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+            final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             AlertDialog.Builder longPressAlertBuilder = new AlertDialog.Builder(getActivity());
             longPressAlertBuilder.setTitle(getString(R.string.alert_title_field_longpress));
             longPressAlertBuilder.setIcon(R.drawable.alert);
-            
-            //这三步可以获取选中的条目的车辆的名称，方可进行下一步操作
+
+            //这三步可以获取选中的条目的田地的名称，方可进行下一步操作
             int listposition = info.position;
             Map<String, String> map = fieldList.get(listposition);
             final String name = map.get("fName");
-            
+
             longPressAlertBuilder.setPositiveButton(getString(R.string.delete_field), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -310,18 +327,18 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
                     notifyDataChange();
                 }
             });
-            
+
             longPressAlertBuilder.setNegativeButton(getString(R.string.carset_cansel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                 }
             });
-            
+
             longPressAlertBuilder.setNeutralButton(getString(R.string.carset_edit), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //若选择修改，则返回修改页面并传出车辆数据
-                   
+                    //若选择修改，则返回修改页面并传出地块数据
+
 //                    Cursor resultCursor = mApp.getDatabaseManager().queryFieldWithPointsByName(name);
 //                    Map<String,String> map = DatabaseManager.cursor2Map(resultCursor);
 //                    String[] s = new String[map.size()];
@@ -333,15 +350,15 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
 //                    startActivity(intent);
                 }
             });
-            
+
             String message = getString(R.string.field_alert_info_longpressinfo_1) + map.get("fName") +
                     getString(R.string.field_alert_info_longpressinfo_2);
             longPressAlertBuilder.setMessage(message);
             longPressAlertBuilder.show();
         }
-        
+
     };
-    
+
     // 建立异步loader实现实时监控，注意一定要是静态类
     public static class MyAsyncLoader extends AsyncTaskLoader<Cursor> {
         MyAsyncLoader(Context context) {
@@ -362,6 +379,6 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
             Log.e(TAG, cursor.toString());
             return cursor;
         }
-        
+
     }
 }

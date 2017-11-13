@@ -73,22 +73,21 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:background="@drawable/textview_border_4"
         android:fadingEdge="vertical"
-        android:scrollbars="vertical"
-        android:background="@drawable/textview_border_4" >
+        android:scrollbars="vertical">
 
         <LinearLayout
-            android:id="@+id/content_left"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/layout_center_right"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
                     style="@style/tractorinfo_list_textstyle"
@@ -150,7 +149,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/cellTextTractorName"
@@ -159,19 +158,16 @@
                     android:text="SJTU00" />
 
                 <TextView
-                    android:id="@+id/txtWheelbase"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_2"
                     android:text="2.250m" />
 
                 <TextView
-                    android:id="@+id/txtAntennaLateral"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_3"
                     android:text="0.005m" />
 
                 <TextView
-                    android:id="@+id/txtAntennaRear"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_2"
                     android:text="+0.025m" />
@@ -183,37 +179,31 @@
                     android:text="2.500m" />
 
                 <TextView
-                    android:id="@+id/txtMinTurningRadius"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_2"
                     android:text="2.100m" />
 
                 <TextView
-                    android:id="@+id/txtAngleCorrection"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_3"
                     android:text="0.02" />
 
                 <TextView
-                    android:id="@+id/txtImplementWidth"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_2"
                     android:text="2.650m" />
 
                 <TextView
-                    android:id="@+id/txtImplementLength"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_3"
                     android:text="0.800m" />
 
                 <TextView
-                    android:id="@+id/txtImplementOffset"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_2"
                     android:text="0.005m" />
 
                 <TextView
-                    android:id="@+id/txtOperationLineSpacing"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_3"
                     android:text="2.700m" />

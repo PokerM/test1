@@ -35,7 +35,7 @@ public class TractorListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return this.list.size();
+        return this.list == null ? 0 : this.list.size();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class TractorListAdapter extends BaseAdapter {
     @SuppressLint("InflateParams")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LinearLayout currentView = null;
+        LinearLayout currentView;
         if (convertView != null) {
             currentView = (LinearLayout) convertView;
         } else {

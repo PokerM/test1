@@ -123,6 +123,8 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
 
         // 初始化全局变量
         mApp = (MyApplication) getApplication();
+        mApp.getDatabaseManager().insertDataToTractor(new String[]{"sjtu", "jj", "lianshi", "700", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}); //test db
+
         initViews();
 
         tractorAttributeName = new String[]{

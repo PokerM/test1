@@ -35,7 +35,7 @@ public class FieldListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return this.list.size();
+        return this.list == null ? 0 : this.list.size();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class FieldListAdapter extends BaseAdapter {
     @SuppressLint("InflateParams")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LinearLayout ll = null;
+        LinearLayout ll;
         if (convertView != null) {
             ll = (LinearLayout) convertView;
         } else {

@@ -32,7 +32,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/management_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginLeft="15dp"
@@ -41,7 +40,6 @@
         android:layout_weight="15">
 
         <LinearLayout
-            android:id="@+id/content_left"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
@@ -59,41 +57,23 @@
                     android:id="@+id/page1"
                     style="@style/circle_page.first" />
 
-                <ImageView
-                    android:id="@+id/page2"
-                    style="@style/circle_page.after" />
+                <ImageView style="@style/circle_page.after" />
 
-                <ImageView
-                    android:id="@+id/page3"
-                    style="@style/circle_page.after" />
+                <ImageView style="@style/circle_page.after" />
 
-                <ImageView
-                    android:id="@+id/page4"
-                    style="@style/circle_page.after" />
+                <ImageView style="@style/circle_page.after" />
 
-                <ImageView
-                    android:id="@+id/page5"
-                    style="@style/circle_page.after" />
+                <ImageView style="@style/circle_page.after" />
 
-                <ImageView
-                    android:id="@+id/page6"
-                    style="@style/circle_page.after" />
+                <ImageView style="@style/circle_page.after" />
 
-                <ImageView
-                    android:id="@+id/page7"
-                    style="@style/circle_page.after" />
+                <ImageView style="@style/circle_page.after" />
 
-                <ImageView
-                    android:id="@+id/page8"
-                    style="@style/circle_page.after" />
+                <ImageView style="@style/circle_page.after" />
 
-                <ImageView
-                    android:id="@+id/page9"
-                    style="@style/circle_page.after" />
+                <ImageView style="@style/circle_page.after" />
 
-                <ImageView
-                    android:id="@+id/page10"
-                    style="@style/circle_page.after" />
+                <ImageView style="@style/circle_page.after" />
 
             </LinearLayout>
 
@@ -107,7 +87,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/content_right"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"

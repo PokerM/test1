@@ -230,6 +230,7 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
             Log.e(TAG, "+++ setHandler: mFieldHandler +++");
         }
 
+        myApp.getDatabaseManager().insertDataToField(new String[]{"001", "sjtu", "2017-11-14 01:53:30", "1", "1", "2", "3", "4"}); //test db
     }
 
     @Override
