@@ -383,7 +383,7 @@
                         android:id="@+id/imgbtnBackwards"
                         style="@style/icon_navi_control"
                         android:layout_gravity="center_horizontal"
-                        android:src="@drawable/back" />
+                        android:src="@drawable/backwards" />
                 </LinearLayout>
 
                 <LinearLayout

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:background="@drawable/screen"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -15,38 +14,41 @@
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:layout_marginLeft="5dp"
-            android:background="@drawable/arrow_left"/>
+            android:background="@drawable/arrow_left" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="3dp"
-            android:textSize="25sp"
-            android:text="返回上一层"/>
+            android:text="返回上一层"
+            android:textSize="25sp" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="5dp">
+        android:padding="5dp"
+        >
 
         <LinearLayout
-            android:layout_weight="2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:padding="10dp"
+            android:layout_weight="2"
+            android:background="@drawable/background_layout_home_center"
             android:orientation="vertical"
-            android:layout_marginLeft="10dp">
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="实时位置："
-                android:textStyle="bold"
-                android:textSize="30sp"
+                android:layout_marginTop="5dp"
                 android:padding="10dp"
-                android:layout_marginTop="5dp"/>
+                android:text="实时位置："
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -54,18 +56,19 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="纬度："
-                    android:textSize="24sp"
                     android:layout_marginLeft="130dp"
-                    android:layout_marginTop="0dp"/>
+                    android:layout_marginTop="0dp"
+                    android:text="纬度："
+                    android:textSize="24sp" />
+
                 <TextView
                     android:id="@+id/txtLat"
                     android:layout_width="wrap_content"
-                    android:layout_gravity="center"
-                    android:textSize="24sp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
-                    android:maxLines="1"/>
+                    android:maxLines="1"
+                    android:textSize="24sp" />
 
             </LinearLayout>
 
@@ -76,59 +79,62 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="经度："
-                    android:textSize="24sp"
                     android:layout_marginLeft="130dp"
-                    android:layout_marginTop="5dp"/>
+                    android:layout_marginTop="5dp"
+                    android:text="经度："
+                    android:textSize="24sp" />
+
                 <TextView
                     android:id="@+id/txtLong"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textSize="24sp"
                     android:layout_marginLeft="10dp"
-                    android:maxLines="1"/>
+                    android:maxLines="1"
+                    android:textSize="24sp" />
 
             </LinearLayout>
 
             <View
-                android:layout_marginTop="25dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#000"/>
+                android:layout_marginTop="25dp"
+                android:background="#000" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="选择标定方式："
-                android:textStyle="bold"
-                android:textSize="30sp"
-                android:padding="10dp"
                 android:layout_marginTop="10dp"
-                />
+                android:padding="10dp"
+                android:text="选择标定方式："
+                android:textSize="30sp"
+                android:textStyle="bold" />
 
 
             <CheckBox
                 android:id="@+id/checkboxManual"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="手动标定"
-                android:textSize="24sp"
                 android:layout_marginLeft="130dp"
-                android:layout_marginTop="0dp"/>
+                android:layout_marginTop="0dp"
+                android:text="手动标定"
+                android:textSize="24sp" />
+
             <CheckBox
                 android:id="@+id/checkboxAuto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="自动标定"
-                android:textSize="24sp"
                 android:layout_marginLeft="130dp"
-                android:layout_marginTop="5dp"/>
+                android:layout_marginTop="5dp"
+                android:text="自动标定"
+                android:textSize="24sp" />
+
             <View
-                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#000"/>
+                android:layout_marginTop="20dp"
+                android:background="#000" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="170dp"
@@ -137,33 +143,35 @@
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:orientation="vertical">
+
                     <Button
-                        android:padding="5dp"
-                        android:layout_gravity="center"
                         android:id="@+id/btnCalibration"
                         android:layout_width="150dp"
-                        android:background="@drawable/calibration_background"
                         android:layout_height="80dp"
-                        android:visibility="gone"/>
-                    <Button
-                        android:padding="10dp"
-                        android:background="@drawable/back_background"
                         android:layout_gravity="center"
+                        android:background="@drawable/calibration_background"
+                        android:padding="5dp"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/btnBackStep"
                         android:layout_width="150dp"
-                        android:layout_marginTop="0dp"
                         android:layout_height="80dp"
-                        android:visibility="gone"
-                        android:id="@+id/btnBackStep"/>
+                        android:layout_gravity="center"
+                        android:layout_marginTop="0dp"
+                        android:background="@drawable/back_background"
+                        android:padding="10dp"
+                        android:visibility="gone" />
 
                     <Button
                         android:id="@+id/btnSwitchMode"
-                        android:visibility="gone"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
-                        android:background="@drawable/transfer"/>
+                        android:background="@drawable/transfer"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -174,50 +182,48 @@
                     android:orientation="vertical">
 
                     <Button
-                        android:background="@drawable/plan_background"
-                        android:padding="5dp"
-                        android:layout_marginLeft="10dp"
                         android:id="@+id/btnComplete"
-                        android:layout_gravity="center"
                         android:layout_width="170dp"
-                        android:layout_height="80dp" />
+                        android:layout_height="80dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/plan_background"
+                        android:padding="5dp" />
 
                     <Button
-                        android:background="@drawable/reset_background"
-                        android:padding="10dp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="0dp"
                         android:id="@+id/btnReset"
                         android:layout_width="150dp"
-                        android:layout_height="80dp" />
+                        android:layout_height="80dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="0dp"
+                        android:background="@drawable/reset_background"
+                        android:padding="10dp" />
 
 
                 </LinearLayout>
 
 
-
             </LinearLayout>
 
             <View
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="#000"/>
+                android:layout_marginTop="10dp"
+                android:background="#000" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="10dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:padding="10dp">
 
                 <Button
                     android:id="@+id/btnSave"
-                    android:layout_marginLeft="0dp"
                     android:layout_width="200dp"
                     android:layout_height="80dp"
-                    android:background="@drawable/save_background"
                     android:layout_gravity="center"
-                    />
+                    android:layout_marginLeft="0dp"
+                    android:background="@drawable/save_background" />
 
                 <Button
                     android:id="@+id/btnCancel"
@@ -231,43 +237,34 @@
 
             </LinearLayout>
 
-
-
-
-
-
-
-
         </LinearLayout>
 
         <LinearLayout
-            android:layout_weight="3"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            >
+            android:layout_weight="3">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <com.baidu.mapapi.map.MapView
-                    android:layout_width="match_parent"
                     android:id="@+id/bmapView"
-                    android:clickable="true"
-                    android:layout_marginBottom="10dp"
-                    android:layout_height="match_parent">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="true">
 
                 </com.baidu.mapapi.map.MapView>
+
                 <Button
+                    android:id="@+id/fab"
                     android:layout_width="38dp"
                     android:layout_height="38dp"
-                    android:id="@+id/fab"
-                    android:background="@drawable/topoint"
-                    android:layout_alignParentRight="true"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginRight="9dp"
+                    android:layout_alignParentRight="true"
                     android:layout_marginBottom="100dp"
-                    />
+                    android:layout_marginRight="9dp"
+                    android:background="@drawable/topoint" />
 
             </RelativeLayout>
 

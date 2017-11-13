@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.AsyncTaskLoader;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -81,42 +80,45 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
 
         loader = new MyAsyncLoader(this.getActivity());
         loaderManager = getActivity().getLoaderManager();
-        Log.e(TAG, "is loaderManager null ? " + (loaderManager == null));
+        Log.e(TAG, "is loaderManager not null? " + (loaderManager != null));
         loaderManager.initLoader(1002, null, this);
         notifyDataChange();
 
-        // 通过intent对象先得到传过来的车辆数据（修改车身参数时回传过来数据）
-        Intent intent = getActivity().getIntent();
-        Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            tractorInfo = bundle.getStringArray("tractorInfo");
-            String tractorName = tractorInfo[0];
-            // 查询信息，若存在重名车辆会覆盖原数据，否则新建数据
-            Cursor resultCursor = mApp.getDatabaseManager().queryTractorByName(tractorName);
-            Map<String, String> map = DatabaseManager.cursorToMap(resultCursor);
-            if (map != null && map.size() != 0) {
-                final ContentValues values = new ContentValues();
-                values.put(TractorInfo.T_TYPE, tractorInfo[1]);
-                values.put(TractorInfo.T_MADE, tractorInfo[2]);
-                values.put(TractorInfo.T_TYPE_NUMBER, tractorInfo[3]);
-                values.put(TractorInfo.T_WHEELBASE, tractorInfo[4]);
-                values.put(TractorInfo.T_ANTENNA_LATERAL, tractorInfo[5]);
-                values.put(TractorInfo.T_ANTENNA_REAR, tractorInfo[6]);
-                values.put(TractorInfo.T_ANTENNA_HEIGHT, tractorInfo[7]);
-                values.put(TractorInfo.T_ANGLE_CORRECTION, tractorInfo[8]);
-                values.put(TractorInfo.T_MIN_TURNING_RADIUS, tractorInfo[9]);
-                values.put(TractorInfo.T_IMPLEMENT_WIDTH, tractorInfo[10]);
-                values.put(TractorInfo.T_IMPLEMENT_OFFSET, tractorInfo[11]);
-                values.put(TractorInfo.T_IMPLEMENT_LENGTH, tractorInfo[12]);
-                values.put(TractorInfo.T_OPERATION_LINESPACING, tractorInfo[13]);
-                mApp.getDatabaseManager().updateTractorByName(tractorName, values);
-            } else {
-                mApp.getDatabaseManager().insertDataToTractor(tractorInfo);
-            }
-        }
-
-        // 更新数据
-        notifyDataChange();
+//        // 通过intent对象先得到传过来的车辆数据（修改车身参数时回传过来数据）
+//        Intent intent = getActivity().getIntent();
+//        Bundle bundle = intent.getExtras();
+//        if (bundle != null) {
+//            tractorInfo = bundle.getStringArray("tractorInfo");
+//            for (String i : tractorInfo) {
+//                Log.e(TAG, i);
+//            }
+//            String tractorName = tractorInfo[0];
+//            // 查询信息，若存在重名车辆会覆盖原数据，否则新建数据
+//            Cursor resultCursor = mApp.getDatabaseManager().queryTractorByName(tractorName);
+//            Map<String, String> map = DatabaseManager.cursorToMap(resultCursor);
+//            if (map != null && map.size() != 0) {
+//                final ContentValues values = new ContentValues();
+//                values.put(TractorInfo.T_TYPE, tractorInfo[1]);
+//                values.put(TractorInfo.T_MADE, tractorInfo[2]);
+//                values.put(TractorInfo.T_TYPE_NUMBER, tractorInfo[3]);
+//                values.put(TractorInfo.T_WHEELBASE, tractorInfo[4]);
+//                values.put(TractorInfo.T_ANTENNA_LATERAL, tractorInfo[5]);
+//                values.put(TractorInfo.T_ANTENNA_REAR, tractorInfo[6]);
+//                values.put(TractorInfo.T_ANTENNA_HEIGHT, tractorInfo[7]);
+//                values.put(TractorInfo.T_ANGLE_CORRECTION, tractorInfo[8]);
+//                values.put(TractorInfo.T_MIN_TURNING_RADIUS, tractorInfo[9]);
+//                values.put(TractorInfo.T_IMPLEMENT_WIDTH, tractorInfo[10]);
+//                values.put(TractorInfo.T_IMPLEMENT_OFFSET, tractorInfo[11]);
+//                values.put(TractorInfo.T_IMPLEMENT_LENGTH, tractorInfo[12]);
+//                values.put(TractorInfo.T_OPERATION_LINESPACING, tractorInfo[13]);
+//                mApp.getDatabaseManager().updateTractorByName(tractorName, values);
+//            } else {
+//                mApp.getDatabaseManager().insertDataToTractor(tractorInfo);
+//            }
+//        }
+//
+//        // 更新数据
+//        notifyDataChange();
     }
 
     @Override
@@ -157,6 +159,7 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
         if (D) {
             Log.e(TAG, "++++ ON DESTROY ++++");
         }
+
     }
 
     private void initViews(View v) {
