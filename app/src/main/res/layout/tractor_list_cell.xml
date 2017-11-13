@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="110dp"
     android:orientation="horizontal">
 
     <ImageView
@@ -28,14 +28,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/tractor_name"
                 android:textColor="#999999"
-                android:textSize="22sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/cellTextTractorName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#999999"
-                android:textSize="22sp" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -48,14 +48,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/tractor_type_name"
                 android:textColor="#999999"
-                android:textSize="22sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/cellTextTractorType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#999999"
-                android:textSize="22sp" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -68,14 +68,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/tractor_made_name"
                 android:textColor="#999999"
-                android:textSize="22sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/cellTextTractorMade"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#999999"
-                android:textSize="22sp" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -88,14 +88,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/tractor_type_number_name"
                 android:textColor="#999999"
-                android:textSize="22sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/cellTextTractorTypeNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#999999"
-                android:textSize="22sp" />
+                android:textSize="20sp" />
         </LinearLayout>
 
     </LinearLayout>
