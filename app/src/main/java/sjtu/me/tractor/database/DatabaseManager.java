@@ -1,14 +1,14 @@
 package sjtu.me.tractor.database;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import sjtu.me.tractor.field.FieldInfo;
 import sjtu.me.tractor.tractorinfo.TractorInfo;
@@ -176,31 +176,14 @@ public class DatabaseManager {
         return cursor;
     }
 
-
-    /**
-     * 根据名称更新表
-     *
-     * @param values      属性值
-     * @param tractorName 拖拉机名称
-     * @return
-     */
-    public boolean updateTractorByName(String tractorName, ContentValues values) {
-        connectDatabase();
-        boolean flag = false;
-        String[] names = {tractorName};
-        int count = myDatabase.update(MyDatabaseHelper.TABLE_TRACTOR, values, "name = ?", names);
-        flag = (count > 0 ? true : false);
-        return flag;
-    }
-
-
     /**
      * MethodName: updateBySQL
      * Description:
+     *
      * @param sql
      * @param bindArgs
      * @return boolean
-    */
+     */
     public boolean updateBySQL(String sql, Object[] bindArgs) {
         connectDatabase();
         boolean flag = false;
@@ -231,29 +214,64 @@ public class DatabaseManager {
      * 向拖拉机表中插入一行数据
      *
      * @param tractorInfo 参数信息
+     * @return 成功标志
      */
-    public void insertDataToTractor(String[] tractorInfo) {
-        if (tractorInfo == null || tractorInfo.length <= 14) {
-            return;
+    public boolean insertDataToTractor(String[] tractorInfo) {
+        if (tractorInfo == null || tractorInfo.length < 14) {
+            return false;
         }
-        String tName = tractorInfo[0];
-        String tType = tractorInfo[1];
-        String tMade = tractorInfo[2];
-        String tTypeNumber = tractorInfo[3];
-        String wheelbase = tractorInfo[4];
-        String antennaLateral = tractorInfo[5];
-        String antennaRear = tractorInfo[6];
-        String antennaHeight = tractorInfo[7];
-        String minTurning = tractorInfo[8];
-        String angleCorrection = tractorInfo[9];
-        String implementWidth = tractorInfo[10];
-        String implementOffset = tractorInfo[11];
-        String implementLength = tractorInfo[12];
-        String lineSpacing = tractorInfo[13];
-        connectDatabase();
-        myDatabase.execSQL("insert into " + MyDatabaseHelper.TABLE_TRACTOR + " values(null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                new String[]{tName, tType, tMade, tTypeNumber, wheelbase, antennaLateral, antennaRear, antennaHeight, minTurning, angleCorrection
-                        , implementWidth, implementOffset, implementLength, lineSpacing});
+        ContentValues values = new ContentValues();
+        values.put(TractorInfo.T_NAME, tractorInfo[0]);
+        values.put(TractorInfo.T_TYPE, tractorInfo[1]);
+        values.put(TractorInfo.T_MADE, tractorInfo[2]);
+        values.put(TractorInfo.T_TYPE_NUMBER, tractorInfo[3]);
+        values.put(TractorInfo.T_WHEELBASE, tractorInfo[4]);
+        values.put(TractorInfo.T_ANTENNA_LATERAL, tractorInfo[5]);
+        values.put(TractorInfo.T_ANTENNA_REAR, tractorInfo[6]);
+        values.put(TractorInfo.T_ANTENNA_HEIGHT, tractorInfo[7]);
+        values.put(TractorInfo.T_ANGLE_CORRECTION, tractorInfo[8]);
+        values.put(TractorInfo.T_MIN_TURNING_RADIUS, tractorInfo[9]);
+        values.put(TractorInfo.T_IMPLEMENT_WIDTH, tractorInfo[10]);
+        values.put(TractorInfo.T_IMPLEMENT_OFFSET, tractorInfo[11]);
+        values.put(TractorInfo.T_IMPLEMENT_LENGTH, tractorInfo[12]);
+        values.put(TractorInfo.T_OPERATION_LINESPACING, tractorInfo[13]);
+        connectDatabase(); //连接数据库
+        long count = myDatabase.insert(MyDatabaseHelper.TABLE_TRACTOR, null, values);
+        boolean flag = count > 0;
+        return flag;
+    }
+
+    /**
+     * 根据名称更新表
+     *
+     * @param tractorName 拖拉机名称
+     * @param tractorInfo 参数信息
+     * @return 成功标志
+     */
+    public boolean updateTractorByName(String tractorName, String[] tractorInfo) {
+        if (tractorInfo == null || tractorInfo.length < 14) {
+            return false;
+        }
+        ContentValues values = new ContentValues();
+        values.put(TractorInfo.T_NAME, tractorInfo[0]);
+        values.put(TractorInfo.T_TYPE, tractorInfo[1]);
+        values.put(TractorInfo.T_MADE, tractorInfo[2]);
+        values.put(TractorInfo.T_TYPE_NUMBER, tractorInfo[3]);
+        values.put(TractorInfo.T_WHEELBASE, tractorInfo[4]);
+        values.put(TractorInfo.T_ANTENNA_LATERAL, tractorInfo[5]);
+        values.put(TractorInfo.T_ANTENNA_REAR, tractorInfo[6]);
+        values.put(TractorInfo.T_ANTENNA_HEIGHT, tractorInfo[7]);
+        values.put(TractorInfo.T_ANGLE_CORRECTION, tractorInfo[8]);
+        values.put(TractorInfo.T_MIN_TURNING_RADIUS, tractorInfo[9]);
+        values.put(TractorInfo.T_IMPLEMENT_WIDTH, tractorInfo[10]);
+        values.put(TractorInfo.T_IMPLEMENT_OFFSET, tractorInfo[11]);
+        values.put(TractorInfo.T_IMPLEMENT_LENGTH, tractorInfo[12]);
+        values.put(TractorInfo.T_OPERATION_LINESPACING, tractorInfo[13]);
+        connectDatabase(); //连接数据库
+        String[] names = {tractorName};
+        int count = myDatabase.update(MyDatabaseHelper.TABLE_TRACTOR, values, "name = ?", names);
+        boolean flag = (count > 0);
+        return flag;
     }
 
     /**
@@ -267,7 +285,8 @@ public class DatabaseManager {
         connectDatabase();
         String[] names = {name};
         int count = myDatabase.delete(MyDatabaseHelper.TABLE_TRACTOR, "name = ?", names);
-        return count > 0;
+        boolean flag = (count > 0);
+        return flag;
     }
 
     /**
@@ -279,21 +298,22 @@ public class DatabaseManager {
     public Cursor queryTractorByName(String queryName) {
         connectDatabase();
         Cursor cursor;
-        cursor = myDatabase.rawQuery("select "
-                        + TractorInfo.T_NAME + ", "
-                        + TractorInfo.T_WHEELBASE + ", "
-                        + TractorInfo.T_ANTENNA_LATERAL + ", "
-                        + TractorInfo.T_ANTENNA_REAR + ", "
-                        + TractorInfo.T_ANTENNA_HEIGHT + ", "
-                        + TractorInfo.T_MIN_TURNING_RADIUS + ", "
-                        + TractorInfo.T_ANGLE_CORRECTION + ", "
-                        + TractorInfo.T_IMPLEMENT_WIDTH + ", "
-                        + TractorInfo.T_IMPLEMENT_OFFSET + ", "
-                        + TractorInfo.T_IMPLEMENT_LENGTH + ", "
-                        + TractorInfo.T_OPERATION_LINESPACING
-                        + " from " + MyDatabaseHelper.TABLE_TRACTOR + " where "
-                        + TractorInfo.T_NAME + " like ?",
-                new String[]{queryName});
+        cursor = myDatabase.rawQuery(new StringBuilder()
+                .append("select ")
+                .append(TractorInfo.T_NAME).append(", ")
+                .append(TractorInfo.T_WHEELBASE).append(", ")
+                .append(TractorInfo.T_ANTENNA_LATERAL).append(", ")
+                .append(TractorInfo.T_ANTENNA_REAR).append(", ")
+                .append(TractorInfo.T_ANTENNA_HEIGHT).append(", ")
+                .append(TractorInfo.T_MIN_TURNING_RADIUS).append(", ")
+                .append(TractorInfo.T_ANGLE_CORRECTION).append(", ")
+                .append(TractorInfo.T_IMPLEMENT_WIDTH).append(", ")
+                .append(TractorInfo.T_IMPLEMENT_OFFSET).append(", ")
+                .append(TractorInfo.T_IMPLEMENT_LENGTH).append(", ")
+                .append(TractorInfo.T_OPERATION_LINESPACING)
+                .append(" from ").append(MyDatabaseHelper.TABLE_TRACTOR)
+                .append(" where ").append(TractorInfo.T_NAME).append(" like ?")
+                .toString(), new String[]{queryName});
         return cursor;
     }
 
@@ -306,26 +326,34 @@ public class DatabaseManager {
      */
     public boolean clearAllFieldData() {
         connectDatabase();
-        boolean flag = false;
         int count = myDatabase.delete(MyDatabaseHelper.TABLE_FIELD, null, null);
-        flag = (count > 0 ? true : false);
+        boolean flag = count > 0;
         return flag;
     }
 
     /**
      * 向地块表中插入条目
      *
-     * @param fNo
-     * @param fName
-     * @param fDate
-     * @param fPNo
-     * @param fPX
-     * @param fPY
+     * @param fieldInfo 地块信息
+     * @return 成功标志
      */
-    public void insertDataToField(String fNo, String fName, String fDate, String fPNo, String fPLat, String fPLng, String fPX, String fPY) {
+    public boolean insertDataToField(String[] fieldInfo) {
+        if (fieldInfo == null || fieldInfo.length < 8) {
+            return false;
+        }
+        ContentValues values = new ContentValues();
+        values.put(FieldInfo.FIELD_ID, fieldInfo[0]);
+        values.put(FieldInfo.FIELD_NAME, fieldInfo[1]);
+        values.put(FieldInfo.FIELD_DATE, fieldInfo[2]);
+        values.put(FieldInfo.FIELD_POINT_NO, fieldInfo[3]);
+        values.put(FieldInfo.FIELD_POINT_LATITUDE, fieldInfo[4]);
+        values.put(FieldInfo.FIELD_POINT_LONGITUDE, fieldInfo[5]);
+        values.put(FieldInfo.FIELD_POINT_X_COORDINATE, fieldInfo[6]);
+        values.put(FieldInfo.FIELD_POINT_Y_COORDINATE, fieldInfo[7]);
         connectDatabase();
-        myDatabase.execSQL("insert into " + MyDatabaseHelper.TABLE_FIELD + " values(null, ?, ?, ?, ?, ?, ?, ?, ?)",
-                new String[]{fNo, fName, fDate, fPNo, fPLat, fPLng, fPX, fPY});
+        long count = myDatabase.insert(MyDatabaseHelper.TABLE_FIELD, null, values);
+        boolean flag = count > 0;
+        return flag;
     }
 
     /**
@@ -333,23 +361,26 @@ public class DatabaseManager {
      * (仅查询地块名称，不查询地块顶点）
      *
      * @param queryName
-     * @return
+     * @return 结果游标
      */
     public Cursor queryFieldByName(String queryName) {
         connectDatabase();
         Cursor cursor = null;
         //SQL查询语句，先建立一个分表，然后从分表中根据名称查询
-        cursor = myDatabase.rawQuery("select "
-                + FieldInfo.FIELD_ID + ", "
-                + FieldInfo.FIELD_NAME + ", "
-                + FieldInfo.FIELD_DATE + ", "
-                + FieldInfo.FIELD_POINT_NO + " from "
-                + MyDatabaseHelper.TABLE_FIELD + " as a "
-                + "where " + FieldInfo.FIELD_POINT_NO
-                + "=(select max(b." + FieldInfo.FIELD_POINT_NO + ") from "
-                + MyDatabaseHelper.TABLE_FIELD + " as b where a."
-                + FieldInfo.FIELD_NAME + " = b." + FieldInfo.FIELD_NAME
-                + ") and " + FieldInfo.FIELD_NAME + " like ?", new String[]{"%" + queryName + "%"});
+        cursor = myDatabase.rawQuery(new StringBuilder()
+                .append("select ")
+                .append(FieldInfo.FIELD_ID).append(", ")
+                .append(FieldInfo.FIELD_NAME).append(", ")
+                .append(FieldInfo.FIELD_DATE).append(", ")
+                .append(FieldInfo.FIELD_POINT_NO)
+                .append(" from ").append(MyDatabaseHelper.TABLE_FIELD)
+                .append(" as a where ")
+                .append(FieldInfo.FIELD_POINT_NO)
+                .append("=(select max(b.").append(FieldInfo.FIELD_POINT_NO).append(") from ")
+                .append(MyDatabaseHelper.TABLE_FIELD)
+                .append(" as b where a.").append(FieldInfo.FIELD_NAME)
+                .append(" = b.").append(FieldInfo.FIELD_NAME).append(") and ")
+                .append(FieldInfo.FIELD_NAME).append(" like ?").toString(), new String[]{"%" + queryName + "%"});
         return cursor;
     }
 
@@ -363,15 +394,18 @@ public class DatabaseManager {
     public Cursor queryFieldWithPointsByName(String queryName) {
         connectDatabase();
         Cursor cursor = null;
-        cursor = myDatabase.rawQuery("select "
-                + FieldInfo.FIELD_ID + ", "
-                + FieldInfo.FIELD_NAME + ", "
-                + FieldInfo.FIELD_DATE + ", "
-                + FieldInfo.FIELD_POINT_NO + ", "
-                + FieldInfo.FIELD_POINT_X_COORDINATE + ", "
-                + FieldInfo.FIELD_POINT_Y_COORDINATE + " from "
-                + MyDatabaseHelper.TABLE_FIELD + " where "
-                + FieldInfo.FIELD_NAME + " like ?", new String[]{queryName});
+        cursor = myDatabase.rawQuery(new StringBuilder()
+                .append("select ")
+                .append(FieldInfo.FIELD_ID).append(", ")
+                .append(FieldInfo.FIELD_NAME).append(", ")
+                .append(FieldInfo.FIELD_DATE).append(", ")
+                .append(FieldInfo.FIELD_POINT_NO).append(", ")
+                .append(FieldInfo.FIELD_POINT_X_COORDINATE).append(", ")
+                .append(FieldInfo.FIELD_POINT_Y_COORDINATE)
+                .append(" from ").append(MyDatabaseHelper.TABLE_FIELD)
+                .append(" where ").append(FieldInfo.FIELD_NAME)
+                .append(" like ?")
+                .toString(), new String[]{queryName});
         return cursor;
     }
 
@@ -384,10 +418,9 @@ public class DatabaseManager {
      */
     public boolean deleteFieldByName(String name) {
         connectDatabase();
-        boolean flag = false;
         String[] names = {name};
         int count = myDatabase.delete(MyDatabaseHelper.TABLE_FIELD, FieldInfo.FIELD_NAME + " = ?", names);
-        flag = (count > 0 ? true : false);
+        boolean flag = (count > 0);
         return flag;
     }
 

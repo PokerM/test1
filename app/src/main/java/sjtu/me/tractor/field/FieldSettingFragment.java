@@ -184,7 +184,7 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
-                                    startActivity(new Intent("sjtu.me.tractor.field.FieldAddingActivity2"));
+                                    startActivity(new Intent("sjtu.me.tractor.field.FieldAddingActivity"));
                                 }
                             })
                     .setNegativeButton(getString(R.string.cancel),

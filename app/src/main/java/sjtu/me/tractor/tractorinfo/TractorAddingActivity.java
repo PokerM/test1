@@ -1,6 +1,7 @@
 package sjtu.me.tractor.tractorinfo;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -110,12 +111,15 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
     public Bundle bundle;
 
     private MyApplication mApp;
-    private TractorInfo tractorInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tractor_adding_activity);
+
+        if (D) {
+            Log.e(TAG, "*** ON CREATE ***");
+        }
 
         // 初始化全局变量
         mApp = (MyApplication) getApplication();
@@ -404,12 +408,11 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
     public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.btnAffirmTractorName:
-                //隐去文字输入框，显示文本控件
-                editTextTractorName.setText(txtTractorName.getText());
-                editTextTractorName.setVisibility(View.GONE);
-                txtTractorName.setVisibility(View.VISIBLE);
-
                 if (!editTextTractorName.getText().toString().isEmpty()) {
+                    //隐去文字输入框，显示文本控件
+                    editTextTractorName.setText(txtTractorName.getText());
+                    editTextTractorName.setVisibility(View.GONE);
+                    txtTractorName.setVisibility(View.VISIBLE);
                     // 输入名称后参数设置可见
                     layoutSetTractorType.setVisibility(View.VISIBLE);
                 }
@@ -532,15 +535,8 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
                             String tractorName = txtTractorName.getText().toString();
 
                             void turnPage() {
-                                String[] tractorInfo = new String[14];
-                                tractorInfo[0] = txtTractorName.getText().toString();
-                                tractorInfo[1] = txtTractorType.getText().toString();
-                                tractorInfo[2] = txtTractorMade.getText().toString();
-                                tractorInfo[3] = txtTractorTypeNumber.getText().toString();
-                                System.arraycopy(tractorAttributeValue, 0, tractorInfo, 4, tractorAttributeValue.length);
-                                Intent intent = new Intent("sjtu.me.tractor.main.HomeActivity");
-                                intent.putExtra("tractorInfo", tractorInfo);
-                                startActivity(intent);
+//                                Intent intent = new Intent("sjtu.me.tractor.main.HomeActivity");
+//                                startActivity(intent);
                                 TractorAddingActivity.this.finish();
                             }
 
@@ -552,11 +548,21 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
                                     if (mApp.getDatabaseManager() != null) {
                                         if (!(txtTractorType.toString().isEmpty() || txtTractorMade.toString().isEmpty()
                                                 || txtTractorTypeNumber.toString().isEmpty())) {
+                                            final String[] tractorInfo = new String[14];
+                                            tractorInfo[0] = tractorName;
+                                            tractorInfo[1] = txtTractorType.getText().toString();
+                                            tractorInfo[2] = txtTractorMade.getText().toString();
+                                            tractorInfo[3] = txtTractorTypeNumber.getText().toString();
+                                            System.arraycopy(tractorAttributeValue, 0, tractorInfo, 4, tractorAttributeValue.length);
+
+                                            for (String s : tractorInfo) {
+                                                Log.e(TAG, s);
+                                            }
+
                                             //根据名称查询数据库
                                             Cursor cursor = mApp.getDatabaseManager().queryTractorByName(tractorName);
                                             Map<String, String> map = DatabaseManager.cursorToMap(cursor);
-                                            if (map.size() != 0) {
-//
+                                            if (map != null && map.size() != 0) {
 
                                                 AlertDialog dialogNameDuplicate = new AlertDialog.Builder(TractorAddingActivity.this)
                                                         .setTitle(getString(R.string.carmessage_errortitle))
@@ -566,7 +572,10 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
 
                                                             @Override
                                                             public void onClick(DialogInterface dialog, int which) {
+
                                                                 // 更新数据库文件中的车辆信息条目
+                                                                boolean flag = mApp.getDatabaseManager().updateTractorByName(tractorName, tractorInfo);
+                                                                Log.e(TAG, "Update tractor table successfully? " + flag);
                                                                 turnPage();
                                                             }
                                                         })
@@ -582,6 +591,8 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
                                                 dialogNameDuplicate.show();
                                                 AlertDialogUtil.changeDialogTheme(dialogNameDuplicate);
                                             } else {
+                                                boolean flag = mApp.getDatabaseManager().insertDataToTractor(tractorInfo);
+                                                Log.e(TAG, "Insert new entry to tractor table successfully? " + flag);
                                                 turnPage();
                                             }
                                         } else {
@@ -696,7 +707,6 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
                 case R.id.btnSelectType:
                     String tractorType = TRACTOR_TYPES[which];
                     txtTractorType.setText(tractorType);
-                    Log.e("txtTractorType", tractorType);
                     break;
 
                 case R.id.btnSelectMade:
@@ -720,36 +730,49 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
     @Override
     protected void onStart() {
         super.onStart();
+        if (D) {
+            Log.e(TAG, "*** ON START ***");
+        }
     }
 
     @Override
     protected void onResume() {
-
         super.onResume();
+        if (D) {
+            Log.e(TAG, "*** ON RESUME ***");
+        }
     }
 
     @Override
     protected void onPause() {
-
         super.onPause();
+        if (D) {
+            Log.e(TAG, "*** ON PAUSE ***");
+        }
     }
 
     @Override
     protected void onStop() {
-
         super.onStop();
+        if (D) {
+            Log.e(TAG, "*** ON STOP ***");
+        }
     }
 
     @Override
     protected void onDestroy() {
-
         super.onDestroy();
+        if (D) {
+            Log.e(TAG, "*** ON DESTROY ***");
+        }
     }
 
     @Override
     protected void onRestart() {
-
         super.onRestart();
+        if (D) {
+            Log.e(TAG, "*** ON RESTART ***");
+        }
     }
 }
 

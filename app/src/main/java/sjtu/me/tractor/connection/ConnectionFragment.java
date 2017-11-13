@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.util.Set;
 
 import sjtu.me.tractor.R;
@@ -65,54 +66,56 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
     private Button btnScan;
     private Button btnCancel;
 
+    // 消息处理器
+    Handler mHomeHandler = new MyHomeHandler(this);
+    private static int dataNumber = 0; //消息计数器
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btnStartConnection:
-//            if (mBluetoothAdapter.isEnabled()) {
-//                if (myApp.getBluetoothService().getState() == BluetoothService.STATE_NONE) {
-//                    startActivityForResult(new Intent(getActivity(), DeviceListActivity.class), REQUEST_SELECTE_BLUETOOTH);
-//                } else {
-//                    myApp.getBluetoothService().stopConnection();
-//                    txtReceivedMessage.setText("停止接收");
-//                    txtSentMessage.setText("停止发送");
-//                    btnStartConnection.setText("打开连接");
-//                }
-//            }
+    /*
+    * 使用静态内部类避免Handler带来的内存泄漏问题;
+    * 在handlerMessage()中写消息处理代码。
+    */
+    private static class MyHomeHandler extends Handler {
+        //持有弱引用MyFieldHandler，GC回收时会被回收掉
+        private final WeakReference<ConnectionFragment> mReferenceActivity;
+        StringBuilder recDataString = new StringBuilder();
 
-                if (mBluetoothAdapter.isEnabled()) {
-                    if (myApp.getBluetoothService().getState() != BluetoothService.STATE_NONE) {
-                        myApp.getBluetoothService().stopConnection();
-                        txtReceivedMessage.setText(R.string.stop_receiving);
-                        txtSentMessage.setText(R.string.stop_sending);
-                        btnStartConnection.setText(R.string.open_connection);
-                    } else {
-                        if (!MyApplication.ADDRESS_NULL.equals(myApp.getBluetoothAddress())) {
-                            myApp.getBluetoothService().startConnection(myApp.getBluetoothAddress());
-                            btnStartConnection.setText(R.string.close_connection);
-                        } else {
-                            ToastUtil.showToast(getString(R.string.select_an_available_device), true);
-                        }
-                    }
+        public MyHomeHandler(ConnectionFragment fragment) {
+            mReferenceActivity = new WeakReference<>(fragment);
+        }
+
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            final ConnectionFragment fragment = mReferenceActivity.get();
+            super.handleMessage(msg);
+            if (fragment != null) {
+                switch (msg.what) {
+                    case BluetoothService.MESSAGE_RECEIVED:
+                        String readMessage = (String) msg.obj;
+                        recDataString.append(readMessage);
+                        String dataInPrint = recDataString.toString(); // 提取字符串
+                        dataNumber++;
+                        fragment.txtReceivedMessage.setText(dataInPrint);
+                        fragment.txtReceivedMessageNum.setText(String.valueOf(dataNumber));
+                        recDataString.delete(0, recDataString.length());
+                        break;
+
+                    case BluetoothService.MESSAGE_SENT:
+                        String writeMessage = msg.obj.toString();
+                        fragment.txtSentMessage.setText(writeMessage.subSequence(0, writeMessage.length() - 1));
+                        break;
+
+                    case BluetoothService.MESSAGE_CONNECT_RESULT:
+                        ToastUtil.showToast(msg.obj.toString(), true);
+                        break;
+
+                    default:
+                        break;
                 }
-                break;
-
-            case R.id.button_cancel:
-                // 关闭正在进行的查找服务
-                if (mBluetoothAdapter.isDiscovering()) {
-                    mBluetoothAdapter.cancelDiscovery();
-                }
-                break;
-
-            case R.id.button_scan:
-                doDiscovery();
-                break;
-
-            default:
-                break;
+            }
         }
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -229,6 +232,54 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
         }
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnStartConnection:
+//            if (mBluetoothAdapter.isEnabled()) {
+//                if (myApp.getBluetoothService().getState() == BluetoothService.STATE_NONE) {
+                //弹出选择蓝牙设备窗口
+//                    startActivityForResult(new Intent(getActivity(), DeviceListActivity.class), REQUEST_SELECTE_BLUETOOTH);
+//                } else {
+//                    myApp.getBluetoothService().stopConnection();
+//                    txtReceivedMessage.setText("停止接收");
+//                    txtSentMessage.setText("停止发送");
+//                    btnStartConnection.setText("打开连接");
+//                }
+//            }
+
+                if (mBluetoothAdapter.isEnabled()) {
+                    if (myApp.getBluetoothService().getState() != BluetoothService.STATE_NONE) {
+                        myApp.getBluetoothService().stopConnection();
+                        txtReceivedMessage.setText(R.string.stop_receiving);
+                        txtSentMessage.setText(R.string.stop_sending);
+                        btnStartConnection.setText(R.string.open_connection);
+                    } else {
+                        if (!MyApplication.ADDRESS_NULL.equals(myApp.getBluetoothAddress())) {
+                            myApp.getBluetoothService().startConnection(myApp.getBluetoothAddress());
+                            btnStartConnection.setText(R.string.close_connection);
+                        } else {
+                            ToastUtil.showToast(getString(R.string.select_an_available_device), true);
+                        }
+                    }
+                }
+                break;
+
+            case R.id.button_cancel:
+                // 关闭正在进行的查找服务
+                if (mBluetoothAdapter.isDiscovering()) {
+                    mBluetoothAdapter.cancelDiscovery();
+                }
+                break;
+
+            case R.id.button_scan:
+                doDiscovery();
+                break;
+
+            default:
+                break;
+        }
+    }
 
     @Override
     public void onPause() {
@@ -288,7 +339,11 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
         // 注销action接收器
         getActivity().unregisterReceiver(mReceiver);
 
+        // 关闭蓝牙连接
         myApp.getBluetoothService().stopConnection();
+
+        // 清除MessageQueue里面消息
+        mHomeHandler.removeCallbacksAndMessages(null);
 
         if (D) {
             Log.e(TAG, "++++ ON DESTROY ++++");
@@ -446,34 +501,4 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
         }
     };
 
-    private final Handler mHomeHandler = new Handler() {
-        StringBuilder recDataString = new StringBuilder();
-        int dataNumber = 0;
-
-        public void handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case BluetoothService.MESSAGE_RECEIVED:
-                    String readMessage = (String) msg.obj;
-                    recDataString.append(readMessage);
-                    String dataInPrint = recDataString.toString(); // 提取字符串
-                    dataNumber++;
-                    txtReceivedMessage.setText(dataInPrint);
-                    txtReceivedMessageNum.setText(String.valueOf(dataNumber));
-                    recDataString.delete(0, recDataString.length());
-                    break;
-
-                case BluetoothService.MESSAGE_SENT:
-                    String writeMessage = msg.obj.toString();
-                    txtSentMessage.setText(writeMessage.subSequence(0, writeMessage.length() - 1));
-                    break;
-
-                case BluetoothService.MESSAGE_CONNECT_RESULT:
-                    ToastUtil.showToast(msg.obj.toString(), true);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    };
 }
