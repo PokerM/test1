@@ -111,9 +111,12 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
                 values.put(TractorInfo.T_OPERATION_LINESPACING, tractorInfo[13]);
                 mApp.getDatabaseManager().updateTractorByName(tractorName, values);
             } else {
-                mApp.getDatabaseManager().insertDataToTractor();
+                mApp.getDatabaseManager().insertDataToTractor(tractorInfo);
             }
         }
+
+        // 更新数据
+        notifyDataChange();
     }
 
     @Override
@@ -329,18 +332,14 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
                         public void onClick(DialogInterface dialog, int which) {
                             // 若选择修改，则返回修改页面并传出车辆数据
 
-                            // Cursor resultCursor =
-                            // mApp.getDatabaseManager().queryFieldWithPointsByName(name);
-                            // Map<String,String> map =
-                            // DatabaseManager.cursor2Map(resultCursor);
-                            // String[] s = new String[map.size()];
-                            // Intent intent = new Intent();
-                            // intent.setClass(CarListActivity.this,
-                            // CarSetActivity.class);
-                            // for(String key : map.keySet()) {
-                            // intent.putExtra(key, map.get(key));
-                            // }
-                            // startActivity(intent);
+                            Cursor resultCursor = mApp.getDatabaseManager().queryTractorByName(name);
+                            Map<String, String> map = DatabaseManager.cursorToMap(resultCursor);
+                            Intent intent = new Intent();
+                            intent.setClass(getActivity(), TractorAddingActivity.class);
+                            for (String key : map.keySet()) {
+                                intent.putExtra(key, map.get(key));
+                            }
+                            startActivity(intent);
                         }
                     });
 
