@@ -75,8 +75,8 @@ public class DeviceListActivity extends Activity {
         });
 
         // 初始化设备列表适配器
-        mPairedDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.device_name);
-        mNewDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.device_name);
+        mPairedDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.device_list_cell);
+        mNewDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.device_list_cell);
 
         // 初始化已配对设备列表        
         ListView pairedListView = (ListView) findViewById(R.id.paired_devices);

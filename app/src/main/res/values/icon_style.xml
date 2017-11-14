@@ -83,35 +83,35 @@
 
 
     <!-- 车辆设置主页面的小按钮和提示按钮风格 -->
-    <style name="carmessage_helpstyle">
+    <style name="tractor_info_help_style">
         <item name="android:layout_width">70dp</item>
         <item name="android:layout_height">70dp</item>
         <item name="android:background">@drawable/help_image</item>
     </style>
     
-    <style name="carmessage_buttonstyle">
+    <style name="tractor_info_button_style">
         <item name="android:textColor">#999999</item>
         <item name="android:background">@drawable/button_bluebackground</item>
     </style>
     
-    <style name="carmessage_buttonstyle.big">
+    <style name="tractor_info_button_style.big">
         <item name="android:layout_width">75dp</item>
         <item name="android:layout_height">60dp</item>
     </style>
 
-    <style name="carmessage_buttonstyle.normal">
+    <style name="tractor_info_button_style.normal">
         <item name="android:layout_width">55dp</item>
         <item name="android:layout_height">45dp</item>
         <item name="android:textSize">22sp</item>
     </style>
 
-    <style name="carmessage_buttonstyle.small">
+    <style name="tractor_info_button_style.small">
         <item name="android:layout_width">50dp</item>
         <item name="android:layout_height">38dp</item>
     </style>
     
     <!-- 车辆数据库信息表的按钮风格 -->
-    <style name="carmessage_buttonstyle.huge">
+    <style name="tractor_info_button_style.huge">
         <item name="android:layout_width">90dp</item>
         <item name="android:layout_height">90dp</item>
         <item name="android:textSize">21sp</item>

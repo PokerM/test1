@@ -20,7 +20,9 @@ import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.List;
 import java.util.Map;
@@ -37,6 +39,8 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
 
     public static final String TAG = "TractorSettingFragment";
     public static final boolean D = true;
+    private static final int LOADER_ID = 10;
+    private static final String QUERY_ALL = "%%";
 
     private static MyApplication mApp;
     private LoaderManager loaderManager;
@@ -46,9 +50,56 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
     private ListView lstTractor;
     private TractorListAdapter tractorListAdapter;
 
+    private LinearLayout layoutAttributeCollections;
+
     public TractorSettingFragment() {
         super();
     }
+
+    // 建立异步loader实现实时监控，注意一定要是静态类
+    public static class MyAsyncLoader extends AsyncTaskLoader<Cursor> {
+        public MyAsyncLoader(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void onStartLoading() {
+            super.onStartLoading();
+            if (takeContentChanged()) {
+                forceLoad();
+            }
+        }
+
+        @Override
+        public Cursor loadInBackground() {
+            Cursor cursor = mApp.getDatabaseManager().queryTractorByName(QUERY_ALL);
+            return cursor;
+        }
+
+    }
+
+    private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            String name = ((TextView) view.findViewById(R.id.cellTextTractorName)).getText().toString();
+            Cursor cursor = mApp.getDatabaseManager().queryTractorByName(name);
+            List<Map<String, String>> list = DatabaseManager.cursorToList(cursor);
+            if (list != null && list.size() != 0) {
+                Map<String, String> map = list.get(0);
+                ((TextView) getActivity().findViewById(R.id.txtName)).setText(name);
+                ((TextView) getActivity().findViewById(R.id.txtWheelbase)).setText(map.get(TractorInfo.T_WHEELBASE));
+                ((TextView) getActivity().findViewById(R.id.txtLateral)).setText(map.get(TractorInfo.T_ANTENNA_LATERAL));
+                ((TextView) getActivity().findViewById(R.id.txtRear)).setText(map.get(TractorInfo.T_ANTENNA_REAR));
+                ((TextView) getActivity().findViewById(R.id.txtHeight)).setText(map.get(TractorInfo.T_ANTENNA_HEIGHT));
+                ((TextView) getActivity().findViewById(R.id.txtRadius)).setText(map.get(TractorInfo.T_MIN_TURNING_RADIUS));
+                ((TextView) getActivity().findViewById(R.id.txtAngular)).setText(map.get(TractorInfo.T_ANGLE_CORRECTION));
+                ((TextView) getActivity().findViewById(R.id.txtWidth)).setText(map.get(TractorInfo.T_IMPLEMENT_WIDTH));
+                ((TextView) getActivity().findViewById(R.id.txtLength)).setText(map.get(TractorInfo.T_IMPLEMENT_LENGTH));
+                ((TextView) getActivity().findViewById(R.id.txtOffset)).setText(map.get(TractorInfo.T_IMPLEMENT_OFFSET));
+                ((TextView) getActivity().findViewById(R.id.txtSpace)).setText(map.get(TractorInfo.T_OPERATION_LINESPACING));
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,31 +126,15 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
             Log.e(TAG, "++++ ON ACTIVITY CREATE ++++");
         }
 
-        // 获取Application全局变量
+       /* 获取Application全局变量*/
         mApp = (MyApplication) getActivity().getApplication();
 
         loader = new MyAsyncLoader(this.getActivity());
         loaderManager = getActivity().getLoaderManager();
         Log.e(TAG, "is loaderManager not null? " + (loaderManager != null));
-        loaderManager.initLoader(1002, null, this);
+        loaderManager.initLoader(LOADER_ID, null, this);
 
-//        // 通过intent对象先得到传过来的车辆数据（修改车身参数时回传过来数据）
-//        Intent intent = getActivity().getIntent();
-//        Bundle bundle = intent.getExtras();
-//        if (bundle != null) {
-//            String[] tractorInfo = bundle.getStringArray("tractorInfo");
-//            String tractorName = tractorInfo[0];
-//            // 查询信息，若存在重名车辆会覆盖原数据，否则新建数据
-//            Cursor resultCursor = mApp.getDatabaseManager().queryTractorByName(tractorName);
-//            Map<String, String> map = DatabaseManager.cursorToMap(resultCursor);
-//            if (map != null && map.size() != 0) {
-//                mApp.getDatabaseManager().updateTractorByName(tractorName, tractorInfo);
-//            } else {
-//                mApp.getDatabaseManager().insertDataToTractor(tractorInfo);
-//            }
-//        }
-
-        // 更新数据
+        /*更新数据*/
         notifyDataChange();
     }
 
@@ -144,7 +179,7 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
         if (D) {
             Log.e(TAG, "++++ ON DESTROY ++++");
         }
-
+        mApp.getDatabaseManager().releaseDataBase();
     }
 
     private void initViews(View v) {
@@ -155,7 +190,7 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
         v.findViewById(R.id.btnRemoveTractorInfo).setOnClickListener(this);
         v.findViewById(R.id.btnClearTractorInfo).setOnClickListener(this);
         v.findViewById(R.id.btnSaveTractorInfo).setOnClickListener(this);
-
+        layoutAttributeCollections = ((LinearLayout) v.findViewById(R.id.layoutAttributeCollections));
     }
 
     @Override
@@ -267,11 +302,18 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
         }
 
         tractorList = updateListData(data);
+        if (tractorList != null) {
+            layoutAttributeCollections.setVisibility(View.VISIBLE);
+        } else {
+            Log.e(TAG, "cursor is null");
+        }
+
         tractorListAdapter = new TractorListAdapter(getActivity(), tractorList);
         lstTractor.setAdapter(tractorListAdapter);
+        lstTractor.setOnItemClickListener(itemClickListener);
         tractorListAdapter.notifyDataSetChanged();
-        // 每次loader完毕之后便可以释放database资源以减轻数据库压力
-        mApp.getDatabaseManager().releaseDataBase();
+//        // 每次loader完毕之后便可以释放database资源以减轻数据库压力
+//        mApp.getDatabaseManager().releaseDataBase();
     }
 
     @Override
@@ -286,7 +328,7 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
     }
 
     public void notifyDataChange() {
-        loaderManager.getLoader(1002).onContentChanged();
+        loaderManager.getLoader(LOADER_ID).onContentChanged();
     }
 
     // 长按删除数据监听器，重写监听方法
@@ -297,12 +339,12 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
             // 设置窗口提示，info可以表示此时点击的菜单的位置，据此可以查询数据库对应名字的车辆信息
             final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             AlertDialog.Builder longPressAlertBuilder = new AlertDialog.Builder(getActivity());
-            longPressAlertBuilder.setTitle(getString(R.string.alert_title_tractor_longpress));
+            longPressAlertBuilder.setTitle(getString(R.string.alert_title_tractor_long_press));
             longPressAlertBuilder.setIcon(R.drawable.alert);
 
             // 这三步可以获取选中的条目的车辆的名称，方可进行下一步操作
-            int listposition = info.position;
-            Map<String, String> map = tractorList.get(listposition);
+            int position = info.position;
+            Map<String, String> map = tractorList.get(position);
             final String name = map.get("tName");
 
             longPressAlertBuilder.setPositiveButton(getString(R.string.delete_tractor),
@@ -315,14 +357,14 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
                         }
                     });
 
-            longPressAlertBuilder.setNegativeButton(getString(R.string.carset_cansel),
+            longPressAlertBuilder.setNegativeButton(getString(R.string.tractor_info_edit_cancel),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     });
 
-            longPressAlertBuilder.setNeutralButton(getString(R.string.carset_edit),
+            longPressAlertBuilder.setNeutralButton(getString(R.string.tractor_info_edit),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -339,35 +381,11 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
                         }
                     });
 
-            String message = getString(R.string.tractor_alert_info_longpressinfo_1) + map.get("tName").toString()
-                    + getString(R.string.tractor_alert_info_longpressinfo_2);
+            String message = getString(R.string.alert_msg_tractor_info_long_press_1) + map.get(TractorInfo.T_NAME).toString()
+                    + getString(R.string.alert_msg_tractor_info_long_press_2);
             longPressAlertBuilder.setMessage(message);
             longPressAlertBuilder.show();
         }
 
     };
-
-    // 建立异步loader实现实时监控，注意一定要是静态类
-    public static class MyAsyncLoader extends AsyncTaskLoader<Cursor> {
-        public MyAsyncLoader(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected void onStartLoading() {
-            super.onStartLoading();
-            if (takeContentChanged()) {
-                forceLoad();
-            }
-        }
-
-        @Override
-        public Cursor loadInBackground() {
-            Cursor cursor = mApp.getDatabaseManager().queryTractorByName("");
-            Log.e(TAG, cursor.toString());
-            return cursor;
-        }
-
-    }
-
 }

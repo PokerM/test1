@@ -145,7 +145,8 @@ public class MyApplication extends Application{
 	@SuppressLint("SdCardPath")
     public static boolean copyDbFilesToExternalStorage(String dbPath) {
 //	    String dbPath = "/data/data/com.example.fielddatabase/databases/" +"auto_tractor";
-	    File newPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "dbFiles");
+        String dir = "dbFiles";
+        File newPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), dir);
         if (!newPath.exists()) {
             newPath.mkdirs();
         }
@@ -166,14 +167,12 @@ public class MyApplication extends Application{
             out.flush();
             in.close();
             out.close();
+            return true;
         } catch (FileNotFoundException ex) {
             return false;
         } catch (IOException e) {
             return false;
         }
-
-        return true;
-
     }
 	
 	

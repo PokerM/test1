@@ -33,10 +33,6 @@ import sjtu.me.tractor.tractorinfo.TractorInfo;
  * sql = "select * from person where name = ?" bindArgs = {"张三丰"}
  * 8.整表查询：
  * sql = "select * from person" bindArgs = null
- *
- * @param sql
- * @param bindArgs
- * @return
  */
 
 /**
@@ -49,7 +45,7 @@ public class DatabaseManager {
     private static final boolean D = true;
 
     private MyDatabaseHelper dbHelper;
-    private SQLiteDatabase myDatabase;
+    private SQLiteDatabase mDatabase;
     public Context context;
 
     //在管理器的创建方法中新创建DBHelper
@@ -61,8 +57,8 @@ public class DatabaseManager {
     /**
      * 连接数据库
      */
-    public void connectDatabase() {
-        myDatabase = dbHelper.getReadableDatabase();
+    private void connectDatabase() {
+        mDatabase = dbHelper.getReadableDatabase();
 
         if (D) {
             Log.e(TAG, "CONNECTING DATABASE --> $$GET READABLE DATABASE$$");
@@ -74,8 +70,8 @@ public class DatabaseManager {
      * 注意：在实时监控条件下切记不可关闭数据库！需要在LoadFinish的时候才可以释放资源。
      */
     public void releaseDataBase() {
-        if (myDatabase != null && myDatabase.isOpen()) {
-            myDatabase.close();
+        if (mDatabase != null && mDatabase.isOpen()) {
+            mDatabase.close();
         }
         dbHelper.close();
     }
@@ -90,9 +86,8 @@ public class DatabaseManager {
      */
     public boolean insert(String table, ContentValues values) {
         connectDatabase();
-        boolean flag = false;
-        long count = myDatabase.insert(table, null, values);
-        flag = (count > 0 ? true : false);
+        long count = mDatabase.insert(table, null, values);
+        boolean flag = (count > 0);
         System.out.println("-->--" + flag);
         return flag;
     }
@@ -112,9 +107,7 @@ public class DatabaseManager {
     public Cursor queryCursor(String table, String[] columns, String whereClause, String[] selectionArgs,
                               String groupBy, String having, String orderBy) {
         connectDatabase();
-        Cursor cursor = null;
-        cursor = myDatabase.query(table, columns, whereClause, selectionArgs, groupBy, having, orderBy);
-        return cursor;
+        return mDatabase.query(table, columns, whereClause, selectionArgs, groupBy, having, orderBy);
     }
 
     /**
@@ -128,9 +121,7 @@ public class DatabaseManager {
      */
     public Cursor queryCursorWithoutGroup(String table, String[] columns, String whereClause, String[] selectionArgs) {
         connectDatabase();
-        Cursor cursor = null;
-        cursor = myDatabase.query(table, columns, whereClause, selectionArgs, null, null, null);
-        return cursor;
+        return mDatabase.query(table, columns, whereClause, selectionArgs, null, null, null);
     }
 
     /**
@@ -142,9 +133,9 @@ public class DatabaseManager {
      */
     public Map<String, String> queryByName(String table, String[] names) {
         connectDatabase();
-        Cursor cursor = null;
-        cursor = myDatabase.query(table, null, "name = ?", names, null, null, null);
-        Map<String, String> map = new HashMap<String, String>();
+        Cursor cursor;
+        cursor = mDatabase.query(table, null, "name = ?", names, null, null, null);
+        Map<String, String> map;
         map = cursorToMap(cursor);
         return map;
     }
@@ -152,43 +143,39 @@ public class DatabaseManager {
     /**
      * 查询整表的指定列
      *
-     * @param table
-     * @param columns
-     * @return
+     * @param table 表名
+     * @param columns 查询列
+     * @return 查询结果
      */
     public Cursor queryColnCursor(String table, String[] columns) {
         connectDatabase();
-        Cursor cursor = null;
-        cursor = myDatabase.query(table, columns, null, null, null, null, null);
-        return cursor;
+        return mDatabase.query(table, columns, null, null, null, null, null);
     }
 
     /**
      * 查询整表
      *
-     * @param table
-     * @return
+     * @param table 表名
+     * @return 结果
      */
     public Cursor queryAllColnCursor(String table) {
         connectDatabase();
-        Cursor cursor = null;
-        cursor = myDatabase.query(table, null, null, null, null, null, "name");
-        return cursor;
+        return mDatabase.query(table, null, null, null, null, null, "name");
     }
 
     /**
      * MethodName: updateBySQL
      * Description:
      *
-     * @param sql
-     * @param bindArgs
-     * @return boolean
+     * @param sql SQL语句
+     * @param bindArgs 参数
+     * @return boolean 成功标志
      */
     public boolean updateBySQL(String sql, Object[] bindArgs) {
         connectDatabase();
         boolean flag = false;
         try {
-            myDatabase.execSQL(sql, bindArgs);
+            mDatabase.execSQL(sql, bindArgs);
             flag = true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -204,9 +191,8 @@ public class DatabaseManager {
      */
     public boolean clearAllTractorData() {
         connectDatabase();
-        boolean flag;
-        int count = myDatabase.delete(MyDatabaseHelper.TABLE_TRACTOR, null, null);
-        flag = (count > 0);
+        int count = mDatabase.delete(MyDatabaseHelper.TABLE_TRACTOR, null, null);
+        boolean flag = (count > 0);
         return flag;
     }
 
@@ -236,9 +222,8 @@ public class DatabaseManager {
         values.put(TractorInfo.T_IMPLEMENT_LENGTH, tractorInfo[12]);
         values.put(TractorInfo.T_OPERATION_LINESPACING, tractorInfo[13]);
         connectDatabase(); //连接数据库
-        long count = myDatabase.insert(MyDatabaseHelper.TABLE_TRACTOR, null, values);
-        boolean flag = count > 0;
-        return flag;
+        long count = mDatabase.insert(MyDatabaseHelper.TABLE_TRACTOR, null, values);
+        return count > 0;
     }
 
     /**
@@ -269,9 +254,8 @@ public class DatabaseManager {
         values.put(TractorInfo.T_OPERATION_LINESPACING, tractorInfo[13]);
         connectDatabase(); //连接数据库
         String[] names = {tractorName};
-        int count = myDatabase.update(MyDatabaseHelper.TABLE_TRACTOR, values, "name = ?", names);
-        boolean flag = (count > 0);
-        return flag;
+        int count = mDatabase.update(MyDatabaseHelper.TABLE_TRACTOR, values, "name = ?", names);
+        return (count > 0);
     }
 
     /**
@@ -284,21 +268,19 @@ public class DatabaseManager {
     public boolean deleteTractorByName(String name) {
         connectDatabase();
         String[] names = {name};
-        int count = myDatabase.delete(MyDatabaseHelper.TABLE_TRACTOR, "name = ?", names);
-        boolean flag = (count > 0);
-        return flag;
+        int count = mDatabase.delete(MyDatabaseHelper.TABLE_TRACTOR, TractorInfo.T_NAME + " = ?", names);
+        return (count > 0);
     }
 
     /**
      * 根据名称查询车辆参数信息
      *
      * @param queryName 查询名称
-     * @return
+     * @return 结果
      */
     public Cursor queryTractorByName(String queryName) {
         connectDatabase();
-        Cursor cursor;
-        cursor = myDatabase.rawQuery(new StringBuilder()
+        Cursor cursor = mDatabase.rawQuery(new StringBuilder()
                 .append("select ")
                 .append(TractorInfo.T_NAME).append(", ")
                 .append(TractorInfo.T_TYPE).append(", ")
@@ -329,7 +311,7 @@ public class DatabaseManager {
      */
     public boolean clearAllFieldData() {
         connectDatabase();
-        int count = myDatabase.delete(MyDatabaseHelper.TABLE_FIELD, null, null);
+        int count = mDatabase.delete(MyDatabaseHelper.TABLE_FIELD, null, null);
         boolean flag = count > 0;
         return flag;
     }
@@ -354,7 +336,7 @@ public class DatabaseManager {
         values.put(FieldInfo.FIELD_POINT_X_COORDINATE, fieldInfo[6]);
         values.put(FieldInfo.FIELD_POINT_Y_COORDINATE, fieldInfo[7]);
         connectDatabase();
-        long count = myDatabase.insert(MyDatabaseHelper.TABLE_FIELD, null, values);
+        long count = mDatabase.insert(MyDatabaseHelper.TABLE_FIELD, null, values);
         boolean flag = count > 0;
         return flag;
     }
@@ -370,7 +352,7 @@ public class DatabaseManager {
         connectDatabase();
         Cursor cursor = null;
         //SQL查询语句，先建立一个分表，然后从分表中根据名称查询
-        cursor = myDatabase.rawQuery(new StringBuilder()
+        cursor = mDatabase.rawQuery(new StringBuilder()
                 .append("select ")
                 .append(FieldInfo.FIELD_ID).append(", ")
                 .append(FieldInfo.FIELD_NAME).append(", ")
@@ -383,7 +365,7 @@ public class DatabaseManager {
                 .append(MyDatabaseHelper.TABLE_FIELD)
                 .append(" as b where a.").append(FieldInfo.FIELD_NAME)
                 .append(" = b.").append(FieldInfo.FIELD_NAME).append(") and ")
-                .append(FieldInfo.FIELD_NAME).append(" like ?").toString(), new String[]{"%" + queryName + "%"});
+                .append(FieldInfo.FIELD_NAME).append(" like ?").toString(), new String[]{queryName});
         return cursor;
     }
 
@@ -391,13 +373,12 @@ public class DatabaseManager {
      * 根据名字查询地块
      * （返回值中包含满足查询的地块的所有顶点数据）
      *
-     * @param queryName
-     * @return
+     * @param queryName 名称
+     * @return 结果
      */
     public Cursor queryFieldWithPointsByName(String queryName) {
         connectDatabase();
-        Cursor cursor = null;
-        cursor = myDatabase.rawQuery(new StringBuilder()
+        Cursor cursor = mDatabase.rawQuery(new StringBuilder()
                 .append("select ")
                 .append(FieldInfo.FIELD_ID).append(", ")
                 .append(FieldInfo.FIELD_NAME).append(", ")
@@ -417,12 +398,12 @@ public class DatabaseManager {
      * （不允许两个地块名称相同）
      *
      * @param name 删除地块名称
-     * @return
+     * @return 成功标志
      */
     public boolean deleteFieldByName(String name) {
         connectDatabase();
         String[] names = {name};
-        int count = myDatabase.delete(MyDatabaseHelper.TABLE_FIELD, FieldInfo.FIELD_NAME + " = ?", names);
+        int count = mDatabase.delete(MyDatabaseHelper.TABLE_FIELD, FieldInfo.FIELD_NAME + " = ?", names);
         boolean flag = (count > 0);
         return flag;
     }
@@ -430,21 +411,20 @@ public class DatabaseManager {
     /**
      * 遍历Cursor的内容转存到Map里面
      *
-     * @param cursor
-     * @return
+     * @param cursor 游标
+     * @return Map表
      */
     public static Map<String, String> cursorToMap(Cursor cursor) {
         Map<String, String> map = new HashMap<String, String>();
-        while (cursor.moveToNext()) {
-            int columnNum = cursor.getColumnCount();
-            for (int i = 0; i < columnNum; i++) {
-                String columnName = cursor.getColumnName(i);
-                String columnValue = cursor.getString(cursor.getColumnIndex(columnName));
-                if (columnValue == null) {
-                    columnValue = "";
-                }
-                map.put(columnName, columnValue);
+        cursor.moveToFirst(); //只取记录表的第一行（假设记录不重名）
+        int columnNum = cursor.getColumnCount();
+        for (int i = 0; i < columnNum; i++) {
+            String columnName = cursor.getColumnName(i);
+            String columnValue = cursor.getString(cursor.getColumnIndex(columnName));
+            if (columnValue == null) {
+                columnValue = "";
             }
+            map.put(columnName, columnValue);
         }
         return map;
     }
@@ -457,6 +437,9 @@ public class DatabaseManager {
      */
     public static ArrayList<Map<String, String>> cursorToList(Cursor cursor) {
         ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        if (cursor == null) {
+            return list;
+        }
 
 //	      cursor.moveToFirst();
 //	      do{
@@ -473,6 +456,7 @@ public class DatabaseManager {
 //            list.add(map);
 //	      }while(cursor.moveToNext());
 
+        /*cursor的初始位置为第0条数据，第一次调用cursor.moveToNext()，相当于cursor.moveToFirst()*/
         while (cursor.moveToNext()) {
             int columnNum = cursor.getColumnCount();
             Map<String, String> map = new HashMap<String, String>();
@@ -497,6 +481,9 @@ public class DatabaseManager {
      */
     public static ArrayList<Map<String, String>> cursorToListAddListNumber(Cursor cursor) {
         ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        if (cursor == null) {
+            return list;
+        }
         int listNumber = 0;
         while (cursor.moveToNext()) {
             listNumber++;

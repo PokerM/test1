@@ -38,6 +38,8 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
 
     public static final String TAG = "FieldSettingFragment";
     public static final boolean D = true;
+    private static final int LOADER_ID = 5;
+    private static final String QUERY_ALL = "%%";
 
     private Button btnImportField;
     private Button btnExportField;
@@ -57,6 +59,28 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
         super();
     }
 
+    // 建立异步loader实现实时监控，注意一定要是静态类
+    public static class MyAsyncLoader extends AsyncTaskLoader<Cursor> {
+        MyAsyncLoader(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void onStartLoading() {
+            super.onStartLoading();
+            if (takeContentChanged()) {
+                forceLoad();
+            }
+        }
+
+        @Override
+        public Cursor loadInBackground() {
+            Cursor cursor = mApp.getDatabaseManager().queryFieldByName(QUERY_ALL);
+            return cursor;
+        }
+
+    }
+//
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +111,7 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
 
         loader = new MyAsyncLoader(this.getActivity());
         loaderManager = getActivity().getLoaderManager();
-        loaderManager.initLoader(1001, null, this);
+        loaderManager.initLoader(LOADER_ID, null, this);
 
         // 更新数据
         notifyDataChange();
@@ -134,6 +158,7 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
         if (D) {
             Log.e(TAG, "++++ ON DESTROY ++++");
         }
+        mApp.getDatabaseManager().releaseDataBase();
     }
 
     private void initViews(View view) {
@@ -283,8 +308,8 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
         fieldListAdapter = new FieldListAdapter(getActivity(), fieldList);
         lstField.setAdapter(fieldListAdapter);
         fieldListAdapter.notifyDataSetChanged();
-        // 每次loader完毕之后便可以释放database资源以减轻数据库压力
-        mApp.getDatabaseManager().releaseDataBase();
+//        // 每次loader完毕之后便可以释放database资源以减轻数据库压力
+//        mApp.getDatabaseManager().releaseDataBase();
 
     }
 
@@ -300,7 +325,7 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
     }
 
     public void notifyDataChange() {
-        loaderManager.getLoader(1001).onContentChanged();
+        loaderManager.getLoader(LOADER_ID).onContentChanged();
     }
 
     //长按删除数据监听器，重写监听方法
@@ -328,13 +353,13 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
                 }
             });
 
-            longPressAlertBuilder.setNegativeButton(getString(R.string.carset_cansel), new DialogInterface.OnClickListener() {
+            longPressAlertBuilder.setNegativeButton(getString(R.string.tractor_info_edit_cancel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                 }
             });
 
-            longPressAlertBuilder.setNeutralButton(getString(R.string.carset_edit), new DialogInterface.OnClickListener() {
+            longPressAlertBuilder.setNeutralButton(getString(R.string.tractor_info_edit), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     //若选择修改，则返回修改页面并传出地块数据
@@ -359,26 +384,4 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
 
     };
 
-    // 建立异步loader实现实时监控，注意一定要是静态类
-    public static class MyAsyncLoader extends AsyncTaskLoader<Cursor> {
-        MyAsyncLoader(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected void onStartLoading() {
-            super.onStartLoading();
-            if (takeContentChanged()) {
-                forceLoad();
-            }
-        }
-
-        @Override
-        public Cursor loadInBackground() {
-            Cursor cursor = mApp.getDatabaseManager().queryFieldByName("");
-            Log.e(TAG, cursor.toString());
-            return cursor;
-        }
-
-    }
 }

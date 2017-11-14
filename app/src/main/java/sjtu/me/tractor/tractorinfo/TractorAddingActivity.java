@@ -1,7 +1,6 @@
 package sjtu.me.tractor.tractorinfo;
 
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -123,7 +122,6 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
 
         // 初始化全局变量
         mApp = (MyApplication) getApplication();
-        mApp.getDatabaseManager().insertDataToTractor(new String[]{"sjtu", "jj", "lianshi", "700", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}); //test db
 
         initViews();
 
@@ -161,15 +159,14 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
         tractorPagerAdapter = new TractorPagerAdapter(this.getSupportFragmentManager(), tractorInfoFragments, viewPager, this);
 
         //当用户进入修改界面时（也即初始的控制其类型不为空时，一次性显示全局页面并设置好数据）
-        //拿回传入的车辆信息（如果有的话）
         intent = getIntent();
         bundle = intent.getExtras();
         if (bundle != null) {
             lstInfoInput.setVisibility(View.VISIBLE);
             viewPager.setVisibility(View.VISIBLE);
-            btnSelectType.setVisibility(View.VISIBLE);
-            btnSelectMade.setVisibility(View.VISIBLE);
-            btnSelectTypeNumber.setVisibility(View.VISIBLE);
+            layoutSetTractorType.setVisibility(View.VISIBLE);
+            layoutSetTractorMade.setVisibility(View.VISIBLE);
+            layoutSetTractorTypeNumber.setVisibility(View.VISIBLE);
             layoutPagerCircles.setVisibility(View.VISIBLE);
             editTextTractorName.setVisibility(View.GONE);
             txtTractorName.setVisibility(View.VISIBLE);
@@ -182,7 +179,7 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
 
             AlertDialog dialog = new AlertDialog.Builder(TractorAddingActivity.this)
                     .setTitle(getString(R.string.alert_dialog_title_edit_tractor))
-                    .setMessage(R.string.carsetback_alertmessage)
+                    .setMessage(R.string.alert_msg_tractor_info_edit_back)
                     .setPositiveButton(getString(R.string.affirm),
                             new DialogInterface.OnClickListener() {
 
@@ -235,11 +232,11 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
                                     txtImplementWidth.setText(tractorAttributeValue[6]);
 
                                     viewImplementOffset = lstInfoInput.getChildAt(7);
-                                    txtImplementOffset = (TextView) viewLineSpacing.findViewById(R.id.txtLabelDetail);
+                                    txtImplementOffset = (TextView) viewImplementOffset.findViewById(R.id.txtLabelDetail);
                                     txtImplementOffset.setText(tractorAttributeValue[7]);
 
                                     viewImplementLength = lstInfoInput.getChildAt(8);
-                                    txtImplementLength = (TextView) viewLineSpacing.findViewById(R.id.txtLabelDetail);
+                                    txtImplementLength = (TextView) viewImplementLength.findViewById(R.id.txtLabelDetail);
                                     txtImplementLength.setText(tractorAttributeValue[8]);
 
                                     viewLineSpacing = lstInfoInput.getChildAt(9);
@@ -296,7 +293,7 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
 
         //为输入框设定文本监听，实现实时更新名称的功能
         editTextTractorName.addTextChangedListener(new TextWatcher() {
-            String newString, filtedString;
+            String newString, filteredString;
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -305,8 +302,8 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 newString = editTextTractorName.getText().toString();
-                filtedString = stringFilter(newString);
-                txtTractorName.setText(filtedString);
+                filteredString = stringFilter(newString);
+                txtTractorName.setText(filteredString);
             }
 
             @Override
@@ -530,8 +527,8 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
 
             case R.id.btnAffirmAddingTractor:
                 AlertDialog dialogAffirm = new AlertDialog.Builder(TractorAddingActivity.this)
-                        .setTitle(getString(R.string.carmessage_tip))
-                        .setMessage(getString(R.string.carmessage_tip_info))
+                        .setTitle(getString(R.string.alert_title_tips))
+                        .setMessage(getString(R.string.alert_msg_tractor_info_tips))
                         .setIcon(R.drawable.alert)
                         .setPositiveButton(R.string.affirm_submit, new DialogInterface.OnClickListener() {
                             String tractorName = txtTractorName.getText().toString();
@@ -557,20 +554,16 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
                                             tractorInfo[3] = txtTractorTypeNumber.getText().toString();
                                             System.arraycopy(tractorAttributeValue, 0, tractorInfo, 4, tractorAttributeValue.length);
 
-                                            for (String s : tractorInfo) {
-                                                Log.e(TAG, s);
-                                            }
-
                                             //根据名称查询数据库
                                             Cursor cursor = mApp.getDatabaseManager().queryTractorByName(tractorName);
                                             Map<String, String> map = DatabaseManager.cursorToMap(cursor);
                                             if (map != null && map.size() != 0) {
 
                                                 AlertDialog dialogNameDuplicate = new AlertDialog.Builder(TractorAddingActivity.this)
-                                                        .setTitle(getString(R.string.carmessage_errortitle))
-                                                        .setMessage(getString(R.string.carmessage_errormessage))
+                                                        .setTitle(getString(R.string.alert_title_tractor_name_error))
+                                                        .setMessage(getString(R.string.alert_msg_tractor_name_error))
                                                         .setIcon(R.drawable.alert)
-                                                        .setPositiveButton(getString(R.string.carmessage_errorsure), new DialogInterface.OnClickListener() {
+                                                        .setPositiveButton(getString(R.string.alert_btn_tractor_overrite), new DialogInterface.OnClickListener() {
 
                                                             @Override
                                                             public void onClick(DialogInterface dialog, int which) {
@@ -581,7 +574,7 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
                                                                 turnPage();
                                                             }
                                                         })
-                                                        .setNegativeButton(getString(R.string.carmessage_errorcansel), new DialogInterface.OnClickListener() {
+                                                        .setNegativeButton(getString(R.string.alert_btn_tractor_rename), new DialogInterface.OnClickListener() {
 
                                                             @Override
                                                             public void onClick(DialogInterface dialog, int which) {

@@ -29,6 +29,7 @@ import lecho.lib.hellocharts.view.LineChartView;
 import sjtu.me.tractor.R;
 import sjtu.me.tractor.bluetooth.BluetoothService;
 import sjtu.me.tractor.database.DatabaseManager;
+import sjtu.me.tractor.database.MyDatabaseHelper;
 import sjtu.me.tractor.field.FieldResultActivity;
 import sjtu.me.tractor.gis.GeoPoint;
 import sjtu.me.tractor.gis.GisAlgorithm;
@@ -156,7 +157,7 @@ public class NaviActivity extends Activity implements OnClickListener {
         //持有弱引用MyFieldHandler，GC回收时会被回收掉
         private final WeakReference<NaviActivity> mReferenceActivity;
 
-        public MyNaviHandler(NaviActivity activity) {
+        MyNaviHandler(NaviActivity activity) {
             mReferenceActivity = new WeakReference<>(activity);
         }
 
@@ -336,7 +337,7 @@ public class NaviActivity extends Activity implements OnClickListener {
             case REQUEST_SELECT_FIELD:
                 if (resultCode == RESULT_OK) {
                     bundle = data.getExtras();
-                    String name = bundle.getString(FieldResultActivity.EXTRA_FIELD_NAME);
+                    String name = (bundle == null ? null : bundle.getString(FieldResultActivity.EXTRA_FIELD_NAME));
                     Log.e("selected item", name);
                     Cursor resultCursor = myApp.getDatabaseManager().queryFieldWithPointsByName(name);
                     List<Map<String, String>> resultList = DatabaseManager.cursorToList(resultCursor);
@@ -428,14 +429,14 @@ public class NaviActivity extends Activity implements OnClickListener {
 
             case R.id.btnHistoryAB:
                 Log.e(TAG, "HISTORY_AB IS PRESSED " );
-                String dbPath = getApplication().getDatabasePath("auto_tractor").toString();
+                String dbPath = getApplication().getDatabasePath(MyDatabaseHelper.DB_NAME).toString();
                 Log.e(TAG, "DB PATH IS " + dbPath);
                 boolean flag = MyApplication.copyDbFilesToExternalStorage(dbPath);
                 Log.e(TAG, "COPY DB FILES SUCCESSFULLY? " + flag);
                 break;
 
             case R.id.btnPlotPath:
-                if (isPlotting == false) {
+                if (!isPlotting) {
                     startPlotPath();
                 } else {
                     stopPlotPath();

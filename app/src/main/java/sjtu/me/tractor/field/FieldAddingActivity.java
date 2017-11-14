@@ -210,6 +210,10 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
 
         setContentView(R.layout.activity_field_adding);
 
+        if (D) {
+            Log.e(TAG, "*** ON CREATE ***");
+        }
+
         mapView = (MapView) findViewById(R.id.bmapView);
         baiduMap = mapView.getMap();
         baiduMap.setMyLocationEnabled(true);
@@ -226,11 +230,16 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
         // 设置蓝牙连接的消息处理器为当前界面处理器
         myApp.getBluetoothService().setHandler(mFieldHandler);
 
-        if (D) {
-            Log.e(TAG, "+++ setHandler: mFieldHandler +++");
+        /*向数据库中插入数据，用来测试数据库功能*/
+        for (int i = 0; i < 8; i++) {
+            boolean flag = myApp.getDatabaseManager().insertDataToTractor(new String[]{"sjtu" + i, "jj", "lianshi", "700", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}); //test db
+            System.out.println("tractor" + flag);
         }
 
-        myApp.getDatabaseManager().insertDataToField(new String[]{"001", "sjtu", "2017-11-14 01:53:30", "1", "1", "2", "3", "4"}); //test db
+        for (int i = 0; i < 8; i++) {
+            boolean flag = myApp.getDatabaseManager().insertDataToField(new String[]{i + ".0", "sjtu" + i, "2017-11-14 01:53:30", "1", "1", "2", "3", "4"}); //test db
+            System.out.println("field" + flag);
+        }
     }
 
     @Override
@@ -378,8 +387,8 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
 
                             public void onClick(DialogInterface dialog, int which) {
 
-                                String input = editText.getText().toString();
-                                if (input.isEmpty()) {
+                                String fName = editText.getText().toString();
+                                if (fName.isEmpty()) {
 //                                    ToastUtil.showToast(getString(R.string.field_name_should_not_be_null), true);
                                     new AlertDialog.Builder(FieldAddingActivity.this)
                                             .setTitle(R.string.alert_title)
@@ -390,22 +399,24 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                                 } else {
                                     // 自动按时间生成文件名
                                     String currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
-                                    String fileField = "field_" + currentTime + input + ".txt";
+                                    String fileField = "field_" + currentTime + fName + ".txt";
 
                                     // 读出所有田地顶点坐标按格式写到字符串
                                     String delimiter = ",";
-                                    String fieldInfo = "vertex_ID,latitude,longitude,x_coordinate,y_coordinate \r\n";
+                                    StringBuilder fieldInfo = new StringBuilder("vertex_ID,latitude,longitude,x_coordinate,y_coordinate \r\n");
                                     for (int i = 0; i < fieldVertices.size(); i++) {
-                                        fieldInfo += i + delimiter + fieldVertices.get(i).getLatitude() + delimiter + fieldVertices.get(i).getLongitude()
-                                                + delimiter + fieldVertices.get(i).getXCoordinate() + delimiter + fieldVertices.get(i).getYCoordinate() + "\r\n";
+                                        fieldInfo.append(i).append(delimiter)
+                                                .append(fieldVertices.get(i).getLatitude()).append(delimiter)
+                                                .append(fieldVertices.get(i).getLongitude()).append(delimiter)
+                                                .append(fieldVertices.get(i).getXCoordinate()).append(delimiter)
+                                                .append(fieldVertices.get(i).getYCoordinate()).append("\r\n");
                                     }
 
                                     // 保存田地信息到外部文件
-                                    FileUtil.writeDataToExternalStorage(ALBUM_NAME, fileField, fieldInfo, false, false);
+                                    FileUtil.writeDataToExternalStorage(ALBUM_NAME, fileField, fieldInfo.toString(), false, false);
 
                                     //保存地块顶点数据到数据库
                                     String fNo = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
-                                    String fName = input;
                                     String fDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
                                     for (int i = 0; i < fieldVertices.size(); i++) {
                                         String fPNo = String.valueOf(i + 1);
@@ -440,7 +451,6 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
     public void navigateTo(double latitude, double longitude) {
 
         LatLng ll = new LatLng(latitude, longitude);
-        ;
         MapStatusUpdate update = MapStatusUpdateFactory.newLatLng(ll);
         baiduMap.animateMapStatus(update);
         update = MapStatusUpdateFactory.zoomTo(19);
@@ -498,8 +508,6 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                     btnCalibration.setVisibility(View.VISIBLE);
                     btnBackStep.setVisibility(View.VISIBLE);
                     btnSwitch.setVisibility(View.GONE);
-                } else {
-
                 }
             }
         });
@@ -511,8 +519,6 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                     btnCalibration.setVisibility(View.GONE);
                     btnBackStep.setVisibility(View.GONE);
                     btnSwitch.setVisibility(View.VISIBLE);
-                } else {
-
                 }
             }
         });

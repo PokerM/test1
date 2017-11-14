@@ -24,7 +24,7 @@ public class FieldListAdapter extends BaseAdapter {
      * @param context 上下文环境
      * @param list    数据列表
      */
-    public FieldListAdapter(Context context, List<Map<String, String>> list) {
+    FieldListAdapter(Context context, List<Map<String, String>> list) {
         this.context = context;
         this.list = list;
     }
@@ -65,10 +65,10 @@ public class FieldListAdapter extends BaseAdapter {
         TextView fPNo = (TextView) ll.findViewById(R.id.txtFieldVertexNumber);
 
         listNumber.setText(list.get(position).get("listNumber"));
-        fName.setText(list.get(position).get("fName"));
-        fNo.setText(list.get(position).get("fNo"));
-        fDate.setText(list.get(position).get("fDate"));
-        fPNo.setText(list.get(position).get("fPNo"));
+        fName.setText(list.get(position).get(FieldInfo.FIELD_NAME));
+        fNo.setText(list.get(position).get(FieldInfo.FIELD_ID));
+        fDate.setText(list.get(position).get(FieldInfo.FIELD_DATE));
+        fPNo.setText(list.get(position).get(FieldInfo.FIELD_POINT_NO));
         return ll;
     }
 

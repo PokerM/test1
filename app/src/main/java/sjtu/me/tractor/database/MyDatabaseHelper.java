@@ -10,11 +10,11 @@ import sjtu.me.tractor.tractorinfo.TractorInfo;
 public class MyDatabaseHelper extends SQLiteOpenHelper {
 	 
 	// 直接用静态final变量设置数据库的版本和名称，并直接让构造方法仅传入参数上下文
-    private static final String DB_NAME = "auto_tractor";
+    public static final String DB_NAME = "auto_tractor";
     private static final int DB_VERSION = 1;
     
     // 定义地块数据库
-    public static final String TABLE_FIELD = "field";   //地块表名
+    static final String TABLE_FIELD = "field";   //地块表名
     
     // 定义生成地块数据表SQL语句
     private static final String CREATE_FIELD_TABLE = 
@@ -30,7 +30,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             + FieldInfo.FIELD_POINT_Y_COORDINATE + " text);";
     
     // 定义拖拉机参数数据库
-    public static final String TABLE_TRACTOR = "tractor";  //拖拉机表名
+    static final String TABLE_TRACTOR = "tractor";  //拖拉机表名
     
     // 定义生成拖拉机参数数据表SQL语句
     private static final String CREATE_TRACTOR_TABLE = 
@@ -53,7 +53,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             
 	
 	//构造方法，将默认名称和版本置为上面的静态变量，将cursorFactory置为空
-	public MyDatabaseHelper(Context context) {
+	MyDatabaseHelper(Context context) {
 		super(context, DB_NAME, null, DB_VERSION);
 		
 	}

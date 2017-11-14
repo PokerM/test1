@@ -32,7 +32,7 @@
     	   android:gravity="right">
             
 		   <Button 
-		       style="@style/carmessage_buttonstyle.small"
+		       style="@style/tractor_info_button_style.small"
 		       android:id="@+id/btnEditLabel"
 		       android:layout_marginRight="5dp"
 		       android:text="@string/tractor_edit"

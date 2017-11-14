@@ -59,8 +59,8 @@
     <string name="info_fragment3_tips">\t\t\t\t请输入从车辆后方观察车辆时天线距离车辆中心线的位置</string>
     <string name="info_fragment2_antenna_lateral">天线横向偏差</string>
     <string name="info_fragment3_antenna_rear">天线到后轴距离</string>
-    <string name="meter">米</string>
-    <string name="carmessage_tip">温馨提示</string>
+    <string name="unit_meter">米</string>
+    <string name="alert_title_tips">温馨提示</string>
     <string name="info_fragment4_antenna_height">天线高度</string>
     <string name="info_fragment4_tips">\t\t\t\t请输入从GPS天线顶端罩到车辆停车位置所在地面的垂直距离</string>
     <string name="info_fragment5_min_turning">最小拐弯半径</string>
@@ -77,33 +77,32 @@
     <string name="info_fragment10_tips">\t\t\t\t请输入拖拉机的作业行间距</string>
 
 
-    <string name="carmessage_editHint">请输入数据</string>
+    <string name="tractor_info_edit_hint">请输入数据</string>
     <string name="carmessage_ecu3">ECU高度</string>
-    <string name="carmessage_tip_info">\t\t\t\t您确定要把车辆数据存储到数据库吗？\n\t</string>
-    <string name="carmessage_errormessage">\t\t\t\t数据库存在同名车辆，若点击确定则会覆盖掉原数据\n\n若不希望覆盖原数据请点击返回按钮更改车辆名称</string>
-    <string name="carmessage_errortitle">重名警告</string>
-    <string name="carmessage_errorsure">确认覆盖</string>
-    <string name="carmessage_errorcansel">返回重命名</string>
+    <string name="alert_msg_tractor_info_tips">\t\t\t\t您确定要把车辆数据存储到数据库吗？\n\t</string>
+    <string name="alert_msg_tractor_name_error">\t\t\t\t数据库存在同名车辆，若点击确定则会覆盖掉原数据\n\n若不希望覆盖原数据请点击返回按钮更改车辆名称</string>
+    <string name="alert_title_tractor_name_error">重名警告</string>
+    <string name="alert_btn_tractor_overide">确认覆盖</string>
+    <string name="alert_btn_tractor_rename">返回重命名</string>
 
     <!-- 车辆数据库信息表页面的所有字符 -->
     <string name="delete_tractor">删除数据</string>
-    <string name="alert_title_tractor_longpress">请选择操作</string>
-    <string name="carlist_title">车辆数据库列表</string>
-    <string name="tractor_alert_info_longpressinfo_1">\t\t\您选择的车辆名称为：\"</string>
-    <string name="tractor_alert_info_longpressinfo_2">\"\t\t请选择您要对其进行的操作</string>
-    <string name="carset_edit">修改数据</string>
-    <string name="carset_cansel">取消操作</string>
+    <string name="alert_title_tractor_long_press">请选择操作</string>
+    <string name="tractor_info_list_title">车辆数据库列表</string>
+    <string name="alert_msg_tractor_info_long_press_1">\t\t\您选择的车辆名称为："</string>
+    <string name="alert_msg_tractor_info_long_press_2">\"\n\n\t\t请选择您要对其进行的操作</string>
+    <string name="tractor_info_edit">修改数据</string>
+    <string name="tractor_info_edit_cancel">取消操作</string>
     <string name="alert_info_clear_all_tractors_affirm">\t\t数据库清空之后将无法恢复！！\n\n您真的要删除吗？！</string>
     <string name="alert_message_save_tractorinfo">\t\t车辆以及作业参数信息将以文件形式保\n\n存在本地目录中</string>
+    <string name="alert_msg_tractor_info_edit_back">\t\t请根据需要修改参数，若不修改名\n\n称则提交时可覆盖原车辆数据；若修\n\n改名称，则会保存为新的车辆</string>
 
-
-    <!-- 车辆修改信息时弹出来的对话框，以便直接取得所有对象 -->
-    <string name="carsetback_alertmessage">\t\t请根据需要修改参数，若不修改名\n\n称则提交时可覆盖原车辆数据；若修\n\n改名称，则会保存为新的车辆</string>
-    <string name="currentDevice">当前选择设备：</string>
-    <string name="currentReceviedString">当前接收数据：</string>
-    <string name="receivedStringNo">数据序号：</string>
-    <string name="currentSentString">当前发送数据：</string>
-    <string name="startConnection">打开连接</string>
+    <!-- 蓝牙连接界面用到的字符 -->
+    <string name="current_device">当前选择设备：</string>
+    <string name="current_received_string">当前接收数据：</string>
+    <string name="received_string_number">数据序号：</string>
+    <string name="current_sent_string">当前发送数据：</string>
+    <string name="start_to_connect">打开连接</string>
 
     <!-- 地块数据库信息表页面的所有字符 -->
     <string name="added_fields">已添加地块</string>

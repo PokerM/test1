@@ -47,7 +47,7 @@
 	             android:layout_height="wrap_content"
 	             android:layout_gravity="center_vertical"
 	             android:layout_marginLeft="60dp"
-	             android:hint="@string/carmessage_editHint"
+	             android:hint="@string/tractor_info_edit_hint"
 	             android:numeric="decimal|signed"
 	             android:textSize="24sp"
 	             android:textColor="#999999"/>
@@ -58,7 +58,7 @@
 	             android:layout_gravity="center_vertical"
 	             android:layout_marginBottom="3dp"
 	             android:textSize="24sp"
-	             android:text="@string/meter"
+	             android:text="@string/unit_meter"
 	             android:textColor="#999999"/>
          </LinearLayout>
          
@@ -73,7 +73,7 @@
          
          <ImageButton 
              android:id="@+id/help4"
-             style="@style/carmessage_helpstyle"/>
+             style="@style/tractor_info_help_style"/>
      </LinearLayout>
 
 </LinearLayout>

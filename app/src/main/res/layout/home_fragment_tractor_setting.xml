@@ -18,9 +18,9 @@
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:background="#666"
-            android:paddingLeft="15dp"
+            android:paddingLeft="5dp"
             android:gravity="center_vertical|left"
-            android:text="@string/carlist_title"
+            android:text="@string/tractor_info_list_title"
             android:textColor="#fff"
             android:textSize="25sp" />
 
@@ -29,7 +29,6 @@
                 android:id="@+id/lstTractor"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
-                android:layout_marginLeft="10dp"
                 >
             </ListView>
 
@@ -40,30 +39,31 @@
 
             <Button
                 android:id="@+id/btnAddTractorInfo"
-                style="@style/carmessage_buttonstyle.huge"
+                android:layout_marginLeft="15dp"
+                style="@style/tractor_info_button_style.huge"
                 android:background="@drawable/imgbtn_tractorinfo_more" />
 
             <Button
                 android:id="@+id/btnEditTractorInfo"
-                style="@style/carmessage_buttonstyle.huge"
+                style="@style/tractor_info_button_style.huge"
                 android:layout_toRightOf="@id/btnAddTractorInfo"
                 android:background="@drawable/imgbtn_tractorinfo_edit" />
 
             <Button
                 android:id="@+id/btnRemoveTractorInfo"
-                style="@style/carmessage_buttonstyle.huge"
+                style="@style/tractor_info_button_style.huge"
                 android:layout_toRightOf="@id/btnEditTractorInfo"
                 android:background="@drawable/imgbtn_tractorinfo_remove" />
 
             <Button
                 android:id="@+id/btnClearTractorInfo"
-                style="@style/carmessage_buttonstyle.huge"
+                style="@style/tractor_info_button_style.huge"
                 android:layout_toRightOf="@id/btnRemoveTractorInfo"
                 android:background="@drawable/imgbtn_tractorinfo_clear" />
 
             <Button
                 android:id="@+id/btnSaveTractorInfo"
-                style="@style/carmessage_buttonstyle.huge"
+                style="@style/tractor_info_button_style.huge"
                 android:layout_toRightOf="@id/btnClearTractorInfo"
                 android:background="@drawable/imgbtn_tractorinfo_save" />
         </RelativeLayout>
@@ -78,6 +78,8 @@
         android:scrollbars="vertical">
 
         <LinearLayout
+            android:id="@+id/layoutAttributeCollections"
+            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/layout_center_right"
@@ -152,61 +154,70 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/cellTextTractorName"
+                    android:id="@+id/txtName"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_1"
-                    android:text="SJTU00" />
+                    />
 
                 <TextView
+                    android:id="@+id/txtWheelbase"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_2"
-                    android:text="2.250m" />
+                    />
 
                 <TextView
+                    android:id="@+id/txtLateral"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_3"
-                    android:text="0.005m" />
+                    />
 
                 <TextView
+                    android:id="@+id/txtRear"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_2"
-                    android:text="+0.025m" />
+                    />
 
                 <TextView
-                    android:id="@+id/txtAntennaHeight"
+                    android:id="@+id/txtHeight"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_3"
-                    android:text="2.500m" />
+                    />
 
                 <TextView
+                    android:id="@+id/txtRadius"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_2"
-                    android:text="2.100m" />
+                    />
 
                 <TextView
+                    android:id="@+id/txtAngular"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_3"
-                    android:text="0.02" />
+                    />
 
                 <TextView
+                    android:id="@+id/txtWidth"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_2"
-                    android:text="2.650m" />
+                    />
 
                 <TextView
+                    android:id="@+id/txtLength"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_3"
-                    android:text="0.800m" />
+                    />
 
                 <TextView
+                    android:id="@+id/txtOffset"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_2"
-                    android:text="0.005m" />
+                    />
 
                 <TextView
+                    android:id="@+id/txtSpace"
                     style="@style/tractorinfo_list_textstyle"
                     android:background="@drawable/textview_border_3"
-                    android:text="2.700m" />
+                    />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

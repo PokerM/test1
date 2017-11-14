@@ -37,7 +37,8 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginTop="5dp"
-        android:layout_weight="15">
+        android:layout_weight="15"
+        android:baselineAligned="false">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -57,23 +58,41 @@
                     android:id="@+id/page1"
                     style="@style/circle_page.first" />
 
-                <ImageView style="@style/circle_page.after" />
+                <ImageView
+                    android:id="@+id/page2"
+                    style="@style/circle_page.after" />
 
-                <ImageView style="@style/circle_page.after" />
+                <ImageView
+                    android:id="@+id/page3"
+                    style="@style/circle_page.after" />
 
-                <ImageView style="@style/circle_page.after" />
+                <ImageView
+                    android:id="@+id/page4"
+                    style="@style/circle_page.after" />
 
-                <ImageView style="@style/circle_page.after" />
+                <ImageView
+                    android:id="@+id/page5"
+                    style="@style/circle_page.after" />
 
-                <ImageView style="@style/circle_page.after" />
+                <ImageView
+                    android:id="@+id/page6"
+                    style="@style/circle_page.after" />
 
-                <ImageView style="@style/circle_page.after" />
+                <ImageView
+                    android:id="@+id/page7"
+                    style="@style/circle_page.after" />
 
-                <ImageView style="@style/circle_page.after" />
+                <ImageView
+                    android:id="@+id/page8"
+                    style="@style/circle_page.after" />
 
-                <ImageView style="@style/circle_page.after" />
+                <ImageView
+                    android:id="@+id/page9"
+                    style="@style/circle_page.after" />
 
-                <ImageView style="@style/circle_page.after" />
+                <ImageView
+                    android:id="@+id/page10"
+                    style="@style/circle_page.after" />
 
             </LinearLayout>
 
@@ -132,8 +151,8 @@
                     android:id="@+id/editTextTractorName"
                     android:layout_width="200dp"
                     android:layout_height="match_parent"
-                    android:layout_toRightOf="@id/txtTractorNameTitle"
                     android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/txtTractorNameTitle"
                     android:gravity="center_vertical"
                     android:hint="@string/tractor_name_input_hint"
                     android:maxLength="20"
@@ -151,7 +170,7 @@
 
                 <Button
                     android:id="@+id/btnAffirmTractorName"
-                    style="@style/carmessage_buttonstyle.normal"
+                    style="@style/tractor_info_button_style.normal"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="5dp"
@@ -159,7 +178,7 @@
 
                 <Button
                     android:id="@+id/btnTractorNameEdit"
-                    style="@style/carmessage_buttonstyle.normal"
+                    style="@style/tractor_info_button_style.normal"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="3dp"
                     android:layout_toLeftOf="@id/btnAffirmTractorName"
@@ -204,7 +223,7 @@
 
                         <Button
                             android:id="@+id/btnSelectType"
-                            style="@style/carmessage_buttonstyle.small"
+                            style="@style/tractor_info_button_style.small"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginRight="5dp"
@@ -244,12 +263,11 @@
 
                         <Button
                             android:id="@+id/btnSelectMade"
-                            style="@style/carmessage_buttonstyle.small"
+                            style="@style/tractor_info_button_style.small"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginRight="5dp"
-                            android:text="@string/select"
-                            />
+                            android:text="@string/select" />
                     </RelativeLayout>
                 </LinearLayout>
 
@@ -285,7 +303,7 @@
 
                         <Button
                             android:id="@+id/btnSelectTypeNumber"
-                            style="@style/carmessage_buttonstyle.small"
+                            style="@style/tractor_info_button_style.small"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginRight="5dp"
@@ -297,37 +315,39 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
+                android:layout_height="380dp"
                 android:orientation="vertical">
 
                 <ListView
                     android:id="@+id/lstTractorInfoInput"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:divider="#00000000"></ListView>
+                    android:divider="#00000000">
+                </ListView>
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <Button
-                    android:id="@+id/btnAffirmAddingTractor"
-                    style="@style/carmessage_buttonstyle.big"
-                    android:layout_gravity="bottom"
-                    android:layout_marginLeft="105dp"
-                    android:text="@string/tractor_affirm"
-                    android:textSize="20sp" />
+            <Button
+                android:id="@+id/btnAffirmAddingTractor"
+                android:layout_gravity="center_vertical"
+                style="@style/tractor_info_button_style.big"
+                android:layout_marginLeft="105dp"
+                android:text="@string/tractor_affirm"
+                android:textSize="20sp" />
 
-                <Button
-                    android:id="@+id/btnExitAddingTractor"
-                    style="@style/carmessage_buttonstyle.big"
-                    android:layout_gravity="bottom"
-                    android:layout_marginLeft="20dp"
-                    android:background="@drawable/button_bluebackground"
-                    android:text="@string/exit"
-                    android:textSize="20sp" />
-            </LinearLayout>
+            <Button
+                android:id="@+id/btnExitAddingTractor"
+                android:layout_gravity="center_vertical"
+                style="@style/tractor_info_button_style.big"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/button_bluebackground"
+                android:text="@string/exit"
+                android:textSize="20sp" />
+        </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="110dp"
+    android:layout_height="60dp"
+    android:background="@drawable/textview_border_with_cornor"
     android:orientation="horizontal">
 
     <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="center_vertical"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:background="@drawable/imageview_border_with_cornor"
         android:padding="5dp"
         android:src="@drawable/tractor_little_icon" />
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="3dp"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <LinearLayout
@@ -27,14 +31,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tractor_name"
-                android:textColor="#999999"
+                android:textColor="#ff000000"
                 android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/cellTextTractorName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#999999"
+                android:textColor="#ff000000"
                 android:textSize="20sp" />
         </LinearLayout>
 
@@ -47,16 +51,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tractor_type_name"
-                android:textColor="#999999"
+                android:textColor="#ff000000"
                 android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/cellTextTractorType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#999999"
+                android:textColor="#ff000000"
                 android:textSize="20sp" />
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+
+        android:orientation="vertical">
+
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -67,14 +81,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tractor_made_name"
-                android:textColor="#999999"
+                android:textColor="#ff000000"
                 android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/cellTextTractorMade"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#999999"
+                android:textColor="#ff000000"
                 android:textSize="20sp" />
         </LinearLayout>
 
@@ -87,14 +101,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tractor_type_number_name"
-                android:textColor="#999999"
+                android:textColor="#ff000000"
                 android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/cellTextTractorTypeNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#999999"
+                android:textColor="#ff000000"
                 android:textSize="20sp" />
         </LinearLayout>
 
