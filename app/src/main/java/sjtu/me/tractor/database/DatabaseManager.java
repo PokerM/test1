@@ -9,6 +9,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import sjtu.me.tractor.field.FieldInfo;
 import sjtu.me.tractor.tractorinfo.TractorInfo;
@@ -44,9 +45,13 @@ public class DatabaseManager {
     private static final String TAG = "DatabaseManager";
     private static final boolean D = true;
 
-    private MyDatabaseHelper dbHelper;
+    private static MyDatabaseHelper dbHelper;
     private SQLiteDatabase mDatabase;
     public Context context;
+
+    /*使用原子操作和单例模式来保障sqlite多线程并发访问*/
+    private static AtomicInteger mOpenCounter = new AtomicInteger();
+    private static DatabaseManager instance;
 
     //在管理器的创建方法中新创建DBHelper
     public DatabaseManager(Context context) {
@@ -54,11 +59,20 @@ public class DatabaseManager {
         dbHelper = new MyDatabaseHelper(context);
     }
 
+    public static synchronized DatabaseManager getInstance(Context context) {
+        if (instance == null) {
+            instance = new DatabaseManager(context);
+        }
+        return instance;
+    }
+
     /**
      * 连接数据库
      */
-    private void connectDatabase() {
-        mDatabase = dbHelper.getReadableDatabase();
+    private synchronized void connectDatabase() {
+        if (mOpenCounter.incrementAndGet() == 1) {
+            mDatabase = dbHelper.getReadableDatabase();
+        }
 
         if (D) {
             Log.e(TAG, "CONNECTING DATABASE --> $$GET READABLE DATABASE$$");
@@ -69,9 +83,11 @@ public class DatabaseManager {
      * 关闭数据库
      * 注意：在实时监控条件下切记不可关闭数据库！需要在LoadFinish的时候才可以释放资源。
      */
-    public void releaseDataBase() {
-        if (mDatabase != null && mDatabase.isOpen()) {
-            mDatabase.close();
+    public synchronized void releaseDataBase() {
+        if (mOpenCounter.decrementAndGet() == 0) {
+            if (mDatabase != null && mDatabase.isOpen()) {
+                mDatabase.close();
+            }
         }
         dbHelper.close();
     }

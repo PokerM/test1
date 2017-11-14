@@ -38,7 +38,7 @@ public class MyApplication extends Application{
         // TODO Auto-generated method stub
         super.onCreate();
         context = getApplicationContext();
-        databaseManager = new DatabaseManager(context);
+        databaseManager = DatabaseManager.getInstance(context);
     }
     
 
