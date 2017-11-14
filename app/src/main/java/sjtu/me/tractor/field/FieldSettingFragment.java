@@ -337,12 +337,12 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
             //设置窗口提示，info可以表示此时点击的菜单的位置，据此可以查询数据库对应名字的车辆信息
             final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             AlertDialog.Builder longPressAlertBuilder = new AlertDialog.Builder(getActivity());
-            longPressAlertBuilder.setTitle(getString(R.string.alert_title_field_longpress));
+            longPressAlertBuilder.setTitle(getString(R.string.alert_title_field_long_press));
             longPressAlertBuilder.setIcon(R.drawable.alert);
 
             //这三步可以获取选中的条目的田地的名称，方可进行下一步操作
-            int listposition = info.position;
-            Map<String, String> map = fieldList.get(listposition);
+            int position = info.position;
+            Map<String, String> map = fieldList.get(position);
             final String name = map.get("fName");
 
             longPressAlertBuilder.setPositiveButton(getString(R.string.delete_field), new DialogInterface.OnClickListener() {
@@ -376,8 +376,8 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
                 }
             });
 
-            String message = getString(R.string.field_alert_info_longpressinfo_1) + map.get("fName") +
-                    getString(R.string.field_alert_info_longpressinfo_2);
+            String message = getString(R.string.field_alert_info_long_press_info_1) + map.get(FieldInfo.FIELD_NAME) +
+                    getString(R.string.field_alert_info_long_press_info_2);
             longPressAlertBuilder.setMessage(message);
             longPressAlertBuilder.show();
         }

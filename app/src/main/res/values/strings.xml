@@ -115,9 +115,9 @@
     <string name="alert_title_affirm">再次警告</string>
     <string name="alert_info_clear_all_fields">\t\t您确定要清空整个地块信息数据库\n\n吗？清空之后将无法恢复！您确定要\n\n删除吗？！</string>
     <string name="alert_info_clear_all_fields_affirm">\t\t数据库清空之后将无法恢复！！\n\n您真的要删除吗？！</string>
-    <string name="alert_title_field_longpress">请选择操作</string>
-    <string name="field_alert_info_longpressinfo_1">\t\t您选择的地块名称为：</string>
-    <string name="field_alert_info_longpressinfo_2">\t\t请选择您要对其进行的操作</string>
+    <string name="alert_title_field_long_press">请选择操作</string>
+    <string name="field_alert_info_long_press_info_1">\t\t您选择的地块名称为：</string>
+    <string name="field_alert_info_long_press_info_2">\n\n\t\t请选择您要对其进行的操作</string>
 
     <!--导航界面XML文件和JAVA文件所有中文字符-->
     <string name="set_field">设置田地</string>
