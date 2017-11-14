@@ -82,7 +82,7 @@
     <string name="alert_msg_tractor_info_tips">\t\t\t\t您确定要把车辆数据存储到数据库吗？\n\t</string>
     <string name="alert_msg_tractor_name_error">\t\t\t\t数据库存在同名车辆，若点击确定则会覆盖掉原数据\n\n若不希望覆盖原数据请点击返回按钮更改车辆名称</string>
     <string name="alert_title_tractor_name_error">重名警告</string>
-    <string name="alert_btn_tractor_overide">确认覆盖</string>
+    <string name="alert_btn_tractor_override">确认覆盖</string>
     <string name="alert_btn_tractor_rename">返回重命名</string>
 
     <!-- 车辆数据库信息表页面的所有字符 -->

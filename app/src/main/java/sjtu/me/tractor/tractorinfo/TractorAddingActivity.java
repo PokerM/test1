@@ -563,7 +563,7 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
                                                         .setTitle(getString(R.string.alert_title_tractor_name_error))
                                                         .setMessage(getString(R.string.alert_msg_tractor_name_error))
                                                         .setIcon(R.drawable.alert)
-                                                        .setPositiveButton(getString(R.string.alert_btn_tractor_overrite), new DialogInterface.OnClickListener() {
+                                                        .setPositiveButton(getString(R.string.alert_btn_tractor_override), new DialogInterface.OnClickListener() {
 
                                                             @Override
                                                             public void onClick(DialogInterface dialog, int which) {
