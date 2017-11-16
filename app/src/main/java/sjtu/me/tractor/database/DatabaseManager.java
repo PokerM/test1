@@ -270,7 +270,7 @@ public class DatabaseManager {
         values.put(TractorInfo.T_OPERATION_LINESPACING, tractorInfo[13]);
         connectDatabase(); //连接数据库
         String[] names = {tractorName};
-        int count = mDatabase.update(MyDatabaseHelper.TABLE_TRACTOR, values, "name = ?", names);
+        int count = mDatabase.update(MyDatabaseHelper.TABLE_TRACTOR, values, TractorInfo.T_NAME + " = ?", names);
         return (count > 0);
     }
 
@@ -432,6 +432,10 @@ public class DatabaseManager {
      */
     public static Map<String, String> cursorToMap(Cursor cursor) {
         Map<String, String> map = new HashMap<String, String>();
+        if (cursor == null) {
+            return map;
+        }
+
         cursor.moveToFirst(); //只取记录表的第一行（假设记录不重名）
         int columnNum = cursor.getColumnCount();
         for (int i = 0; i < columnNum; i++) {
