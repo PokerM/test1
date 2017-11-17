@@ -10,7 +10,6 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.ImageView;
 import sjtu.me.tractor.R;
-import sjtu.me.tractor.main.NaviActivityOldVersion;
 
 public class StartActivity extends Activity {
 	private ImageView welcome;

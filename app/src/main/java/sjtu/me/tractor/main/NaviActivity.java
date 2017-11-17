@@ -208,7 +208,7 @@ public class NaviActivity extends Activity implements OnClickListener {
             Log.e(TAG, "+++ setHandler: mNaviHandler +++");
         }
 
-        initViews();
+//        initViews();
 
         // ---CheckBox---
         CheckBox checkBox1 = (CheckBox) findViewById(R.id.starTopLeft2);
@@ -269,11 +269,11 @@ public class NaviActivity extends Activity implements OnClickListener {
             Log.e(TAG, "+++ ON START +++");
         }
 
-        if (myApp.getBluetoothService().getState() == BluetoothService.STATE_NONE) {
-            txtCommunicationState.setText(R.string.comm_off);
-        } else {
-            txtCommunicationState.setText(R.string.comm_on);
-        }
+//        if (myApp.getBluetoothService().getState() == BluetoothService.STATE_NONE) {
+//            txtCommunicationState.setText(R.string.comm_off);
+//        } else {
+//            txtCommunicationState.setText(R.string.comm_on);
+//        }
     }
 
     @Override
@@ -392,12 +392,12 @@ public class NaviActivity extends Activity implements OnClickListener {
                 }
                 break;
 
-            case R.id.btnTurnLeft:
+            case R.id.btnABMode:
                 isToTurnLeft = true;
                 myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_TURN_LEFT);
                 break;
 
-            case R.id.btnTurnRight:
+            case R.id.btnPlanningMode:
                 isToTurnRight = true;
                 myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_TURN_RIGHT);
                 break;
@@ -412,7 +412,7 @@ public class NaviActivity extends Activity implements OnClickListener {
                 myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_SET_B_REQUEST);
                 break;
 
-            case R.id.btnDrawAB:
+            case R.id.btnStartPilot:
                 if (APointY == BPointY && APointX == BPointX) {
                     //弹出AB点重合警告
                     ToastUtil.showToast(getString(R.string.ab_overlay_error_warning), true);
@@ -435,7 +435,7 @@ public class NaviActivity extends Activity implements OnClickListener {
                 Log.e(TAG, "COPY DB FILES SUCCESSFULLY? " + flag);
                 break;
 
-            case R.id.btnPlotPath:
+            case R.id.checkboxPlotPath:
                 if (!isPlotting) {
                     startPlotPath();
                 } else {
@@ -443,29 +443,10 @@ public class NaviActivity extends Activity implements OnClickListener {
                 }
                 break;
 
-            case R.id.btnSavePath:
-//            boundTempMapX = new HashMap<Integer, Double>();
-//            boundTempMapY = new HashMap<Integer, Double>();
-//
-//            boundTempMapX.put(1, 622442.2437);
-//            boundTempMapX.put(2, 622420.828635);
-//            boundTempMapX.put(3, 622423.89173);
-//            boundTempMapX.put(4, 622446.48542);
-//            boundTempMapY.put(1, 3423929.17782);
-//            boundTempMapY.put(2, 3423930.259849);
-//            boundTempMapY.put(3, 3424003.981122);
-//            boundTempMapY.put(4, 3424005.692487);
-//
-//            myView.setViewFieldBoundary(boundTempMapX, boundTempMapY, true);
-                break;
-
             case R.id.btnHistoryPath:
                 break;
 
-            case R.id.imgbtnForwards:
-                break;
-
-            case R.id.imgbtnBackwards:
+            case R.id.imgbtnAccelerate:
                 break;
 
             case R.id.imgbtnTurnLeft:
@@ -503,7 +484,6 @@ public class NaviActivity extends Activity implements OnClickListener {
         txtDistance2Bound1 = (TextView) findViewById(R.id.txtDistance2Bound1);
         txtDistance2Bound2 = (TextView) findViewById(R.id.txtDistance2Bound2);
         txtGpsState = (TextView) findViewById(R.id.txtGpsState);
-        txtCarState = (TextView) findViewById(R.id.txtCarState);
         txtNorthAngle = (TextView) findViewById(R.id.txtNorthAngle);
         txtLocationX = (TextView) findViewById(R.id.txtLocationX);
         txtLocationY = (TextView) findViewById(R.id.txtLocationY);
@@ -511,7 +491,7 @@ public class NaviActivity extends Activity implements OnClickListener {
         txtVelocity = (TextView) findViewById(R.id.txtVelocity);
         txtDeviance = (TextView) findViewById(R.id.txtDeviance);
         txtTurningAngle = (TextView) findViewById(R.id.txtTurningAngle);
-        txtCommunicationState = (TextView) findViewById(R.id.txtCommunicationState);
+        txtCommunicationState = (TextView) findViewById(R.id.txtPrecsionSeeding);
         txtReceivedString = (TextView) findViewById(R.id.txtReceivedString);
         txtReceivedStringLength = (TextView) findViewById(R.id.txtReceivedStringLength);
         txtReceivedStringNo = (TextView) findViewById(R.id.txtReceivedStringNo);
@@ -520,11 +500,8 @@ public class NaviActivity extends Activity implements OnClickListener {
         imgbtnBack = (ImageButton) findViewById(R.id.imgbtnBack);
         imgbtnBack.setOnClickListener(this);
 
-        imgbtnForwards = (ImageButton) findViewById(R.id.imgbtnForwards);
+        imgbtnForwards = (ImageButton) findViewById(R.id.imgbtnAccelerate);
         imgbtnForwards.setOnClickListener(this);
-
-        imgbtnBackwards = (ImageButton) findViewById(R.id.imgbtnBackwards);
-        imgbtnBackwards.setOnClickListener(this);
 
         imgbtnTurnRight = (ImageButton) findViewById(R.id.imgbtnTurnRight);
         imgbtnTurnRight.setOnClickListener(this);
@@ -541,10 +518,10 @@ public class NaviActivity extends Activity implements OnClickListener {
         btnStartNavi = (Button) findViewById(R.id.btnStartNavi);
         btnStartNavi.setOnClickListener(this);
 
-        btnTurnLeft = (Button) findViewById(R.id.btnTurnLeft);
+        btnTurnLeft = (Button) findViewById(R.id.btnABMode);
         btnTurnLeft.setOnClickListener(this);
 
-        btnTurnRight = (Button) findViewById(R.id.btnTurnRight);
+        btnTurnRight = (Button) findViewById(R.id.btnPlanningMode);
         btnTurnRight.setOnClickListener(this);
 
         btnSetA = (Button) findViewById(R.id.btnSetA);
@@ -553,17 +530,14 @@ public class NaviActivity extends Activity implements OnClickListener {
         btnSetB = (Button) findViewById(R.id.btnSetB);
         btnSetB.setOnClickListener(this);
 
-        btnDrawAB = (Button) findViewById(R.id.btnDrawAB);
+        btnDrawAB = (Button) findViewById(R.id.btnStartPilot);
         btnDrawAB.setOnClickListener(this);
 
         btnHistoryAB = (Button) findViewById(R.id.btnHistoryAB);
         btnHistoryAB.setOnClickListener(this);
 
-        btnPlotPath = (Button) findViewById(R.id.btnPlotPath);
+        btnPlotPath = (Button) findViewById(R.id.checkboxPlotPath);
         btnPlotPath.setOnClickListener(this);
-
-        btnSavePath = (Button) findViewById(R.id.btnSavePath);
-        btnSavePath.setOnClickListener(this);
 
         btnHistoryPath = (Button) findViewById(R.id.btnHistoryPath);
         btnHistoryPath.setOnClickListener(this);
@@ -624,7 +598,7 @@ public class NaviActivity extends Activity implements OnClickListener {
                 txtGpsState.setText(getString(R.string.gps_sign) + GPS);
                 txtDirectionAngle.setText(getString(R.string.direction_angle) + directionAngle);
                 txtVelocity.setText(getString(R.string.speed) + carVelocity + getString(R.string.speed_unit));
-                txtCarState.setText(getString(R.string.stop_bit) + stopBit);
+                txtCarState.setText(getString(R.string.field_name) + stopBit);
                 txtNorthAngle.setText(getString(R.string.north_angle) + northAngle);
                 txtDeviance.setText(getString(R.string.lateral_deviation) + lateralDeviation);
                 txtTurningAngle.setText(getString(R.string.turning_angle) + turningAngle);

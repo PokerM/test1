@@ -67,67 +67,58 @@
                     android:id="@+id/btnSetField"
                     style="@style/icon_navi"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/button_skin2"
                     android:text="@string/set_field" />
 
                 <Button
-                    android:id="@+id/btnTurnLeft"
+                    android:id="@+id/btnABMode"
                     style="@style/icon_navi"
-                    android:background="@drawable/button_skin2"
                     android:text="@string/turn_left" />
 
                 <Button
-                    android:id="@+id/btnTurnRight"
+                    android:id="@+id/btnPlanningMode"
                     style="@style/icon_navi"
-                    android:background="@drawable/button_skin2"
                     android:text="@string/turn_right" />
 
                 <Button
                     android:id="@+id/btnSetA"
                     style="@style/icon_navi"
-                    android:background="@drawable/button_skin2"
                     android:text="@string/set_a_point" />
 
                 <Button
                     android:id="@+id/btnSetB"
                     style="@style/icon_navi"
-                    android:background="@drawable/button_skin2"
                     android:text="@string/set_b_poing" />
 
                 <Button
-                    android:id="@+id/btnDrawAB"
+                    android:id="@+id/btnStartPilot"
                     style="@style/icon_navi"
-                    android:background="@drawable/button_skin2"
                     android:text="@string/draw_ab" />
 
                 <Button
                     android:id="@+id/btnHistoryAB"
                     style="@style/icon_navi"
-                    android:background="@drawable/button_skin2"
                     android:text="@string/history_ab" />
 
                 <Button
                     android:id="@+id/btnStartNavi"
                     style="@style/icon_navi"
-                    android:background="@drawable/button_skin2"
                     android:text="@string/start_navi" />
 
                 <Button
-                    android:id="@+id/btnPlotPath"
+                    android:id="@+id/checkboxPlotPath"
                     style="@style/icon_navi"
-                    android:background="@drawable/button_skin2"
+                   
                     android:text="@string/plot_path" />
 
                 <Button
                     android:id="@+id/btnSavePath"
                     style="@style/icon_navi"
-                    android:background="@drawable/button_skin2"
+                   
                     android:text="@string/save_path" />
 
                 <Button
                     android:id="@+id/btnHistoryPath"
                     style="@style/icon_navi"
-                    android:background="@drawable/button_skin2"
                     android:text="@string/history_path" />
             </LinearLayout>
 
@@ -222,10 +213,10 @@
                         android:textSize="20sp" />
 
                     <TextView
-                        android:id="@+id/txtCarState"
+                        android:id="@+id/txtFieldName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/stop_bit"
+                        android:text="@string/field_name"
                         android:textSize="20sp" />
 
                     <TextView
@@ -289,7 +280,7 @@
                         android:orientation="vertical" >
 
                         <TextView
-                            android:id="@+id/txtCommunicationState"
+                            android:id="@+id/txtPrecsionSeeding"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/comm_state"
@@ -342,7 +333,7 @@
                     android:paddingTop="10dp" >
 
                     <ImageButton
-                        android:id="@+id/imgbtnForwards"
+                        android:id="@+id/imgbtnAccelerate"
                         style="@style/icon_navi_control"
                         android:layout_gravity="center_horizontal"
                         android:longClickable="true"
