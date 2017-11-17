@@ -436,15 +436,17 @@ public class DatabaseManager {
             return map;
         }
 
-        cursor.moveToFirst(); //只取记录表的第一行（假设记录不重名）
-        int columnNum = cursor.getColumnCount();
-        for (int i = 0; i < columnNum; i++) {
-            String columnName = cursor.getColumnName(i);
-            String columnValue = cursor.getString(cursor.getColumnIndex(columnName));
-            if (columnValue == null) {
-                columnValue = "";
+        if (cursor.moveToFirst()) {
+            //只取记录表的第一行（假设记录不重名）
+            int columnNum = cursor.getColumnCount();
+            for (int i = 0; i < columnNum; i++) {
+                String columnName = cursor.getColumnName(i);
+                String columnValue = cursor.getString(cursor.getColumnIndex(columnName));
+                if (columnValue == null) {
+                    columnValue = "";
+                }
+                map.put(columnName, columnValue);
             }
-            map.put(columnName, columnValue);
         }
         return map;
     }
