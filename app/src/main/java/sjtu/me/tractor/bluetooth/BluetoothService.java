@@ -32,8 +32,8 @@ public class BluetoothService {
     public static final int STATE_NONE = 0; // 未连接蓝牙设备
     public static final int STATE_LISTEN = 1; // 未连接蓝牙设备
     public static final int STATE_CONNECTING = 2; // 启动外发的连接
-    public static final int STATE_CONNECTED = 3; // 已连接蓝牙设备
-    public static final int STATE_COMMUNICATING = 4; // 蓝牙设备正在通信中
+    private static final int STATE_CONNECTED = 3; // 已连接蓝牙设备
+    private static final int STATE_COMMUNICATING = 4; // 蓝牙设备正在通信中
 
     // handler消息类型
     public static final int MESSAGE_RECEIVED = 0;
@@ -63,8 +63,8 @@ public class BluetoothService {
     public static final String TURN_RIGHT = "30001"; // 右转指令
 	public static final String TURN_LEFT = "30002"; // 左转指令
     public static final String SET_A_REQUEST = "40003"; // 请求设置A点指令
-    public static final String SET_A_AFFIRM = "40013"; // 确认收到B点指令
-    public static final String SET_B_REQUEST = "40004"; // 请求设置A点指令
+    public static final String SET_A_AFFIRM = "40013"; // 确认收到A点指令
+    public static final String SET_B_REQUEST = "40004"; // 请求设置B点指令
     public static final String SET_B_AFFIRM = "40014";  // 确认收到B点指令
     
     public static final String HEADLAND_POINT_1 = "50001";	// 请求设置地头点指令
@@ -190,14 +190,9 @@ public class BluetoothService {
     // }
 
     /**
-     * Start the ConnectThread to initiate a connection to a remote device.
-     * 
-     * @param device
-     *            The BluetoothDevice to connect
-     */
-    /*
      * 方法名：connect(BluetoothDevice device) 功能：开始连接远程设备 参数：device - 要连接的蓝牙设备
-     * 返回值：void
+     * Start the ConnectThread to initiate a connection to a remote device.
+     * @param address 蓝牙地址
      */
     public synchronized void startConnection(String address) {
         if (D) {
