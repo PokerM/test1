@@ -192,7 +192,7 @@ public class NaviActivity extends Activity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.navi_activity);
+        setContentView(R.layout.navi_activity_new);
         if (D) {
             Log.e(TAG, "+++ ON CREATE +++");
         }

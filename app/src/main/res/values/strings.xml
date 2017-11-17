@@ -143,8 +143,8 @@
     <string name="lateral_deviation">横向偏差：</string>
     <string name="turning_angle">转向角：</string>
     <string name="comm_state">通信状态：</string>
-    <string name="command_receive">接收数据：</string>
-    <string name="commend_send">发送数据：</string>
+    <string name="command_receive">接收：</string>
+    <string name="commend_send">发送：</string>
     <string name="comm_off">通信状态：断开</string>
     <string name="comm_on">通信状态：连接</string>
     <string name="ab_overlay_error_warning">B点不能和A点重合!请重新设置B点!</string>

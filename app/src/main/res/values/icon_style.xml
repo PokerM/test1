@@ -38,7 +38,12 @@
         <item name="android:layout_marginTop">3dp</item>
         <item name="android:layout_gravity">center_horizontal</item>
     </style>
-	
+
+    <style name="navi_btn_left">
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">100dp</item>
+    </style>
+
 	<!-- circle风格，用于显示车辆设置主页的八个圆圈风格风格 -->
     <style name="circle_page">
         <item name="android:background">#00000000</item>
