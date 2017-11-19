@@ -36,11 +36,11 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Light.NoTitleBar">
         <meta-data
-            android:name="TencentMapSDK"
-            android:value="EIIBZ-VNE3P-HWSDJ-VQZ2T-OKL5E-QLBYN" />
-        <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="YMLlPjHbhKkU27UqqWv3983XISHqu9DI" />
+            android:value="Wjpzs2ZxrYY9byQq1fTwuhmG6KHvfSZB" />
+        <!--<meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="YMLlPjHbhKkU27UqqWv3983XISHqu9DI" />-->
 
         <activity
             android:name=".start.StartActivity"

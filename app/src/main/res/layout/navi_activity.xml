@@ -39,9 +39,9 @@
             <ImageButton
                 android:id="@+id/imgbtnConnectionStatus"
                 android:background="@drawable/connection_broken"
-                android:layout_width="130dp"
+                android:layout_width="120dp"
                 android:layout_height="40dp"
-                android:layout_marginLeft="40dp"
+                android:layout_marginLeft="50dp"
                 android:layout_marginTop="4dp" />
 
             <TextView
@@ -95,7 +95,7 @@
                 <Button
                     android:id="@+id/btnSetField"
                     style="@style/navi_menu_button_style"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="3dp"
                     android:background="@drawable/imgbtn_navi_select_field" />
 
                 <Button
@@ -138,8 +138,8 @@
             </LinearLayout>
 
             <FrameLayout
-                android:layout_width="700dp"
-                android:layout_height="match_parent">
+                android:layout_width="705dp"
+                android:layout_height="660dp">
 
                 <CheckBox
                     android:id="@+id/starTopLeft2"
@@ -195,6 +195,7 @@
 
                 <sjtu.me.tractor.surfaceview.MySurfaceView
                     android:id="@+id/mySurfaceView"
+                    android:layout_marginTop="3dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
