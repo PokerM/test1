@@ -401,7 +401,7 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                                 } else {
                                     // 自动按时间生成文件名
                                     String currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
-                                    String fileField = "field_" + currentTime + fName + ".txt";
+                                    String fileField = "field_" + fName + "_" + currentTime + ".txt";
 
                                     // 读出所有田地顶点坐标按格式写到字符串
                                     String delimiter = ",";

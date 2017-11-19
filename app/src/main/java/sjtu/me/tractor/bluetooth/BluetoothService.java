@@ -623,6 +623,7 @@ public class BluetoothService {
                     Log.e(TAG, "disconnected", e);
                     String connectResult = "接收数据通信已断开！";
                     mHandler.obtainMessage(MESSAGE_CONNECT_RESULT, -1, -1, connectResult).sendToTarget();
+                    isCancel = true;
                 }
             }
         }
@@ -735,6 +736,7 @@ public class BluetoothService {
                     mHandler.obtainMessage(MESSAGE_SENT, -1, -1, sendingMessage).sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "Writing Exception!");
+                    isCancel = true;
                 }
 
                 long end = System.currentTimeMillis();

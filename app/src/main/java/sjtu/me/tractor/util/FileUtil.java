@@ -89,8 +89,7 @@ public final class FileUtil {
                 .append(ROOT_DIRECTORY)
                 .append(File.separator)
                 .append(albumName).toString();
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
-                ROOT_DIRECTORY + dir);
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), dir);
         if (!file.exists()) {
             file.mkdirs();
         }

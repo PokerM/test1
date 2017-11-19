@@ -71,7 +71,6 @@ public class NaviActivity extends Activity implements OnClickListener {
     public static final int HEADLAND_P1_RESPONSE = 50101;
     public static final int HEADLAND_P2_RESPONSE = 50102;
 
-    private static final String DATA_FILE_NAME_SUFFIX = "data.txt";
     private static final String DATA_DIRECTORY = "data";
     private static final String AB_LINE_DIRECTORY = "ab_lines";
 
@@ -851,7 +850,7 @@ public class NaviActivity extends Activity implements OnClickListener {
         dataNo = 0; //将数据点编号重置为零
         myView.drawPath(1, true); //设置绘制轨迹状态为真
         currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date()); //获取当前日期时间字符串
-        fileNameToSave = currentTime + "_" + DATA_FILE_NAME_SUFFIX; //设置数据保存文件名
+        fileNameToSave = "data_" + currentTime + ".txt"; //设置数据保存文件名
     }
 
     /**
