@@ -120,22 +120,14 @@
     <string name="field_alert_info_long_press_info_2">\n\n\t\t请选择您要对其进行的操作</string>
 
     <!--导航界面XML文件和JAVA文件所有中文字符-->
-    <string name="set_field">设置田地</string>
-    <string name="turn_left">左转</string>
-    <string name="turn_right">右转</string>
-    <string name="set_a_point">设置A点</string>
-    <string name="set_b_poing">设置B点</string>
-    <string name="draw_ab">画AB线</string>
-    <string name="history_ab">历史AB线</string>
     <string name="start_navi">启动导航</string>
     <string name="plot_path">绘制轨迹</string>
-    <string name="save_path">保存轨迹</string>
-    <string name="history_path">历史轨迹</string>
     <string name="border_distance_1">距离边界1：</string>
     <string name="border_distance_2">距离边界2：</string>
     <string name="gps_sign">GPS标志</string>
-    <string name="field_name">地块名称</string>
-    <string name="north_angle">真北方向</string>
+    <string name="field_name_text">地块名称</string>
+    <string name="tractor_name_text">车辆名称</string>
+    <string name="line_spacing_txt">行间距</string>
     <string name="x_coordinate">X坐标</string>
     <string name="y_coordinate">Y坐标</string>
     <string name="direction_angle">航向角</string>
@@ -143,7 +135,6 @@
     <string name="lateral_deviation">横向偏差</string>
     <string name="turning_angle">转向角</string>
     <string name="precision_seeding">精量播种</string>
-    <string name="comm_state">通信状态</string>
     <string name="command_receive">接收：</string>
     <string name="commend_send">发送：</string>
     <string name="comm_off">通信状态：断开</string>
@@ -183,7 +174,12 @@
     <string name="field_vertices_are_not_enough">未标定足够的点，无法规划区域</string>
     <string name="start_to_set_field">确定开始设置田地？</string>
     <string name="please_input_field_name">请输入地块名字!</string>
-
+    <string name="satellite_gps_no_location">无定位</string>
+    <string name="satellite_gps_single_point">单点定位</string>
+    <string name="satellite_gps_rtk">差分定位</string>
+    <string name="satellite_gps_rtk_fixed">RTK固定</string>
+    <string name="satellite_gps_float">RTK浮点</string>
+    <string name="alert_message_navi_download">\t\t启动规划路径自动导航模式\n\n点击确定装载规划路径到下位机</string>
 
     <drawable name="color_normal">#69541b</drawable>
     <drawable name="color_pressed">#b2d235</drawable>

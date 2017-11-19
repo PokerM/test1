@@ -46,6 +46,7 @@ import sjtu.me.tractor.bluetooth.BluetoothService;
 import sjtu.me.tractor.gis.GeoPoint;
 import sjtu.me.tractor.main.MyApplication;
 import sjtu.me.tractor.util.FileUtil;
+import sjtu.me.tractor.util.SysUtil;
 import sjtu.me.tractor.util.ToastUtil;
 
 
@@ -58,7 +59,8 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
     private static final char END = '*'; // 串口通信字符串结束标志
     private static final char START = '#'; // 串口通信字符串开始标志
     private static final char SEPARATOR = ','; // 分隔符
-    private static final String ALBUM_NAME = "AutoTractorData";
+    private static final int SEPARATOR_NUMBER = 12; // 分隔符个数
+    private static final String FIELD_DIRECTORY = "fields";
 
     private MyApplication myApp; // 程序全局变量
     private ArrayList<GeoPoint> fieldVertices = new ArrayList<>(); // 定义地块顶点数组
@@ -122,8 +124,8 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                         String message = (String) msg.obj;
                         readMessageSB.append(message);
 
-                        // 如果 ","的个数不为8，或者字符串开始和结束字符不是指定的，则数据无效
-                        if (!((MyApplication.countCharacter(readMessageSB, SEPARATOR) == 10)
+                        // 如果 ","的个数不为12，或者字符串开始和结束字符不是指定的，则数据无效
+                        if (!((SysUtil.countCharacter(readMessageSB, SEPARATOR) == SEPARATOR_NUMBER)
                                 && (readMessageSB.charAt(0) == START)
                                 && (readMessageSB.charAt(readMessageSB.length() - 1) == END))) {
                             readMessageSB.delete(0, readMessageSB.length());
@@ -158,8 +160,7 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                                 ToastUtil.showToast(activity.getString(R.string.receiving_data_format_error), true);
                             }
 
-                            // clear all string data
-                            readMessageSB.delete(0, readMessageSB.length());
+                            readMessageSB.delete(0, readMessageSB.length()); // 清除数据
                         }
                         break;
 
@@ -208,7 +209,7 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
         SDKInitializer.setCoordType(CoordType.GCJ02);//使用 GCJ02 坐标系
         SDKInitializer.initialize(getApplicationContext());
 
-        setContentView(R.layout.activity_field_adding);
+        setContentView(R.layout.field_adding_activity);
 
         if (D) {
             Log.e(TAG, "*** ON CREATE ***");
@@ -413,7 +414,7 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                                     }
 
                                     // 保存田地信息到外部文件
-                                    FileUtil.writeDataToExternalStorage(ALBUM_NAME, fileField, fieldInfo.toString(), false, false);
+                                    FileUtil.writeDataToExternalStorage(FIELD_DIRECTORY, fileField, fieldInfo.toString(), false, false);
 
                                     //保存地块顶点数据到数据库
                                     String fNo = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());

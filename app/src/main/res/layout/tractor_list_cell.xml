@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:background="@drawable/textview_border_with_cornor"
+    android:background="@drawable/field_result_list_cell_background"
     android:orientation="horizontal">
 
     <ImageView

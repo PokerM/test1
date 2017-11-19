@@ -3,6 +3,5 @@
     
     <item android:drawable="@drawable/navi_linechart_pressed" android:state_checked="true"/>  
     <item android:drawable="@drawable/navi_linechart" android:state_checked="false"/>  
-    <item android:drawable="@drawable/anchor_point"/>  
 
 </selector>

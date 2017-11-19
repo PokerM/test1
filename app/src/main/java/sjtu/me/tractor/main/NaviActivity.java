@@ -2,6 +2,8 @@ package sjtu.me.tractor.main;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -29,13 +32,14 @@ import lecho.lib.hellocharts.view.LineChartView;
 import sjtu.me.tractor.R;
 import sjtu.me.tractor.bluetooth.BluetoothService;
 import sjtu.me.tractor.database.DatabaseManager;
-import sjtu.me.tractor.database.MyDatabaseHelper;
-import sjtu.me.tractor.field.FieldResultActivity;
+import sjtu.me.tractor.field.FieldInfo;
 import sjtu.me.tractor.gis.GeoPoint;
 import sjtu.me.tractor.gis.GisAlgorithm;
 import sjtu.me.tractor.hellochart.LineChart;
 import sjtu.me.tractor.surfaceview.MySurfaceView;
+import sjtu.me.tractor.util.AlertDialogUtil;
 import sjtu.me.tractor.util.FileUtil;
+import sjtu.me.tractor.util.SysUtil;
 import sjtu.me.tractor.util.ToastUtil;
 
 /**
@@ -50,6 +54,7 @@ public class NaviActivity extends Activity implements OnClickListener {
     private static final char END = '*'; // 串口通信字符串结束标志
     private static final char START = '#'; // 串口通信字符串开始标志
     private static final char SEPARATOR = ','; // 分隔符
+    private static final int SEPARATOR_NUMBER = 12; // 分隔符个数
 
     private static final int REQUEST_SELECT_FIELD = 3;   // 跳转到开启蓝牙连接页面的标志
 
@@ -63,54 +68,62 @@ public class NaviActivity extends Activity implements OnClickListener {
     public static final int HEADLAND_P1_RESPONSE = 50101;
     public static final int HEADLAND_P2_RESPONSE = 50102;
 
-    private static final String FILE_NAME = "data.txt";
-    private static final String ALBUM_NAME = "AutoTractorData";
+    private static final String DATA_FILE_NAME_SUFFIX = "data.txt";
+    private static final String DATA_DIRECTORY = "data";
+    private static final String AB_LINE_DIRECTORY = "ab_lines";
+
+    private static final String QUERY_ALL = "%%";
 
     ImageButton imgbtnBack;  //返回按钮
-    ImageButton imgbtnForwards;     //前进按钮
-    ImageButton imgbtnBackwards;    //后退按钮
-    ImageButton imgbtnTurnLeft;     //左转按钮
-    ImageButton imgbtnTurnRight;        //右转按钮
-    ImageButton imgbtnStop;    //停止按钮
-
+    ImageButton imgbtnConnectionStatus;  //连接状态显示按钮
     Button btnSetField;  //设置田地按钮
-    Button btnStartNavi;  //启动导航按钮
-    Button btnTurnLeft;  //左转按钮
-    Button btnTurnRight;  //右转按钮
+    Button btnSetTractor;  //设置田地按钮
+    CheckBox chkboxABMode;  //AB线导航模式按钮
+    Button btnPlanningMode; //规划导航模式按钮
+    Button btnHistoryPath;  //历史轨迹按钮
+    CheckBox chxboxStatistics; //统计数据按钮
+    CheckBox chxboxRemoteMode; //遥控器模式按钮
+    LinearLayout layoutABModePane;
+    Button btnHistoryAB;  //历史AB线按钮
     Button btnSetA;  //设置A点按钮
     Button btnSetB;  //设置B点按钮
-    Button btnDrawAB;  //画AB线按钮
-    Button btnHistoryAB;  //历史AB线按钮
-    Button btnPlotPath;  //绘制轨迹按钮
-    Button btnSavePath;  //保存路径按钮
-    Button btnHistoryPath;  //历史按钮
+    CheckBox chkboxStartNavi; //启动导航
+    LinearLayout layoutRemotePane;
+    Button btnAccelerate; //加速按钮
+    Button btnTurnLeft;  //左转按钮
+    CheckBox chkboxStartSwitch;  //启动开关按钮
+    Button btnTurnRight;  //右转按钮
+    ImageButton imgbtnEmergencyStop;    //急停按钮
 
+    TextView txtDeviance;  //横向偏差文本
+    TextView txtSatellite;  //卫星数目文本
+    TextView txtGpsState;  //GPS状态文本
     TextView txtDistance2Bound1;    //到边界距离文本
     TextView txtDistance2Bound2;    //到边界距离文本
-    TextView txtGpsState;  //GPS状态文本
-    TextView txtCarState;  //导航控制状态文本
-    TextView txtNorthAngle;    //真北方向角文本
+    TextView txtFieldName;  //地块名称文本
+    TextView txtTractorName;  //车辆名称文本
+    TextView txtLineSpacing;    //行间距
     TextView txtLocationX;     //定位X坐标文本
     TextView txtLocationY;     //定位Y坐标文本
-    TextView txtDirectionAngle;    //航向角文本
     TextView txtVelocity;  //速度文本
-    TextView txtDeviance;  //横向偏差文本
-    TextView txtTurningAngle;  //横向偏差文本
-    TextView txtCommunicationState;    //通信状态文本
+    TextView txtDirectionAngle;    //航向角文本
+    TextView txtTurningAngle;  //转向角文本
+    TextView txtPrecisionSeeding;  //精量播种数据文本
     TextView txtReceivedString;    //接收数据文本
-    TextView txtReceivedStringLength;  //接收数据长度文本
     TextView txtReceivedStringNo;  //接收数据编号文本
     TextView txtSentString;    //发送数据文本
 
+
     Bundle bundle;
     private int dataNo = 0;
-    private int currentState = 0;
-    private int pastState = 0;
+    private int currentState = 0; //当前指令状态
+    private int preState = 0; //上一个指令状态
 
-    private double pointX = 0;
-    private double pointY = 0;
+    private double locationX = 0;
+    private double locationY = 0;
     private double lateralDeviation = 0;
-    private double APointX, APointY, BPointX, BPointY;
+    private double aX, aY, bX, bY; //AB点XY坐标
+    private double aLat, aLng, bLat, bLng; //AB点经纬度
     private float lineSpace = 0;
     private long startTimeMillis;
     private String fileNameToSave;
@@ -146,8 +159,27 @@ public class NaviActivity extends Activity implements OnClickListener {
     protected int pathPointNo;
     protected Object mPath;
 
-    // 消息处理器
+    /*创建消息处理器，处理通信线程发送过来的数据。*/
     MyNaviHandler mNaviHandler = new MyNaviHandler(this);
+
+    /*handler的message字符串处理，使用StringBuilder类的性能远高于String类；
+    另外，使用全局静态变量比使用局部变量速度快一倍以上。*/
+    private static StringBuilder stringBuilder = new StringBuilder();
+
+    /*使用静态变量保存解析的数据*/
+    private static double lat;
+    private static double lng;
+    private static double xx;
+    private static double yy;
+    private static int satellite;
+    private static int gps;
+    private static double north;
+    private static double velocity;
+    private static int command;
+    private static double direction;
+    private static double lateral;
+    private static double turnning;
+    private static double seeding;
 
     /**
      * 使用静态内部类避免Handler带来的内存泄漏问题;
@@ -192,7 +224,7 @@ public class NaviActivity extends Activity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.navi_activity_new);
+        setContentView(R.layout.navi_activity);
         if (D) {
             Log.e(TAG, "+++ ON CREATE +++");
         }
@@ -208,7 +240,7 @@ public class NaviActivity extends Activity implements OnClickListener {
             Log.e(TAG, "+++ setHandler: mNaviHandler +++");
         }
 
-//        initViews();
+        initViews();
 
         // ---CheckBox---
         CheckBox checkBox1 = (CheckBox) findViewById(R.id.starTopLeft2);
@@ -269,11 +301,11 @@ public class NaviActivity extends Activity implements OnClickListener {
             Log.e(TAG, "+++ ON START +++");
         }
 
-//        if (myApp.getBluetoothService().getState() == BluetoothService.STATE_NONE) {
-//            txtCommunicationState.setText(R.string.comm_off);
-//        } else {
-//            txtCommunicationState.setText(R.string.comm_on);
-//        }
+        if (myApp.getBluetoothService().getState() == BluetoothService.STATE_NONE) {
+            imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_broken);
+        } else {
+            imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_broken);
+        }
     }
 
     @Override
@@ -305,9 +337,9 @@ public class NaviActivity extends Activity implements OnClickListener {
         myApp.getBluetoothService().setHandler(mNaviHandler);
 
         if (myApp.getBluetoothService().getState() == BluetoothService.STATE_NONE) {
-            txtCommunicationState.setText(R.string.comm_off);
+            imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_broken);
         } else {
-            txtCommunicationState.setText(R.string.comm_on);
+            imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_broken);
         }
     }
 
@@ -337,20 +369,16 @@ public class NaviActivity extends Activity implements OnClickListener {
             case REQUEST_SELECT_FIELD:
                 if (resultCode == RESULT_OK) {
                     bundle = data.getExtras();
-                    String name = (bundle == null ? null : bundle.getString(FieldResultActivity.EXTRA_FIELD_NAME));
+                    String name = (bundle == null ? null : bundle.getString(FieldInfo.FIELD_NAME));
                     Log.e("selected item", name);
                     Cursor resultCursor = myApp.getDatabaseManager().queryFieldWithPointsByName(name);
                     List<Map<String, String>> resultList = DatabaseManager.cursorToList(resultCursor);
 
                     for (int i = 0; i < resultList.size(); i++) {
-                        GeoPoint vertex = new GeoPoint(Double.valueOf(resultList.get(i).get("fPX")), Double.valueOf(resultList.get(i).get("fPY")));
+                        GeoPoint vertex = new GeoPoint(Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_X_COORDINATE)),
+                                Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_Y_COORDINATE)));
                         fieldVertex.add(vertex);
                     }
-
-                    Log.e("fieldVertex", fieldVertex.get(0).getXCoordinate() + "," + fieldVertex.get(0).getYCoordinate());
-                    Log.e("fieldVertex", fieldVertex.get(1).getXCoordinate() + "," + fieldVertex.get(1).getYCoordinate());
-                    Log.e("fieldVertex", fieldVertex.get(2).getXCoordinate() + "," + fieldVertex.get(2).getYCoordinate());
-                    Log.e("fieldVertex", fieldVertex.get(3).getXCoordinate() + "," + fieldVertex.get(3).getYCoordinate());
 
                     myView.setViewFieldBoundary(fieldVertex, true);
                 }
@@ -370,13 +398,12 @@ public class NaviActivity extends Activity implements OnClickListener {
                 try {
                     runtime.exec("input keyevent " + KeyEvent.KEYCODE_BACK);
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 break;
 
             case R.id.btnSetField:
-                Cursor cursor = myApp.getDatabaseManager().queryFieldByName("");
+                Cursor cursor = myApp.getDatabaseManager().queryFieldByName(QUERY_ALL);
                 Bundle data = new Bundle();
                 data.putSerializable("data", DatabaseManager.cursorToList(cursor));
                 Intent intent = new Intent("sjtu.me.tractor.fieldsetting.FieldResultActivity");
@@ -384,22 +411,39 @@ public class NaviActivity extends Activity implements OnClickListener {
                 startActivityForResult(intent, REQUEST_SELECT_FIELD);
                 break;
 
-            case R.id.btnStartNavi:
-                if (!isStartNavi) {
-                    startNavi();
+            case R.id.btnSetTractor:
+                Cursor cursor2 = myApp.getDatabaseManager().queryFieldByName(QUERY_ALL);
+                Bundle data2 = new Bundle();
+                data2.putSerializable("data", DatabaseManager.cursorToList(cursor2));
+                Intent intent2 = new Intent("sjtu.me.tractor.fieldsetting.FieldResultActivity");
+                intent2.putExtras(data2);
+                startActivityForResult(intent2, REQUEST_SELECT_FIELD);
+                break;
+
+            case R.id.chkboxABMode:
+                if (((CheckBox) v).isChecked()) {
+                    layoutABModePane.setVisibility(View.VISIBLE);
                 } else {
-                    stopNavi();
+                    layoutABModePane.setVisibility(View.INVISIBLE);
                 }
                 break;
 
-            case R.id.btnABMode:
-                isToTurnLeft = true;
-                myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_TURN_LEFT);
-                break;
-
-            case R.id.btnPlanningMode:
-                isToTurnRight = true;
-                myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_TURN_RIGHT);
+            case R.id.btnHistoryAB:
+                Cursor cursor3 = myApp.getDatabaseManager().queryFieldByName(QUERY_ALL);
+                Bundle data3 = new Bundle();
+                data3.putSerializable("data", DatabaseManager.cursorToList(cursor3));
+                Intent intent3 = new Intent("sjtu.me.tractor.fieldsetting.FieldResultActivity");
+                intent3.putExtras(data3);
+                startActivityForResult(intent3, REQUEST_SELECT_FIELD);
+                
+                /*拷贝数据库文件到外部存储空间，开发测试时用*/
+                /*
+                Log.e(TAG, "HISTORY_AB IS PRESSED ");
+                String dbPath = getApplication().getDatabasePath(MyDatabaseHelper.DB_NAME).toString();
+                Log.e(TAG, "DB PATH IS " + dbPath);
+                boolean flag = FileUtil.copyDbFilesToExternalStorage(dbPath);
+                Log.e(TAG, "COPY DB FILES SUCCESSFULLY? " + flag);
+                */
                 break;
 
             case R.id.btnSetA:
@@ -412,64 +456,81 @@ public class NaviActivity extends Activity implements OnClickListener {
                 myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_SET_B_REQUEST);
                 break;
 
-            case R.id.btnStartPilot:
-                if (APointY == BPointY && APointX == BPointX) {
-                    //弹出AB点重合警告
-                    ToastUtil.showToast(getString(R.string.ab_overlay_error_warning), true);
-                    return;
+            case R.id.chkboxStartNavi:
+                if (!isStartNavi) {
+                    startNavi();
+                    startPlotAndSavePath();
                 } else {
-                    myView.drawABline(APointX, APointY, BPointX, BPointY, true);
+                    stopNavi();
+                    stopPlotAndSavePath();
                 }
-                currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
-                String fileABPoints = currentTime + "_AB_Points.txt";
-                // 保存田地顶点坐标到外部文件
-                FileUtil.writeDataToExternalStorage(ALBUM_NAME, fileABPoints,
-                        "ABpoints:\r\n" + APointX + "," + APointY + "\r\n" + BPointX + "," + BPointX, true, false);
                 break;
 
-            case R.id.btnHistoryAB:
-                Log.e(TAG, "HISTORY_AB IS PRESSED " );
-                String dbPath = getApplication().getDatabasePath(MyDatabaseHelper.DB_NAME).toString();
-                Log.e(TAG, "DB PATH IS " + dbPath);
-                boolean flag = MyApplication.copyDbFilesToExternalStorage(dbPath);
-                Log.e(TAG, "COPY DB FILES SUCCESSFULLY? " + flag);
-                break;
+            case R.id.btnPlanningMode:
+                AlertDialog planningDialog = new AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.alert_title_field_tip))
+                        .setMessage(getString(R.string.alert_message_field_import))
+                        .setIcon(R.drawable.alert)
+                        .setPositiveButton(getString(R.string.affirm), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
 
-            case R.id.checkboxPlotPath:
-                if (!isPlotting) {
-                    startPlotPath();
-                } else {
-                    stopPlotPath();
-                }
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.cancel), null)
+                        .create();
+                planningDialog.show();
+                AlertDialogUtil.changeDialogTheme(planningDialog);
                 break;
 
             case R.id.btnHistoryPath:
+                Cursor cursor4 = myApp.getDatabaseManager().queryFieldByName(QUERY_ALL);
+                Bundle data4 = new Bundle();
+                data4.putSerializable("data", DatabaseManager.cursorToList(cursor4));
+                Intent intent4 = new Intent("sjtu.me.tractor.fieldsetting.FieldResultActivity");
+                intent4.putExtras(data4);
+                startActivityForResult(intent4, REQUEST_SELECT_FIELD);
                 break;
 
-            case R.id.imgbtnAccelerate:
-                break;
-
-            case R.id.imgbtnTurnLeft:
-                isToTurnLeft = true;
-                myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_TURN_LEFT);
-                break;
-
-            case R.id.imgbtnTurnRight:
-                isToTurnRight = true;
-                myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_TURN_RIGHT);
-                break;
-
-
-            case R.id.imgbtnStop:
-                myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_STOP_NAVI);
-                break;
-
-            case R.id.btnShowLineChart:
+            case R.id.chkboxStatistics:
                 if (((CheckBox) v).isChecked()) {
                     lineChart.showChartView(true);
                 } else {
                     lineChart.showChartView(false);
                 }
+                break;
+
+            case R.id.chkboxRemoteMode:
+                if (((CheckBox) v).isChecked()) {
+                    layoutRemotePane.setVisibility(View.VISIBLE);
+                } else {
+                    layoutRemotePane.setVisibility(View.INVISIBLE);
+                }
+                break;
+
+            case R.id.btnAccelerate:
+                break;
+
+            case R.id.btnTurnLeft:
+                isToTurnLeft = true;
+                myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_TURN_LEFT);
+                break;
+
+            case R.id.chkboxStartSwitch:
+                if (((CheckBox) v).isChecked()) {
+                    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_START_NAVI); //蓝牙发送开始导航指令
+                } else {
+                    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_STOP_NAVI); //蓝牙发送停止导航指令
+                }
+                break;
+
+            case R.id.btnTurnRight:
+                isToTurnRight = true;
+                myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_TURN_RIGHT);
+                break;
+
+            case R.id.imgbtnEmergencyStop:
+                myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_STOP_NAVI);
                 break;
 
             default:
@@ -481,48 +542,57 @@ public class NaviActivity extends Activity implements OnClickListener {
         myView = (MySurfaceView) findViewById(R.id.mySurfaceView);
         myView.setCanvasSize(1400, 1330);
 
+        lineChart = new LineChart((LineChartView) findViewById(R.id.lineChartView));
+
+        txtDeviance = ((TextView) findViewById(R.id.txtDeviance));
+        txtSatellite = (TextView) findViewById(R.id.txtSatellite);
+        txtGpsState = (TextView) findViewById(R.id.txtGpsState);
         txtDistance2Bound1 = (TextView) findViewById(R.id.txtDistance2Bound1);
         txtDistance2Bound2 = (TextView) findViewById(R.id.txtDistance2Bound2);
-        txtGpsState = (TextView) findViewById(R.id.txtGpsState);
-        txtNorthAngle = (TextView) findViewById(R.id.txtNorthAngle);
+        txtFieldName = (TextView) findViewById(R.id.txtFieldName);
+        txtTractorName = (TextView) findViewById(R.id.txtTractorName);
+        txtLineSpacing = (TextView) findViewById(R.id.txtLineSpacing);
         txtLocationX = (TextView) findViewById(R.id.txtLocationX);
         txtLocationY = (TextView) findViewById(R.id.txtLocationY);
-        txtDirectionAngle = (TextView) findViewById(R.id.txtDirectionAngle);
         txtVelocity = (TextView) findViewById(R.id.txtVelocity);
+        txtDirectionAngle = (TextView) findViewById(R.id.txtDirectionAngle);
         txtDeviance = (TextView) findViewById(R.id.txtDeviance);
         txtTurningAngle = (TextView) findViewById(R.id.txtTurningAngle);
-        txtCommunicationState = (TextView) findViewById(R.id.txtPrecsionSeeding);
+        txtPrecisionSeeding = (TextView) findViewById(R.id.txtLineSpacing);
         txtReceivedString = (TextView) findViewById(R.id.txtReceivedString);
-        txtReceivedStringLength = (TextView) findViewById(R.id.txtReceivedStringLength);
         txtReceivedStringNo = (TextView) findViewById(R.id.txtReceivedStringNo);
         txtSentString = (TextView) findViewById(R.id.txtSentString);
 
         imgbtnBack = (ImageButton) findViewById(R.id.imgbtnBack);
         imgbtnBack.setOnClickListener(this);
 
-        imgbtnForwards = (ImageButton) findViewById(R.id.imgbtnAccelerate);
-        imgbtnForwards.setOnClickListener(this);
-
-        imgbtnTurnRight = (ImageButton) findViewById(R.id.imgbtnTurnRight);
-        imgbtnTurnRight.setOnClickListener(this);
-
-        imgbtnTurnLeft = (ImageButton) findViewById(R.id.imgbtnTurnLeft);
-        imgbtnTurnLeft.setOnClickListener(this);
-
-        imgbtnStop = (ImageButton) findViewById(R.id.imgbtnStop);
-        imgbtnStop.setOnClickListener(this);
+        imgbtnConnectionStatus = (ImageButton) findViewById(R.id.imgbtnConnectionStatus);
 
         btnSetField = (Button) findViewById(R.id.btnSetField);
         btnSetField.setOnClickListener(this);
 
-        btnStartNavi = (Button) findViewById(R.id.btnStartNavi);
-        btnStartNavi.setOnClickListener(this);
+        btnSetTractor = (Button) findViewById(R.id.btnSetTractor);
+        btnSetTractor.setOnClickListener(this);
 
-        btnTurnLeft = (Button) findViewById(R.id.btnABMode);
-        btnTurnLeft.setOnClickListener(this);
+        chkboxABMode = (CheckBox) findViewById(R.id.chkboxABMode);
+        chkboxABMode.setOnClickListener(this);
 
-        btnTurnRight = (Button) findViewById(R.id.btnPlanningMode);
-        btnTurnRight.setOnClickListener(this);
+        btnPlanningMode = (Button) findViewById(R.id.btnPlanningMode);
+        btnPlanningMode.setOnClickListener(this);
+
+        btnHistoryPath = (Button) findViewById(R.id.btnHistoryPath);
+        btnHistoryPath.setOnClickListener(this);
+
+        chxboxStatistics = (CheckBox) findViewById(R.id.chkboxStatistics);
+        chxboxStatistics.setOnClickListener(this);
+
+        chxboxRemoteMode = (CheckBox) findViewById(R.id.chkboxRemoteMode);
+        chxboxRemoteMode.setOnClickListener(this);
+
+        layoutABModePane = (LinearLayout) findViewById(R.id.layoutABMode);
+
+        btnHistoryAB = (Button) findViewById(R.id.btnHistoryAB);
+        btnHistoryAB.setOnClickListener(this);
 
         btnSetA = (Button) findViewById(R.id.btnSetA);
         btnSetA.setOnClickListener(this);
@@ -530,19 +600,26 @@ public class NaviActivity extends Activity implements OnClickListener {
         btnSetB = (Button) findViewById(R.id.btnSetB);
         btnSetB.setOnClickListener(this);
 
-        btnDrawAB = (Button) findViewById(R.id.btnStartPilot);
-        btnDrawAB.setOnClickListener(this);
+        chkboxStartNavi = (CheckBox) findViewById(R.id.chkboxStartNavi);
+        chkboxStartNavi.setOnClickListener(this);
 
-        btnHistoryAB = (Button) findViewById(R.id.btnHistoryAB);
-        btnHistoryAB.setOnClickListener(this);
+        layoutRemotePane = (LinearLayout) findViewById(R.id.layoutRemotePane);
 
-        btnPlotPath = (Button) findViewById(R.id.checkboxPlotPath);
-        btnPlotPath.setOnClickListener(this);
+        btnAccelerate = (Button) findViewById(R.id.btnAccelerate);
+        btnAccelerate.setOnClickListener(this);
 
-        btnHistoryPath = (Button) findViewById(R.id.btnHistoryPath);
-        btnHistoryPath.setOnClickListener(this);
+        btnTurnLeft = (Button) findViewById(R.id.btnTurnLeft);
+        btnTurnLeft.setOnClickListener(this);
 
-        findViewById(R.id.btnShowLineChart).setOnClickListener(this);
+        chkboxStartSwitch = (CheckBox) findViewById(R.id.chkboxStartSwitch);
+        chkboxStartSwitch.setOnClickListener(this);
+
+        btnTurnRight = (Button) findViewById(R.id.btnTurnRight);
+        btnTurnRight.setOnClickListener(this);
+
+        imgbtnEmergencyStop = (ImageButton) findViewById(R.id.imgbtnEmergencyStop);
+        imgbtnEmergencyStop.setOnClickListener(this);
+
     }
 
     /**
@@ -553,107 +630,90 @@ public class NaviActivity extends Activity implements OnClickListener {
      */
     private void doNavigationTask(Message msg) {
         String dataString;
-        String readMessage = (String) msg.obj;
-        StringBuilder readMessageSB = new StringBuilder();
-        readMessageSB.append(readMessage);
-        double formerDidstance = 0;
+        String msgString = (String) msg.obj;
+        stringBuilder.append(msgString);
 
-        // 如果 ","的个数不为8，或者字符串开始和结束字符不是指定的，则数据无效
-        if (!((MyApplication.countCharacter(readMessageSB, SEPARATOR) == 8) && (readMessageSB.charAt(0) == START)
-                && (readMessageSB.charAt(readMessageSB.length() - 1) == END))) {
-            readMessageSB.delete(0, readMessageSB.length());
+        if (stringBuilder.length() < 0) {
+            return;
+        }
+
+        /*如果 ","的个数不为13，或者字符串开始和结束字符不是指定字符，则数据无效*/
+        if ((SysUtil.countCharacter(stringBuilder, SEPARATOR) != SEPARATOR_NUMBER)
+                || (stringBuilder.charAt(0) != START) || (stringBuilder.charAt(stringBuilder.length() - 1) != END)) {
+            stringBuilder.delete(0, stringBuilder.length()); //清除无效内容
         } else {
             dataNo++;
-            dataString = readMessageSB.substring(1, readMessageSB.length() - 1); // 提取字符串
+            dataString = stringBuilder.substring(1, stringBuilder.length() - 1); // 提取字符串
             // 将收到的数据保存到外部存储器
             if (isDataToSave) {
-                FileUtil.writeDataToExternalStorage(ALBUM_NAME, fileNameToSave, dataString, true, true);
+                FileUtil.writeDataToExternalStorage(DATA_DIRECTORY, fileNameToSave, dataString, true, true);
             }
 
             // set the TextView with the received data
             txtReceivedString.setText(dataString);
-            int dataLength = dataString.length();
-            txtReceivedStringLength.setText(getString(R.string.length) + dataLength);
             txtReceivedStringNo.setText(getString(R.string.number) + dataNo);
 
-            String[] dataArray = dataString.split(",", 9);
-            try {
-                double xCoordinate = Double.parseDouble(dataArray[0]); // x坐标
-                double yCoordinate = Double.parseDouble(dataArray[1]); // y坐标
-                int GPS = Integer.parseInt(dataArray[2]);
-                double northAngle = Double.parseDouble(dataArray[3]);
-                double carVelocity = Double.parseDouble(dataArray[4]);
-                int stopBit = Integer.parseInt(dataArray[5]);
-                double directionAngle = Double.parseDouble(dataArray[6]);
-                double lateralDeviation = Double.parseDouble(dataArray[7]);
-                double turningAngle;
-                if ("nan".equalsIgnoreCase(dataArray[8])) {
-                    turningAngle = 99999.999;
-                } else {
-                    turningAngle = Double.parseDouble(dataArray[8]);
+            if (parseReceivedMessage(dataString)) {
+                txtDeviance.setText(String.valueOf(lateral));
+                txtSatellite.setText(String.valueOf(satellite));
+                switch (satellite) {
+                    /*根据GPS定位标识设置显示文本*/
+                    case 0:
+                        txtSatellite.setText(R.string.satellite_gps_no_location);
+                        break;
+
+                    case 1:
+                        txtSatellite.setText(R.string.satellite_gps_single_point);
+                        break;
+
+                    case 2:
+                        txtSatellite.setText(R.string.satellite_gps_rtk);
+                        break;
+
+                    case 4:
+                        txtSatellite.setText(R.string.satellite_gps_rtk_fixed);
+                        break;
+
+                    case 5:
+                        txtSatellite.setText(R.string.satellite_gps_float);
+                        break;
+
+                    default:
+                        txtSatellite.setText(R.string.satellite_gps_no_location);
+                        break;
                 }
-
-                txtLocationX.setText(getString(R.string.x_coordinate) + xCoordinate);
-                txtLocationY.setText(getString(R.string.y_coordinate) + yCoordinate);
-                txtGpsState.setText(getString(R.string.gps_sign) + GPS);
-                txtDirectionAngle.setText(getString(R.string.direction_angle) + directionAngle);
-                txtVelocity.setText(getString(R.string.speed) + carVelocity + getString(R.string.speed_unit));
-                txtCarState.setText(getString(R.string.field_name) + stopBit);
-                txtNorthAngle.setText(getString(R.string.north_angle) + northAngle);
-                txtDeviance.setText(getString(R.string.lateral_deviation) + lateralDeviation);
-                txtTurningAngle.setText(getString(R.string.turning_angle) + turningAngle);
-
-                currentState = stopBit;
-                pointX = xCoordinate;
-                pointY = yCoordinate;
-
-                //保存横向偏差数据到集合
-                NaviActivity.this.lateralDeviation = lateralDeviation;
+                txtLocationX.setText(String.valueOf(xx));
+                txtLocationY.setText(String.valueOf(yy));
+                txtVelocity.setText(String.valueOf(velocity));
+                txtDirectionAngle.setText(String.valueOf(direction));
+                txtTurningAngle.setText(String.valueOf(turnning));
+                txtPrecisionSeeding.setText(String.valueOf(seeding));
+                currentState = command;
+                locationX = xx;
+                locationY = yy;
                 long timeMillis = System.currentTimeMillis();
-                mPointValues.add(new PointValue((float) ((timeMillis - startTimeMillis) / 1000.0), (float) NaviActivity.this.lateralDeviation));
 
-                // draw the path
-                // 绘制当前点
-                myView.setCurentPoint(dataNo, pointX, pointY);
-//						Log.e(TAG, "setCurrentPoint");
+                /*以时间横轴，横向偏差为纵轴，添加偏差数据到集合*/
+                mPointValues.add(new PointValue((float) ((timeMillis - startTimeMillis) / 1000.0), (float) lateral));
 
+                /*绘制当前点*/
+                myView.setCurentPoint(dataNo, locationX, locationY);
+
+                 /*计算到地头的距离*/
                 double distance1 = GisAlgorithm.distanceFromPointToLine(622420.828635, 3423930.259849,
-                        622422.2437, 3423929.17782, pointX, pointY);
+                        622422.2437, 3423929.17782, locationX, locationY);
                 double distance2 = GisAlgorithm.distanceFromPointToLine(622423.89173, 3424003.981122,
-                        622446.48542, 3424005.692487, pointX, pointY);
+                        622446.48542, 3424005.692487, locationX, locationY);
                 txtDistance2Bound1.setText(getString(R.string.border_distance_1) + distance1);
                 txtDistance2Bound2.setText(getString(R.string.border_distance_2) + distance2);
 
-//                if (dataNo % 20 == 0) {
-//                    formerDidstance = distance1;
-//                }
-//                if (isStartNavi == true && stopBit != 10020
-//                        && distance1 - 10 <= 0.25 && distance1 < formerDidstance) {
-//                    isToTurnRight = true;
-//                    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_TURN_RIGHT);
-//                    if (currentState == 10020) {
-//                        isToTurnRight = false;
-//                        // 设置发送指令为默认命令
-//                        myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
-//                    }
-//                }
-//
-//                if (isStartNavi == true && stopBit != 10030
-//                        && distance2 - 10 <= 0.25 && distance1 > formerDidstance) {
-//                    isToTurnLeft = true;
-//                    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_TURN_LEFT);
-//                    if (currentState == 10030) {
-//                        isToTurnRight = false;
-//                        // 设置发送指令为默认命令
-//                        myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
-//                    }
-//                }
-
-                // 判断此时是否点击设置A点
-                if (isPointASet && currentState == CAR_SET_A_RESPONSE) {
-                    if (pastState != CAR_SET_A_RESPONSE) {
-                        APointX = pointX;
-                        APointY = pointY;
+                /*设置A点*/
+                if (isPointASet && currentState == CAR_SET_A_RESPONSE) {// 判断此时是否点击设置A点
+                    if (preState != CAR_SET_A_RESPONSE) {
+                        aX = locationX;
+                        aY = locationY;
+                        aLat = lat;
+                        aLng = lng;
                         ToastUtil.showToast(getString(R.string.a_point_already_set), true);
                         isPointASet = false;
                     }
@@ -661,49 +721,100 @@ public class NaviActivity extends Activity implements OnClickListener {
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_SET_A_AFFIRM);
                 }
 
-                // 判断此时是否点击设置B点
-                if (isPointBSet && currentState == CAR_SET_B_RESPONSE) {
-                    if (pastState != CAR_SET_B_RESPONSE) {
-                        BPointX = pointX;
-                        BPointY = pointY;
-                        ToastUtil.showToast(getString(R.string.b_point_already_set), true);
+                /*设置B点*/
+                if (isPointBSet && currentState == CAR_SET_B_RESPONSE) {// 判断此时是否点击设置B点
+                    if (preState != CAR_SET_B_RESPONSE) {
+                        bX = locationX;
+                        bY = locationY;
+                        bLat = lat;
+                        bLat = lng;
+
+                        if (aY == bY && aX == bX) {
+                            //弹出AB点重合警告
+                            ToastUtil.showToast(getString(R.string.ab_overlay_error_warning), true);
+                            return;
+                        } else {
+                            ToastUtil.showToast(getString(R.string.b_point_already_set), true);
+                            myView.drawABline(aX, aY, bX, bY, true);
+                            currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
+                            String fileABPoints = currentTime + "_AB_Points.txt";
+                            String abLine = new StringBuilder()
+                                    .append(aX).append(",").append(aY).append(",").append(aLat).append(",").append(aLng)
+                                    .append("\r\n")
+                                    .append(bX).append(",").append(bY).append(",").append(bLat).append(",").append(bLng)
+                                    .toString();
+                            // 保存AB线到外部文件
+                            FileUtil.writeDataToExternalStorage(AB_LINE_DIRECTORY, fileABPoints, abLine, true, false);
+                        }
+
                         isPointBSet = false;
                     }
                     // 设置发送指令为确认收到B点坐标命令
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_SET_B_AFFIRM);
                 }
 
+                /*启动导航*/
                 if (currentState == CAR_LINE_NAVI) {
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                 }
 
-//						if (currentState == CAR_LINE_NAVI || currentState == HEADLAND_P1_RESPONSE
-//						        || currentState == HEADLAND_P2_RESPONSE) {
-//						    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
-//						}
-
-                // 判断此时是否右转
-                if (isToTurnRight && currentState == CAR_TURNING_RIGHT) {
-                    isToTurnRight = false;
+                /*右转*/
+                if (isToTurnRight && currentState == CAR_TURNING_RIGHT) {// 判断此时是否右转
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                 }
 
-                // 判断此时是否左转
-                if (isToTurnLeft && currentState == CAR_TURNING_LEFT) {
+                /*左转*/
+                if (isToTurnLeft && currentState == CAR_TURNING_LEFT) {// 判断此时是否左转
                     isToTurnLeft = false;
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                 }
 
+                if (currentState == CAR_LINE_NAVI || currentState == HEADLAND_P1_RESPONSE
+						        || currentState == HEADLAND_P2_RESPONSE) {
+						    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
+						}
 
-                // 保存当前状态
-                pastState = currentState;
-
-            } catch (NumberFormatException e) {
-                ToastUtil.showToast(getString(R.string.received_data_type_error), true);
+                preState = currentState; // 保存当前状态
             }
 
-            // clear all string data
-            readMessageSB.delete(0, readMessageSB.length());
+            stringBuilder.delete(0, stringBuilder.length()); //清除效内容
+        }
+    }
+
+    /**
+     * 解析接收数据
+     *
+     * @param dataString 接收到的数据
+     * @return 解析成功标志
+     */
+    private boolean parseReceivedMessage(String dataString) {
+        String[] dataArray = dataString.split(String.valueOf(SEPARATOR), SEPARATOR_NUMBER + 1);
+        if (dataArray == null || dataArray.length < 13) {
+            return false;
+        }
+        try {
+            lat = Double.parseDouble(dataArray[0]);
+            lng = Double.parseDouble(dataArray[1]);
+            xx = Double.parseDouble(dataArray[2]);
+            yy = Double.parseDouble(dataArray[3]);
+            satellite = Integer.parseInt(dataArray[4]);
+            gps = Integer.parseInt(dataArray[5]);
+            north = Double.parseDouble(dataArray[6]);
+            velocity = Double.parseDouble(dataArray[7]);
+            command = Integer.parseInt(dataArray[8]);
+            direction = Double.parseDouble(dataArray[9]);
+            lateral = Double.parseDouble(dataArray[10]);
+            if ("nan".equalsIgnoreCase(dataArray[11])) {
+                turnning = 99999.999;
+            } else {
+                turnning = Double.parseDouble(dataArray[11]);
+            }
+            seeding = Double.parseDouble(dataArray[12]);
+            return true;
+
+        } catch (NumberFormatException e) {
+            ToastUtil.showToast(getString(R.string.received_data_type_error), true);
+            return false;
         }
     }
 
@@ -715,8 +826,6 @@ public class NaviActivity extends Activity implements OnClickListener {
         startTimeMillis = System.currentTimeMillis(); //记录开始导航系统时间（毫秒）
         mPointValues.clear(); //导航横向偏差数据集合清零
         myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_START_NAVI); //蓝牙发送开始导航指令
-        btnStartNavi.setText(R.string.stop_navi);
-        findViewById(R.id.btnShowLineChart).setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -725,32 +834,28 @@ public class NaviActivity extends Activity implements OnClickListener {
     private void stopNavi() {
         isStartNavi = false; //
         myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_STOP_NAVI); //蓝牙发送停止导航指令
-        lineChart = new LineChart((LineChartView) findViewById(R.id.lineChartView), mPointValues); //将导航偏差数据集传到折线图
-        btnStartNavi.setText(getString(R.string.start_navi));
-        findViewById(R.id.btnShowLineChart).setVisibility(View.VISIBLE);
+        lineChart.setPointValues(mPointValues); //将导航偏差数据集传到折线图
     }
 
     /**
      * 开始绘制轨迹操作方法
      */
-    private void startPlotPath() {
+    private void startPlotAndSavePath() {
         isPlotting = true; //设置开始绘制轨迹状态为真
         isDataToSave = true; //设置开始保存数据状态为真
         dataNo = 0; //将数据点编号重置为零
         myView.drawPath(1, true); //设置绘制轨迹状态为真
         currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date()); //获取当前日期时间字符串
-        fileNameToSave = currentTime + "_" + FILE_NAME; //设置数据保存文件名
-        btnPlotPath.setText(R.string.stop_plot_path);
+        fileNameToSave = currentTime + "_" + DATA_FILE_NAME_SUFFIX; //设置数据保存文件名
     }
 
     /**
      * 停止绘制轨迹操作方法
      */
-    private void stopPlotPath() {
+    private void stopPlotAndSavePath() {
         isPlotting = false;
         myView.drawPath(1, false);
         isDataToSave = false;
-        btnPlotPath.setText(getString(R.string.plot_path));
     }
 
     /**

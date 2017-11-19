@@ -9,7 +9,7 @@
         android:id="@+id/txtListNumber"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@drawable/textview_border_with_cornor"
+        android:background="@drawable/field_result_list_cell_background"
         android:gravity="center_vertical|center_horizontal"
         android:text="1"
         android:textSize="32sp" />

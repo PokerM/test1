@@ -13,7 +13,7 @@ import android.util.Log;
 
 /**
  * @author billhu
- * 蓝牙服务类
+ *         蓝牙服务类
  */
 public class BluetoothService {
 
@@ -52,7 +52,7 @@ public class BluetoothService {
     public static final int COMMAND_STOP_NAVI = 8;
     public static final int COMMAND_SPECIFIED = 20;
     public static final int COMMAND_DEFAULT = 30;
-    
+
     public static final int COMMAND_HEADLAND_POINT_1 = 9;
     public static final int COMMAND_HEADLAND_POINT_2 = 10;
 
@@ -61,13 +61,13 @@ public class BluetoothService {
     public static final String START_NAVI = "10000"; // 启动导航指令
     public static final String STOP_NAVI = "20000"; // 停止导航指令
     public static final String TURN_RIGHT = "30001"; // 右转指令
-	public static final String TURN_LEFT = "30002"; // 左转指令
+    public static final String TURN_LEFT = "30002"; // 左转指令
     public static final String SET_A_REQUEST = "40003"; // 请求设置A点指令
     public static final String SET_A_AFFIRM = "40013"; // 确认收到A点指令
     public static final String SET_B_REQUEST = "40004"; // 请求设置B点指令
     public static final String SET_B_AFFIRM = "40014";  // 确认收到B点指令
-    
-    public static final String HEADLAND_POINT_1 = "50001";	// 请求设置地头点指令
+
+    public static final String HEADLAND_POINT_1 = "50001";    // 请求设置地头点指令
     public static final String HEADLAND_POINT_2 = "50002";
 
     private BluetoothAdapter mAdapter; // 定义蓝牙适配器
@@ -91,20 +91,20 @@ public class BluetoothService {
         this.mAdapter = BluetoothAdapter.getDefaultAdapter();
         this.mState = STATE_NONE;
     }
-    
+
     /**
      * @return
      */
     public Handler getHandler() {
-		return mHandler;
-	}
+        return mHandler;
+    }
 
-	/**
-	 * @param mHandler
-	 */
-	public void setHandler(Handler mHandler) {
-		this.mHandler = mHandler;
-	}
+    /**
+     * @param mHandler
+     */
+    public void setHandler(Handler mHandler) {
+        this.mHandler = mHandler;
+    }
 
     /**
      * @return
@@ -115,9 +115,8 @@ public class BluetoothService {
 
     /**
      * 设置发送命令类型
-     * 
-     * @param commandType
-     *            发送命令类型
+     *
+     * @param commandType 发送命令类型
      */
     public void setCommandType(int commandType) {
         this.commandType = commandType;
@@ -132,7 +131,7 @@ public class BluetoothService {
 
     /**
      * 设置发送命令
-     * 
+     *
      * @param sendCommand
      */
     public synchronized void setSendCommand(String sendCommand) {
@@ -192,13 +191,14 @@ public class BluetoothService {
     /**
      * 方法名：connect(BluetoothDevice device) 功能：开始连接远程设备 参数：device - 要连接的蓝牙设备
      * Start the ConnectThread to initiate a connection to a remote device.
+     *
      * @param address 蓝牙地址
      */
     public synchronized void startConnection(String address) {
         if (D) {
             Log.e(TAG, "startConnection");
         }
-        
+
         mDevice = mAdapter.getRemoteDevice(address);
 
         // 停止所有正在连接的线程
@@ -222,7 +222,7 @@ public class BluetoothService {
 //        setState(STATE_CONNECTING);
 //        mConnectThread = new ConnectThread(mDevice);
 //        mConnectThread.start();
-        
+
         BluetoothSocket tmp = null;
         // 获取连接给定蓝牙设备的套接字
         try {
@@ -290,13 +290,13 @@ public class BluetoothService {
             mReceivingThread.cancel();
             mReceivingThread = null;
         }
-        
+
 //        // 再停止请求连接的线程
 //        if (mConnectThread != null) {
 //            mConnectThread.cancel();
 //            mConnectThread = null;
 //        }
-        
+
         // 关闭套接字
         if (mSocket != null) {
             try {
@@ -306,7 +306,7 @@ public class BluetoothService {
                 Log.e(TAG, "close() of connect socket failed", e);
             }
         }
-        
+
         // // 由于仅需连接一台设备，停止其余连接线程
         // if (mAcceptThread != null) {
         // mAcceptThread.cancel();
@@ -314,7 +314,7 @@ public class BluetoothService {
         // }
         setState(STATE_NONE);
     }
-    
+
     private synchronized void communicate() {
         if (D) {
             Log.e(TAG, "communicate");
@@ -366,78 +366,78 @@ public class BluetoothService {
      * like a server-side client. It runs until a connection is accepted (or
      * until cancelled). 蓝牙服务器端侦听线程 此应用中Android蓝牙设备作为客户端，用不上该线程
      */
-    // private class AcceptThread extends Thread {
-    // // 本地服务套接字
-    // private final BluetoothServerSocket mmServerSocket;
-    //
-    // public AcceptThread() {
-    // BluetoothServerSocket tmp = null;
-    //
-    // // 新建一个监听服务套接字
-    // try {
-    // //开启监听
-    // tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
-    // } catch (IOException e) {
-    // Log.e(TAG, "listen() failed", e);
-    // }
-    // mmServerSocket = tmp;
-    // }
-    //
-    // public void run() {
-    // if (D) Log.e(TAG, "BEGIN mAcceptThread" + this);
-    // setName("AcceptThread");
-    // BluetoothSocket socket = null;
-    //
-    // // 当蓝牙未连接时监听服务套接字
-    // while (mState != STATE_CONNECTED) {
-    // try {
-    // // This is a blocking call and will only return on a
-    // // successful connection or an exception
-    // socket = mmServerSocket.accept();
-    // } catch (IOException e) {
-    // Log.e(TAG, "accept() failed", e);
-    // break;
-    // }
-    //
-    // // If a connection was accepted
-    // if (socket != null) {
-    // synchronized (BluetoothService.this) {
-    // switch (mState) {
-    // case STATE_LISTEN:
-    // case STATE_CONNECTING:
-    // // Situation normal. Start the connected thread.
-    //// connected(socket, socket.getRemoteDevice());
-    // break;
-    // case STATE_NONE:
-    // case STATE_CONNECTED:
-    // // Either not ready or already connected. Terminate new socket.
-    // try {
-    // socket.close();
-    // } catch (IOException e) {
-    // Log.e(TAG, "Could not close unwanted socket", e);
-    // }
-    // break;
-    // }
-    // }
-    // }
-    // }
-    // if (D) Log.i(TAG, "END mAcceptThread");
-    // }
-    //
-    // public void cancel() {
-    // if (D) Log.e(TAG, "cancel " + this);
-    // try {
-    // mmServerSocket.close();
-    // } catch (IOException e) {
-    // Log.e(TAG, "close() of server failed", e);
-    // }
-    // }
-    //
-    // }
+//    private class AcceptThread extends Thread {
+//        // 本地服务套接字
+//        private final BluetoothServerSocket mmServerSocket;
+//
+//        public AcceptThread() {
+//            BluetoothServerSocket tmp = null;
+//
+//            // 新建一个监听服务套接字
+//            try {
+//                //开启监听
+//                tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
+//            } catch (IOException e) {
+//                Log.e(TAG, "listen() failed", e);
+//            }
+//            mmServerSocket = tmp;
+//        }
+//
+//        public void run() {
+//            if (D) Log.e(TAG, "BEGIN mAcceptThread" + this);
+//            setName("AcceptThread");
+//            BluetoothSocket socket = null;
+//
+//            // 当蓝牙未连接时监听服务套接字
+//            while (mState != STATE_CONNECTED) {
+//                try {
+//                    // This is a blocking call and will only return on a
+//                    // successful connection or an exception
+//                    socket = mmServerSocket.accept();
+//                } catch (IOException e) {
+//                    Log.e(TAG, "accept() failed", e);
+//                    break;
+//                }
+//
+//                // If a connection was accepted
+//                if (socket != null) {
+//                    synchronized (BluetoothService.this) {
+//                        switch (mState) {
+//                            case STATE_LISTEN:
+//                            case STATE_CONNECTING:
+//                                // Situation normal. Start the connected thread.
+//                                // connected(socket, socket.getRemoteDevice());
+//                                break;
+//                            case STATE_NONE:
+//                            case STATE_CONNECTED:
+//                                // Either not ready or already connected. Terminate new socket.
+//                                try {
+//                                    socket.close();
+//                                } catch (IOException e) {
+//                                    Log.e(TAG, "Could not close unwanted socket", e);
+//                                }
+//                                break;
+//                        }
+//                    }
+//                }
+//            }
+//            if (D) Log.i(TAG, "END mAcceptThread");
+//        }
+//
+//        public void cancel() {
+//            if (D) Log.e(TAG, "cancel " + this);
+//            try {
+//                mmServerSocket.close();
+//            } catch (IOException e) {
+//                Log.e(TAG, "close() of server failed", e);
+//            }
+//        }
+//
+//    }
 
     /**
      * Start the ConnectedThread to begin managing a Bluetooth connection
-     * 
+     *
      * @param socket
      *            The BluetoothSocket on which the connection was made
      * @param device
@@ -447,7 +447,7 @@ public class BluetoothService {
      * 方法名：connected(BluetoothSocket socket, BluetoothDevice device)
      * 功能：开始管理蓝牙连接的线程 参数：device - 已连接的蓝牙设备 socket - 蓝牙连接的套接字 返回值：void
      */
-   
+
 
     /**
      * This thread runs while attempting to make an outgoing connection with a
@@ -543,10 +543,10 @@ public class BluetoothService {
         private final InputStream mmInStream; // 蓝牙接收数据字节流
 
         public ReceivingThread() {
-            if(D) {
+            if (D) {
                 Log.e(TAG, "*** create a ReceivingThread ***");
             }
-            
+
             InputStream tmpIn = null;
             try {
                 // create I/O streams for receiving data
@@ -560,7 +560,7 @@ public class BluetoothService {
         @Override
         public void run() {
 
-            if(D) {
+            if (D) {
                 Log.e(TAG, "接收数据线程已经启动！");
             }
 
@@ -573,7 +573,7 @@ public class BluetoothService {
                 try {
                     for (int i = 0; i < 1; i++) {
                         bytes = mmInStream.read(readBuffer); // read bytes from
-                                                             // input buffer
+                        // input buffer
                         String readMessage = new String(readBuffer, 0, bytes);
                         readMsg = readMsg.append(readMessage);
                     }
@@ -620,7 +620,7 @@ public class BluetoothService {
                     }
 
                 } catch (IOException e) {
-                    Log.e(TAG, "disconnected", e);  
+                    Log.e(TAG, "disconnected", e);
                     String connectResult = "接收数据通信已断开！";
                     mHandler.obtainMessage(MESSAGE_CONNECT_RESULT, -1, -1, connectResult).sendToTarget();
                 }
@@ -659,7 +659,7 @@ public class BluetoothService {
 
         @Override
         public void run() {
-            if(D) {
+            if (D) {
                 Log.e(TAG, "发送数据线程已经启动！");
             }
 
@@ -669,53 +669,57 @@ public class BluetoothService {
             while (!isCancel) {
 
                 switch (commandType) {
-                case COMMAND_START_NAVI:
-                    sendingMessage = "#0," + START_NAVI + ",*\n";
-                    break;
-                    
-                case COMMAND_STOP_NAVI:
-                    sendingMessage = "#0," + STOP_NAVI + ",*\n";
-                    break;
-                    
-                case COMMAND_SET_A_REQUEST:
-                    sendingMessage = "#0," + SET_A_REQUEST + ",*\n";
-                    break;
-                    
-                case COMMAND_SET_A_AFFIRM:
-                    sendingMessage = "#0," + SET_A_AFFIRM + ",*\n";
-                    break;
-                    
-                case COMMAND_SET_B_REQUEST:
-                    sendingMessage = "#0," + SET_B_REQUEST + ",*\n";
-                    break;
-                    
-                case COMMAND_SET_B_AFFIRM:
-                    sendingMessage = "#0," + SET_B_AFFIRM + ",*\n";
-                    break;
-                    
-                case COMMAND_TURN_LEFT:
-                	sendingMessage = "#0," + TURN_LEFT + ",*\n";
-                	break;
-                	
-                case COMMAND_TURN_RIGHT:
-                	sendingMessage = "#0," + TURN_RIGHT + ",*\n";
-                	break;
-                	
-                case COMMAND_HEADLAND_POINT_1:
-                	sendingMessage = "#0," + HEADLAND_POINT_1 + ",*\n";
-                	break;
-                	
-                case COMMAND_HEADLAND_POINT_2:
-                	sendingMessage = "#0," + HEADLAND_POINT_2 + ",*\n";
-                	break;
+                    case COMMAND_START_NAVI:
+                        sendingMessage = "#0," + START_NAVI + ",*\n";
+                        break;
 
-                case COMMAND_SPECIFIED:
-                    sendingMessage = "#0," + sendCommand + ",*\n";
-                    break;
+                    case COMMAND_STOP_NAVI:
+                        sendingMessage = "#0," + STOP_NAVI + ",*\n";
+                        break;
 
-                default:
-                    sendingMessage = "#0," + HEARTBEAT + ",*\n";
-                    break;
+                    case COMMAND_SET_A_REQUEST:
+                        sendingMessage = "#0," + SET_A_REQUEST + ",*\n";
+                        break;
+
+                    case COMMAND_SET_A_AFFIRM:
+                        sendingMessage = "#0," + SET_A_AFFIRM + ",*\n";
+                        break;
+
+                    case COMMAND_SET_B_REQUEST:
+                        sendingMessage = "#0," + SET_B_REQUEST + ",*\n";
+                        break;
+
+                    case COMMAND_SET_B_AFFIRM:
+                        sendingMessage = "#0," + SET_B_AFFIRM + ",*\n";
+                        break;
+
+                    case COMMAND_TURN_LEFT:
+                        sendingMessage = "#0," + TURN_LEFT + ",*\n";
+                        break;
+
+                    case COMMAND_TURN_RIGHT:
+                        sendingMessage = "#0," + TURN_RIGHT + ",*\n";
+                        break;
+
+                    case COMMAND_HEADLAND_POINT_1:
+                        sendingMessage = "#0," + HEADLAND_POINT_1 + ",*\n";
+                        break;
+
+                    case COMMAND_HEADLAND_POINT_2:
+                        sendingMessage = "#0," + HEADLAND_POINT_2 + ",*\n";
+                        break;
+
+                    case COMMAND_SPECIFIED:
+                        sendingMessage = "#0," + sendCommand + ",*\n";
+                        break;
+
+                    case COMMAND_DEFAULT:
+                        sendingMessage = "#0," + HEARTBEAT + ",*\n";
+                        break;
+
+                    default:
+                        sendingMessage = "#0," + HEARTBEAT + ",*\n";
+                        break;
                 }
 
                 writeBuffer = sendingMessage.getBytes();
@@ -756,7 +760,7 @@ public class BluetoothService {
 
     /**
      * Write data to outputStream via bluetooth socket. 发送指定字符串
-     * 
+     *
      * @param str
      */
     public void writeOutputStream(String str) {

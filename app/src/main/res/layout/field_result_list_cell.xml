@@ -3,16 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="2dp" >
+    android:background="@drawable/field_result_list_cell_background"
+    android:padding="2dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1" >
+        android:layout_margin="2dp"
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/fNameHint"
-            android:background="@drawable/textview_border_with_cornor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="地块名称："
@@ -31,11 +32,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1" >
+        android:layout_margin="2dp"
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/fNoHint"
-            android:background="@drawable/textview_border_with_cornor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="地块编号："
@@ -54,11 +55,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1" >
+        android:layout_margin="2dp"
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/fPNoHint"
-            android:background="@drawable/textview_border_with_cornor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="顶点个数："
@@ -77,11 +78,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1" >
+        android:layout_margin="2dp"
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/fDateHint"
-            android:background="@drawable/textview_border_with_cornor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="添加日期："

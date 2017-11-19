@@ -22,6 +22,7 @@ import sjtu.me.tractor.R;
 import sjtu.me.tractor.connection.ConnectionFragment;
 import sjtu.me.tractor.field.FieldSettingFragment;
 import sjtu.me.tractor.tractorinfo.TractorSettingFragment;
+import sjtu.me.tractor.util.SysUtil;
 import sjtu.me.tractor.util.ToastUtil;
 
 /**
@@ -78,10 +79,10 @@ public class HomeActivity extends Activity implements OnClickListener {
 
         super.onRestart();
 
-//        /*
-//         * 为了省电和防止后台通信线程长期运行，可以在程序进入后台运行时关闭通信；
-//         * 在restart中重启通信，这样会降低程序启动速度。
-//         */
+        /*
+         * 为了省电和防止后台通信线程长期运行，可以在程序进入后台运行时关闭通信；
+         * 在restart中重启通信，这样会降低程序启动速度。
+         */
 //        MyApplication myApp = (MyApplication) getApplication();
 //        if (myApp.getBluetoothService().getState() == BluetoothService.STATE_NONE) {
 //            myApp.getBluetoothService().startConnection(myApp.getBluetoothAddress());
@@ -97,11 +98,11 @@ public class HomeActivity extends Activity implements OnClickListener {
         // TODO Auto-generated method stub
         super.onStop();
 
-//		/*
-//		* 为了省电和防止后台通信线程长期运行，可以在程序进入后台运行时关闭通信；
-//        * 在restart中重启通信，这样会降低程序启动速度。
-//        */
-        if (!MyApplication.isAppOnForeground(this)) {
+		/*
+		* 为了省电和防止后台通信线程长期运行，可以在程序进入后台运行时关闭通信；
+        * 在restart中重启通信，这样会降低程序启动速度。
+        */
+        if (!SysUtil.isAppOnForeground(this)) {
             Log.e("APP", "ON BACK GROUDN");
 //		    MyApplication myApp = (MyApplication) getApplication();
 //		    if (myApp.getBluetoothService().getState() != BluetoothService.STATE_NONE) {
