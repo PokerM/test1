@@ -3,12 +3,15 @@ package sjtu.me.tractor.main;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -206,7 +209,9 @@ public class NaviActivity extends Activity implements OnClickListener {
 
                     case BluetoothService.MESSAGE_SENT:
                         String writeMessage = msg.obj.toString();
-                        activity.txtSentString.setText(writeMessage);
+                        String[] arrays = (writeMessage == null ? null : writeMessage.split(","));
+                        String sentMsg = ((arrays != null && arrays.length > 1) ? arrays[1] : "NULL" );
+                        activity.txtSentString.setText(sentMsg);
                         break;
 
                     case BluetoothService.MESSAGE_CONNECT_RESULT:
@@ -304,7 +309,7 @@ public class NaviActivity extends Activity implements OnClickListener {
         if (myApp.getBluetoothService().getState() == BluetoothService.STATE_NONE) {
             imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_broken);
         } else {
-            imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_broken);
+            imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_ok);
         }
     }
 
@@ -339,7 +344,7 @@ public class NaviActivity extends Activity implements OnClickListener {
         if (myApp.getBluetoothService().getState() == BluetoothService.STATE_NONE) {
             imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_broken);
         } else {
-            imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_broken);
+            imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_ok);
         }
     }
 
@@ -558,7 +563,7 @@ public class NaviActivity extends Activity implements OnClickListener {
         txtDirectionAngle = (TextView) findViewById(R.id.txtDirectionAngle);
         txtDeviance = (TextView) findViewById(R.id.txtDeviance);
         txtTurningAngle = (TextView) findViewById(R.id.txtTurningAngle);
-        txtPrecisionSeeding = (TextView) findViewById(R.id.txtLineSpacing);
+        txtPrecisionSeeding = (TextView) findViewById(R.id.txtPrecsionSeeding);
         txtReceivedString = (TextView) findViewById(R.id.txtReceivedString);
         txtReceivedStringNo = (TextView) findViewById(R.id.txtReceivedStringNo);
         txtSentString = (TextView) findViewById(R.id.txtSentString);
@@ -650,8 +655,7 @@ public class NaviActivity extends Activity implements OnClickListener {
             }
 
             // set the TextView with the received data
-            txtReceivedString.setText(dataString);
-            txtReceivedStringNo.setText(getString(R.string.number) + dataNo);
+            txtReceivedStringNo.setText(String.valueOf(dataNo));
 
             if (parseReceivedMessage(dataString)) {
                 txtDeviance.setText(String.valueOf(lateral));
@@ -659,27 +663,27 @@ public class NaviActivity extends Activity implements OnClickListener {
                 switch (satellite) {
                     /*根据GPS定位标识设置显示文本*/
                     case 0:
-                        txtSatellite.setText(R.string.satellite_gps_no_location);
+                        txtGpsState.setText(R.string.satellite_gps_no_location);
                         break;
 
                     case 1:
-                        txtSatellite.setText(R.string.satellite_gps_single_point);
+                        txtGpsState.setText(R.string.satellite_gps_single_point);
                         break;
 
                     case 2:
-                        txtSatellite.setText(R.string.satellite_gps_rtk);
+                        txtGpsState.setText(R.string.satellite_gps_rtk);
                         break;
 
                     case 4:
-                        txtSatellite.setText(R.string.satellite_gps_rtk_fixed);
+                        txtGpsState.setText(R.string.satellite_gps_rtk_fixed);
                         break;
 
                     case 5:
-                        txtSatellite.setText(R.string.satellite_gps_float);
+                        txtGpsState.setText(R.string.satellite_gps_float);
                         break;
 
                     default:
-                        txtSatellite.setText(R.string.satellite_gps_no_location);
+                        txtGpsState.setText(R.string.satellite_gps_no_location);
                         break;
                 }
                 txtLocationX.setText(String.valueOf(xx));
@@ -689,6 +693,7 @@ public class NaviActivity extends Activity implements OnClickListener {
                 txtTurningAngle.setText(String.valueOf(turnning));
                 txtPrecisionSeeding.setText(String.valueOf(seeding));
                 currentState = command;
+                txtReceivedString.setText(String.valueOf(command));
                 locationX = xx;
                 locationY = yy;
                 long timeMillis = System.currentTimeMillis();

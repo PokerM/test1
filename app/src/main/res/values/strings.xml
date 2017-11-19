@@ -136,6 +136,7 @@
     <string name="turning_angle">转向角</string>
     <string name="precision_seeding">精量播种</string>
     <string name="command_receive">接收：</string>
+    <string name="data_no">序号：</string>
     <string name="commend_send">发送：</string>
     <string name="comm_off">通信状态：断开</string>
     <string name="comm_on">通信状态：连接</string>

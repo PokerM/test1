@@ -200,120 +200,133 @@
 
             </FrameLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                >
 
                 <TextView
                     android:id="@+id/txtFieldName"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="35dp"
                     android:layout_marginLeft="67dp"
                     android:layout_marginTop="20dp"
                     android:text="@string/field_name_text"
-                    android:textSize="25sp" />
+                    android:gravity="center_vertical"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/txtTractorName"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txtFieldName"
+                    android:layout_height="35dp"
                     android:layout_marginLeft="67dp"
                     android:layout_marginTop="24dp"
                     android:text="@string/tractor_name_text"
-                    android:textSize="25sp" />
+                    android:gravity="center_vertical"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/txtLineSpacing"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_below="@id/txtTractorName"
                     android:layout_marginLeft="67dp"
                     android:layout_marginTop="24dp"
                     android:text="@string/line_spacing_txt"
-                    android:textSize="25sp" />
+                    android:gravity="center_vertical"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/txtLocationX"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_below="@id/txtLineSpacing"
                     android:layout_marginLeft="67dp"
                     android:layout_marginTop="28dp"
                     android:text="@string/x_coordinate"
-                    android:textSize="25sp" />
+                    android:gravity="center_vertical"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/txtLocationY"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="37dp"
+                    android:layout_below="@id/txtLocationX"
                     android:layout_marginLeft="67dp"
                     android:layout_marginTop="24dp"
                     android:text="@string/y_coordinate"
-                    android:textSize="25sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/txtVelocity"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_below="@id/txtLocationY"
                     android:layout_marginLeft="67dp"
                     android:layout_marginTop="24dp"
                     android:text="@string/speed"
-                    android:textSize="25sp" />
+                    android:gravity="center_vertical"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/txtDirectionAngle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_below="@id/txtVelocity"
                     android:layout_marginLeft="67dp"
                     android:layout_marginTop="27dp"
                     android:text="@string/direction_angle"
-                    android:textSize="25sp" />
+                    android:gravity="center_vertical"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/txtTurningAngle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txtDirectionAngle"
+                    android:layout_height="32dp"
                     android:layout_marginLeft="67dp"
                     android:layout_marginTop="27dp"
                     android:text="@string/turning_angle"
-                    android:textSize="25sp" />
+                    android:gravity="center_vertical"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/txtPrecsionSeeding"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txtTurningAngle"
+                    android:layout_height="35dp"
                     android:layout_marginLeft="67dp"
                     android:layout_marginTop="29dp"
                     android:text="@string/precision_seeding"
-                    android:textSize="25sp" />
+                    android:gravity="center_vertical"
+                    android:textSize="20sp" />
 
                 <ImageButton
                     android:id="@+id/imgbtnEmergencyStop"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="25dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="5dp"
                     android:background="@drawable/imgbtn_navi_emegency_stop" />
-            </LinearLayout>
+            </RelativeLayout>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:layout_marginBottom="2dp"
             android:layout_marginTop="2dp"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/command_receive"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/txtReceivedString"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="@string/data_no"
                 android:textSize="18sp" />
 
             <TextView
@@ -325,6 +338,20 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="@string/command_receive"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txtReceivedString"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
                 android:text="@string/commend_send"
                 android:textSize="18sp" />
 

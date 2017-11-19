@@ -232,14 +232,15 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
         myApp.getBluetoothService().setHandler(mFieldHandler);
 
         /*向数据库中插入数据，用来测试数据库功能*/
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 3; i++) {
             boolean flag = myApp.getDatabaseManager().insertDataToTractor(new String[]{"sjtu" + i, "jj", "lianshi", "700", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}); //test db
-            System.out.println("tractor" + flag);
         }
 
-        for (int i = 0; i < 8; i++) {
-            boolean flag = myApp.getDatabaseManager().insertDataToField(new String[]{i + ".0", "sjtu" + i, "2017-11-14 01:53:30", "1", "1", "2", "3", "4"}); //test db
-            System.out.println("field" + flag);
+        double[] x = {622534.791214, 622532.741983, 622671.928413, 622673.470054};
+        double[] y = {3424025.827438, 3424046.804231, 3424048.042998, 3424026.59498};
+
+        for (int i = 0; i < 4; i++) {
+            myApp.getDatabaseManager().insertDataToField(new String[]{"201700" + i, "songjiang", "2017-11-14 01:53:30", String.valueOf(i + 1), "1", "2", String.valueOf(x[i]), String.valueOf(y[i])}); //test db
         }
     }
 
