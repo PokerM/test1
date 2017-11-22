@@ -54,11 +54,17 @@ public class DatabaseManager {
     private static DatabaseManager instance;
 
     //在管理器的创建方法中新创建DBHelper
-    public DatabaseManager(Context context) {
+    private DatabaseManager(Context context) {
         this.context = context;
-        dbHelper = new MyDatabaseHelper(context);
+        dbHelper = MyDatabaseHelper.getInstance(context);
     }
 
+    /**
+     * 单例模式
+     *
+     * @param context
+     * @return
+     */
     public static synchronized DatabaseManager getInstance(Context context) {
         if (instance == null) {
             instance = new DatabaseManager(context);
@@ -88,8 +94,12 @@ public class DatabaseManager {
             if (mDatabase != null && mDatabase.isOpen()) {
                 mDatabase.close();
             }
+            dbHelper.close();
         }
-        dbHelper.close();
+
+        if (D) {
+            Log.e(TAG, "RELEASING DATABASE --> $$CLOSE DATABASE$$");
+        }
     }
 
 
@@ -159,7 +169,7 @@ public class DatabaseManager {
     /**
      * 查询整表的指定列
      *
-     * @param table 表名
+     * @param table   表名
      * @param columns 查询列
      * @return 查询结果
      */
@@ -183,7 +193,7 @@ public class DatabaseManager {
      * MethodName: updateBySQL
      * Description:
      *
-     * @param sql SQL语句
+     * @param sql      SQL语句
      * @param bindArgs 参数
      * @return boolean 成功标志
      */
@@ -208,8 +218,7 @@ public class DatabaseManager {
     public boolean clearAllTractorData() {
         connectDatabase();
         int count = mDatabase.delete(MyDatabaseHelper.TABLE_TRACTOR, null, null);
-        boolean flag = (count > 0);
-        return flag;
+        return (count > 0);
     }
 
     /**
@@ -366,9 +375,8 @@ public class DatabaseManager {
      */
     public Cursor queryFieldByName(String queryName) {
         connectDatabase();
-        Cursor cursor = null;
         //SQL查询语句，先建立一个分表，然后从分表中根据名称查询
-        cursor = mDatabase.rawQuery(new StringBuilder()
+        Cursor cursor = mDatabase.rawQuery(new StringBuilder()
                 .append("select ")
                 .append(FieldInfo.FIELD_ID).append(", ")
                 .append(FieldInfo.FIELD_NAME).append(", ")
@@ -382,6 +390,28 @@ public class DatabaseManager {
                 .append(" as b where a.").append(FieldInfo.FIELD_NAME)
                 .append(" = b.").append(FieldInfo.FIELD_NAME).append(") and ")
                 .append(FieldInfo.FIELD_NAME).append(" like ?").toString(), new String[]{queryName});
+        return cursor;
+    }
+
+    /**
+     * 获取地块名称列表
+     *
+     * @return 结果游标
+     */
+    public Cursor getFieldsNameList() {
+        connectDatabase();
+        //SQL查询语句，先建立一个分表，然后从分表中根据名称查询
+        Cursor cursor  = mDatabase.rawQuery(new StringBuilder()
+                .append("select ")
+                .append(FieldInfo.FIELD_NAME)
+                .append(" from ").append(MyDatabaseHelper.TABLE_FIELD)
+                .append(" as a where ")
+                .append(FieldInfo.FIELD_POINT_NO)
+                .append("=(select max(b.").append(FieldInfo.FIELD_POINT_NO).append(") from ")
+                .append(MyDatabaseHelper.TABLE_FIELD)
+                .append(" as b where a.").append(FieldInfo.FIELD_NAME)
+                .append(" = b.").append(FieldInfo.FIELD_NAME).append(") and ")
+                .append(FieldInfo.FIELD_NAME).append(" like ?").toString(), new String[]{"%%"});
         return cursor;
     }
 

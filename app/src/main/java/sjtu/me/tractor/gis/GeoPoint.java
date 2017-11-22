@@ -35,41 +35,51 @@ public class GeoPoint {
         this.yCoordinate = yCoordinate;
     }
 
-    public double getXCoordinate() {
+    public double getX() {
         return xCoordinate;
     }
 
-    public void setXCoordinate(double xCoordinate) {
+    public void setX(double xCoordinate) {
         this.xCoordinate = xCoordinate;
     }
 
-    public double getYCoordinate() {
+    public double getY() {
         return yCoordinate;
     }
 
-    public void setYCoordinate(double yCoordinate) {
+    public void setY(double yCoordinate) {
         this.yCoordinate = yCoordinate;
     }
 
-    public double getLatitude() {
+    public double getLat() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLat(double latitude) {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public double getLng() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLng(double longitude) {
         this.longitude = longitude;
+    }
+
+    public double distanceFromP(GeoPoint point) {
+        return Math.sqrt(Math.pow((this.getX() - point.getX()), 2)
+                + Math.pow((this.getY() - point.getY()), 2));
+    }
+    
+    public double distanceP1FromP2(GeoPoint p1, GeoPoint p2) {
+        return Math.sqrt(Math.pow((p2.getX() - p1.getX()), 2)
+                + Math.pow((p2.getY() - p1.getY()), 2));
     }
 
     @Override
     public String toString() {
-        return "(" + this.getXCoordinate() + "," + this.getYCoordinate() + ")";
+        return "(" + this.getX() + "," + this.getY() + ")";
     }
 
 

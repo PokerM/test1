@@ -31,6 +31,7 @@
         android:layout_height="match_parent"
         android:padding="5dp">
 
+
         <LinearLayout
             android:layout_width="300dp"
             android:layout_height="match_parent"
@@ -43,27 +44,25 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:padding="10dp"
-                android:text="实时位置："
+                android:text="选择拖拉机："
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
-            <LinearLayout
+            <Spinner
+                android:id="@+id/spTractor"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="60dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="10dp"
+                android:spinnerMode="dropdown">
 
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="100dp">
+            </Spinner>
 
-                </Spinner>
-
-            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="20dp"
                 android:background="#000" />
 
             <TextView
@@ -71,14 +70,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:padding="10dp"
-                android:text="选择标定方式："
+                android:text="选择作业地块："
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
             <Spinner
+                android:id="@+id/spField"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="100dp">
+                android:layout_height="60dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="10dp"
+                android:spinnerMode="dropdown">
 
             </Spinner>
 
@@ -88,62 +90,60 @@
                 android:layout_marginTop="20dp"
                 android:background="#000" />
 
-            <LinearLayout
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
+                android:text="选择AB线："
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spABLine"
                 android:layout_width="match_parent"
-                android:layout_height="170dp"
-                android:layout_marginTop="20dp"
-                android:padding="10dp">
-
-                <Button
-                    android:id="@+id/btnSwitchMode"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:background="@drawable/transfer" />
-
-
-            </LinearLayout>
+                android:layout_height="60dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="10dp"
+                android:spinnerMode="dropdown" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:background="#000" />
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
+                android:layout_width="160dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center|center"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
                 android:padding="10dp">
 
                 <Button
-                    android:id="@+id/btnSave"
-                    android:layout_width="200dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="0dp"
-                    android:background="@drawable/save_background" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="710dp"
-            android:layout_height="700dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <sjtu.me.tractor.surfaceview.MySurfaceView
-                    android:id="@+id/myView"
+                    android:id="@+id/btnSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="3dp" />
-            </RelativeLayout>
+                    android:background="@drawable/imgbtn_planning_switch"
+                    android:text="规划路径"
+                    android:textSize="25sp" />
 
+            </LinearLayout>
         </LinearLayout>
 
-    </LinearLayout>
+        <FrameLayout
+            android:layout_width="715dp"
+            android:layout_height="700dp">
 
+            <sjtu.me.tractor.surfaceview.MySurfaceView
+                android:id="@+id/myView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true" />
+
+        </FrameLayout>
+
+    </LinearLayout>
 </LinearLayout>

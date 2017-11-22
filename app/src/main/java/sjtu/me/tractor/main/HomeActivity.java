@@ -160,7 +160,7 @@ public class HomeActivity extends Activity implements OnClickListener {
                 break;
 
             case R.id.btnPathPlanning:
-                Intent intent2 = new Intent("sjtu.me.tractor.field.FieldAddingActivity");
+                Intent intent2 = new Intent("sjtu.me.tractor.planning.PathPlanningActivity");
                 startActivityForResult(intent2, 1);
                 break;
 

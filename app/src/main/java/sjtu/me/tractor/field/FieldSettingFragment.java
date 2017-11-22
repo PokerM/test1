@@ -41,7 +41,6 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
     private static final int LOADER_ID = 5;
     private static final String QUERY_ALL = "%%";
 
-    private Button btnImportField;
     private Button btnExportField;
     private Button btnAddField;
     private Button btnRemoveField;
@@ -165,7 +164,7 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
         lstField = (ListView) view.findViewById(R.id.lstFields);
         lstField.setOnCreateContextMenuListener(longPressListener);
 
-        btnImportField = (Button) view.findViewById(R.id.btnImportField);
+        Button btnImportField = (Button) view.findViewById(R.id.btnImportField);
         btnImportField.setOnClickListener(this);
 
         btnExportField = (Button) view.findViewById(R.id.btnExportField);
@@ -190,7 +189,19 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
                         .setTitle(getString(R.string.alert_title_field_tip))
                         .setMessage(getString(R.string.alert_message_field_import))
                         .setIcon(R.drawable.alert)
-                        .setPositiveButton(getString(R.string.affirm), null)
+                        .setPositiveButton(getString(R.string.affirm), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                /*向数据库中插入默认松江试验田数据*/
+        /*myApp.getDatabaseManager().insertDataToTractor(new String[]{"sjtu001", "jj", "lianshi", "700", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}); //test db*/
+                                double[] x = {622506.361931, 622445.558854, 622445.858947, 622506.610201};
+                                double[] y = {3423836.00652, 3423836.056613, 3423855.546672, 3423855.719806};
+                                for (int vertexNumber = 0; vertexNumber < 4; vertexNumber++) {
+                                     mApp.getDatabaseManager().insertDataToField(new String[]{"201700" + vertexNumber, "songjiang", "2017-11-14 01:53:30", String.valueOf(vertexNumber + 1), "1", "2", String.valueOf(x[vertexNumber]), String.valueOf(y[vertexNumber])}); //test db
+                                }
+                                notifyDataChange();
+                            }
+                        })
                         .setNegativeButton(getString(R.string.cancel), null)
                         .create();
                 importDialog.show();

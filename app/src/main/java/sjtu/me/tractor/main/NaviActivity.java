@@ -3,15 +3,12 @@ package sjtu.me.tractor.main;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -61,12 +58,12 @@ public class NaviActivity extends Activity implements OnClickListener {
 
     private static final int REQUEST_SELECT_FIELD = 3;   // 跳转到开启蓝牙连接页面的标志
 
-    public static final int CAR_STATE_IDLE = 99999;
-    public static final int CAR_SET_A_RESPONSE = 40103;
-    public static final int CAR_SET_B_RESPONSE = 40104;
-    public static final int CAR_LINE_NAVI = 10010;
-    public static final int CAR_TURNING_RIGHT = 10020;
-    public static final int CAR_TURNING_LEFT = 10030;
+    public static final int DEFAULT_STATE_RESPONSE = 99999;
+    public static final int SET_A_RESPONSE = 40103;
+    public static final int SET_B_RESPONSE = 40104;
+    public static final int LINE_NAVI_RESPONSE = 10010;
+    public static final int TURNING_RIGHT_RESPONSE = 10020;
+    public static final int TURNING_LEFT_RESPONSE = 10030;
 
     public static final int HEADLAND_P1_RESPONSE = 50101;
     public static final int HEADLAND_P2_RESPONSE = 50102;
@@ -123,7 +120,6 @@ public class NaviActivity extends Activity implements OnClickListener {
 
     private double locationX = 0;
     private double locationY = 0;
-    private double lateralDeviation = 0;
     private double aX, aY, bX, bY; //AB点XY坐标
     private double aLat, aLng, bLat, bLng; //AB点经纬度
     private float lineSpace = 0;
@@ -131,18 +127,16 @@ public class NaviActivity extends Activity implements OnClickListener {
     private String fileNameToSave;
     private String currentTime;
 
-    private boolean isDataReceiving = false;
     private boolean isDataToSave = false;
     private boolean isPlotting = false;
-    private boolean isOriginSet = false;
     private boolean isPointASet = false;
     private boolean isPointBSet = false;
     private boolean isBoundP1Set = false;
     private boolean isBoundP2Set = false;
     private boolean isBoundP3Set = false;
     private boolean isBoundP4Set = false;
-    private boolean isStartNavi = false; //启动导航标志
-    private boolean isAutoNavi = false; //启动导航标志
+    private boolean isStartNavi = false;
+    private boolean isStopNavi = false;
     private boolean isToTurnRight = false;
     private boolean isToTurnLeft = false;
 
@@ -175,9 +169,9 @@ public class NaviActivity extends Activity implements OnClickListener {
     private static double yy;
     private static int satellite;
     private static int gps;
-    private static double north;
     private static double velocity;
     private static int command;
+    private static double sensor;
     private static double direction;
     private static double lateral;
     private static double turnning;
@@ -378,6 +372,7 @@ public class NaviActivity extends Activity implements OnClickListener {
                     Cursor resultCursor = myApp.getDatabaseManager().queryFieldWithPointsByName(name);
                     List<Map<String, String>> resultList = DatabaseManager.cursorToList(resultCursor);
 
+                    fieldVertex.clear();
                     for (int i = 0; i < resultList.size(); i++) {
                         GeoPoint vertex = new GeoPoint(Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_X_COORDINATE)),
                                 Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_Y_COORDINATE)));
@@ -461,7 +456,7 @@ public class NaviActivity extends Activity implements OnClickListener {
                 break;
 
             case R.id.chkboxStartNavi:
-                if (!isStartNavi) {
+                if (((CheckBox) v).isChecked()) {
                     startNavi();
                     startPlotAndSavePath();
                 } else {
@@ -473,7 +468,7 @@ public class NaviActivity extends Activity implements OnClickListener {
             case R.id.btnPlanningMode:
                 AlertDialog planningDialog = new AlertDialog.Builder(this)
                         .setTitle(getString(R.string.alert_title_field_tip))
-                        .setMessage(getString(R.string.alert_message_field_import))
+                        .setMessage(getString(R.string.alert_message_navi_download))
                         .setIcon(R.drawable.alert)
                         .setPositiveButton(getString(R.string.affirm), new DialogInterface.OnClickListener() {
                             @Override
@@ -659,7 +654,7 @@ public class NaviActivity extends Activity implements OnClickListener {
             if (parseReceivedMessage(dataString)) {
                 txtDeviance.setText(String.valueOf(lateral));
                 txtSatellite.setText(String.valueOf(satellite));
-                switch (satellite) {
+                switch (gps) {
                     /*根据GPS定位标识设置显示文本*/
                     case 0:
                         txtGpsState.setText(R.string.satellite_gps_no_location);
@@ -702,6 +697,7 @@ public class NaviActivity extends Activity implements OnClickListener {
 
                 /*绘制当前点*/
                 myView.setCurentPoint(dataNo, locationX, locationY);
+                Log.e(TAG, "setCurrentPoint");
 
                  /*计算到地头的距离*/
                 double distance1 = GisAlgorithm.distanceFromPointToLine(622420.828635, 3423930.259849,
@@ -712,8 +708,8 @@ public class NaviActivity extends Activity implements OnClickListener {
                 txtDistance2Bound2.setText(getString(R.string.border_distance_2) + distance2);
 
                 /*设置A点*/
-                if (isPointASet && currentState == CAR_SET_A_RESPONSE) {// 判断此时是否点击设置A点
-                    if (preState != CAR_SET_A_RESPONSE) {
+                if (isPointASet && currentState == SET_A_RESPONSE) {// 判断此时是否点击设置A点
+                    if (preState != SET_A_RESPONSE) {
                         aX = locationX;
                         aY = locationY;
                         aLat = lat;
@@ -726,12 +722,12 @@ public class NaviActivity extends Activity implements OnClickListener {
                 }
 
                 /*设置B点*/
-                if (isPointBSet && currentState == CAR_SET_B_RESPONSE) {// 判断此时是否点击设置B点
-                    if (preState != CAR_SET_B_RESPONSE) {
+                if (isPointBSet && currentState == SET_B_RESPONSE) {// 判断此时是否点击设置B点
+                    if (preState != SET_B_RESPONSE) {
                         bX = locationX;
                         bY = locationY;
                         bLat = lat;
-                        bLat = lng;
+                        bLng = lng;
 
                         if (aY == bY && aX == bX) {
                             //弹出AB点重合警告
@@ -757,23 +753,31 @@ public class NaviActivity extends Activity implements OnClickListener {
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_SET_B_AFFIRM);
                 }
 
-                /*启动导航*/
-                if (currentState == CAR_LINE_NAVI) {
+                /*启动导航后收到直线行驶响应则切换为默认发送指令*/
+                if (isStartNavi == true && currentState == LINE_NAVI_RESPONSE) {
+                    isStartNavi = false;
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                 }
 
-                /*右转*/
-                if (isToTurnRight && currentState == CAR_TURNING_RIGHT) {// 判断此时是否右转
+                /*停止导航后收到默认响应则切换为默认发送指令*/
+                if (isStopNavi == true && currentState == DEFAULT_STATE_RESPONSE    ) {
+                    isStopNavi = false;
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                 }
 
-                /*左转*/
-                if (isToTurnLeft && currentState == CAR_TURNING_LEFT) {// 判断此时是否左转
+                /*右转后收到右转响应则切换为默认发送指令*/
+                if (isToTurnRight && currentState == TURNING_RIGHT_RESPONSE) {
+                    isToTurnRight = false;
+                    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
+                }
+
+                /*左转后收到左转响应则切换为默认发送指令*/
+                if (isToTurnLeft && currentState == TURNING_LEFT_RESPONSE) {
                     isToTurnLeft = false;
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                 }
 
-                if (currentState == CAR_LINE_NAVI || currentState == HEADLAND_P1_RESPONSE
+                if (currentState == LINE_NAVI_RESPONSE || currentState == HEADLAND_P1_RESPONSE
 						        || currentState == HEADLAND_P2_RESPONSE) {
 						    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
 						}
@@ -803,10 +807,10 @@ public class NaviActivity extends Activity implements OnClickListener {
             yy = Double.parseDouble(dataArray[3]);
             satellite = Integer.parseInt(dataArray[4]);
             gps = Integer.parseInt(dataArray[5]);
-            north = Double.parseDouble(dataArray[6]);
+            direction = Double.parseDouble(dataArray[6]);
             velocity = Double.parseDouble(dataArray[7]);
             command = Integer.parseInt(dataArray[8]);
-            direction = Double.parseDouble(dataArray[9]);
+            sensor = Double.parseDouble(dataArray[9]);
             lateral = Double.parseDouble(dataArray[10]);
             if ("nan".equalsIgnoreCase(dataArray[11])) {
                 turnning = 99999.999;
@@ -826,19 +830,21 @@ public class NaviActivity extends Activity implements OnClickListener {
      * 开始导航操作方法
      */
     private void startNavi() {
-        isStartNavi = true; //设置导航状态为真
+        /*发送启动导航命令*/
+        myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_START_NAVI); //蓝牙发送开始导航指令
         startTimeMillis = System.currentTimeMillis(); //记录开始导航系统时间（毫秒）
         mPointValues.clear(); //导航横向偏差数据集合清零
-        myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_START_NAVI); //蓝牙发送开始导航指令
+        isStartNavi = true; //设置导航状态为真
     }
 
     /**
      * 停止导航操作方法
      */
     private void stopNavi() {
-        isStartNavi = false; //
+        /*发送停止导航命令*/
         myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_STOP_NAVI); //蓝牙发送停止导航指令
         lineChart.setPointValues(mPointValues); //将导航偏差数据集传到折线图
+        isStopNavi = true;
     }
 
     /**
@@ -864,7 +870,7 @@ public class NaviActivity extends Activity implements OnClickListener {
 
     /**
      * 判断是否需要拐弯
-     * （这算法暂时是错误的，因为车辆来回两次穿越距离边界一定距离的直线，但是只有一次转弯）
+     * （这方法暂时是不能用的，因为车辆来回两次穿越距离边界一定距离的直线，但是只有一次转弯）
      *
      * @param distance 距离边界实时距离
      * @param limit    拐弯距离限制

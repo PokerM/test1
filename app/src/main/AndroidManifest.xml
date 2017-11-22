@@ -125,10 +125,17 @@
             android:enabled="true"
             android:process=":remote" />
 
-
         <activity android:name=".field.FieldAddingActivity">
             <intent-filter>
                 <action android:name="sjtu.me.tractor.field.FieldAddingActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".planning.PathPlanningActivity">
+            <intent-filter>
+                <action android:name="sjtu.me.tractor.planning.PathPlanningActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

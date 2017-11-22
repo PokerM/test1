@@ -8,7 +8,7 @@ import sjtu.me.tractor.gis.GeoPoint;
  */
 public class GeoField {
     
-    private int fieldID = 0;         //田地编号
+    private int fieldID = 0;         //田地编号d
     private int dotNum;              //节点数
     private GeoPoint[] dotSerial;    //节点序列
     

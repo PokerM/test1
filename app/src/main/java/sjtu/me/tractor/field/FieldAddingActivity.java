@@ -63,7 +63,7 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
     private static final String FIELD_DIRECTORY = "fields";
 
     private MyApplication myApp; // 程序全局变量
-    private ArrayList<GeoPoint> fieldVertices = new ArrayList<>(); // 定义地块顶点数组
+    private ArrayList<GeoPoint> fieldVerticesList = new ArrayList<>(); // 定义地块顶点列表
     private HashMap<Integer, GeoPoint> fieldMap = new HashMap<>();
     private List<LatLng> points = new ArrayList<>();//多边形的点,点的记录
     private List<LatLng> pointsTemporary = new ArrayList<>();//暂时存放的点
@@ -92,7 +92,7 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
     private BaiduMap baiduMap;//百度地图
     private Polygon mPolygon;//区域覆盖
     private List<Polyline> polyLines = new ArrayList<>();//画线
-    private List<Marker> markers = new ArrayList<>();
+    private List<Marker> markerList = new ArrayList<>();
 
     // 消息处理器
     MyFieldHandler mFieldHandler = new MyFieldHandler(this);
@@ -145,10 +145,9 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                                 activity.txtLat.setText(strLatitude);
                                 activity.txtLong.setText(strLongitude);
 
-                                // 地图中心转到当前点
-                                activity.navigateTo(SJTU.latitude, SJTU.longitude);
-
-                                activity.navigatePoint(latitude, longitude);//不断地在地图上显示当前点
+                                /*地图中心转到当前点,不断地在地图上显示当前点*/
+                                activity.navigateTo(latitude, longitude);
+                                activity.navigatePoint(latitude, longitude);
 
                                 if (CALIBRATION_FLAG == 1) {
                                     activity.addFieldVertex(latitude, longitude, xCoordinate, yCoordinate);
@@ -174,12 +173,12 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
     private void addFieldVertex(double lat, double lng, double xx, double yy) {
 
         points.add(new LatLng(lat, lng));
-        fieldVertices.add(new GeoPoint(lat, lng, xx, yy));  //添加田地顶点
+        fieldVerticesList.add(new GeoPoint(lat, lng, xx, yy));  //添加田地顶点
 
         OverlayOptions option = new MarkerOptions()
                 .position(new LatLng(lat, lng))
                 .icon(bitmap);
-        markers.add((Marker) baiduMap.addOverlay(option));//在地图上添加Marker，并显示
+        markerList.add((Marker) baiduMap.addOverlay(option));//在地图上添加Marker，并显示
 
         if ((points.size() >= 2) && (pointsTemporary.size() == 2)) {
             LatLng ll = pointsTemporary.get(1);
@@ -231,17 +230,6 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
         // 设置蓝牙连接的消息处理器为当前界面处理器
         myApp.getBluetoothService().setHandler(mFieldHandler);
 
-        /*向数据库中插入数据，用来测试数据库功能*/
-        for (int i = 0; i < 3; i++) {
-            boolean flag = myApp.getDatabaseManager().insertDataToTractor(new String[]{"sjtu" + i, "jj", "lianshi", "700", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}); //test db
-        }
-
-        double[] x = {622534.791214, 622532.741983, 622671.928413, 622673.470054};
-        double[] y = {3424025.827438, 3424046.804231, 3424048.042998, 3424026.59498};
-
-        for (int i = 0; i < 4; i++) {
-            myApp.getDatabaseManager().insertDataToField(new String[]{"201700" + i, "songjiang", "2017-11-14 01:53:30", String.valueOf(i + 1), "1", "2", String.valueOf(x[i]), String.valueOf(y[i])}); //test db
-        }
     }
 
     @Override
@@ -265,8 +253,8 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                 // 判断覆盖多边形是否空
                 if (mPolygon == null) {
                     // 移除田地前一个顶点
-                    if (fieldVertices != null) {
-                        fieldVertices.remove(fieldVertices.size() - 1); // 按下回退键时，移除无效的田地顶点
+                    if (fieldVerticesList != null && fieldVerticesList.size() > 0) {
+                        fieldVerticesList.remove(fieldVerticesList.size() - 1); // 按下回退键时，移除无效的田地顶点
                     }
 
                     if (points.size() == 1) {
@@ -292,14 +280,16 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                         pointsTemporary.add(j);
                     }
 
-                    markers.get(markers.size() - 1).remove();
-                    markers.remove(markers.size() - 1);
+                    if (markerList != null && markerList.size() > 0) {
+                        markerList.get(markerList.size() - 1).remove();
+                        markerList.remove(markerList.size() - 1);
+                    }
                 }
 
                 if (mPolygon != null) {
                     mPolygon.remove();
-                    if (fieldVertices != null) {
-                        fieldVertices.remove(fieldVertices.size() - 1); // 按下回退键时，移除无效的田地顶点
+                    if (fieldVerticesList != null && fieldVerticesList.size() > 0) {
+                        fieldVerticesList.remove(fieldVerticesList.size() - 1); // 按下回退键时，移除无效的田地顶点
                     }
 
                     for (int i = 0; i <= points.size() - 2; i++) {
@@ -320,13 +310,13 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                 ToastUtil.showToast("已删除前一个顶点", true);
                 break;
 
-            case R.id.btnSwitchMode:
+            case R.id.btnSwitch:
                 if (flag == 1) {
                     flag--;
                     btnSwitch.setBackgroundResource(R.drawable.transfer);
                 } else {
                     flag++;
-                    btnSwitch.setBackgroundResource(R.drawable.transfer_press);
+                    btnSwitch.setBackgroundResource(R.drawable.transfer_pressed);
                 }
                 break;
 
@@ -370,10 +360,10 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                 if (mPolygon != null) {
                     mPolygon.remove();
                 }
-                for (int i = 0; i < markers.size(); i++) {
-                    markers.get(i).remove();
+                for (int i = 0; i < markerList.size(); i++) {
+                    markerList.get(i).remove();
                 }
-                markers.clear();
+                markerList.clear();
                 points.clear();
                 pointsTemporary.clear();
                 polyLines.clear();
@@ -406,12 +396,12 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                                     // 读出所有田地顶点坐标按格式写到字符串
                                     String delimiter = ",";
                                     StringBuilder fieldInfo = new StringBuilder("vertex_ID,latitude,longitude,x_coordinate,y_coordinate \r\n");
-                                    for (int i = 0; i < fieldVertices.size(); i++) {
+                                    for (int i = 0; i < fieldVerticesList.size(); i++) {
                                         fieldInfo.append(i).append(delimiter)
-                                                .append(fieldVertices.get(i).getLatitude()).append(delimiter)
-                                                .append(fieldVertices.get(i).getLongitude()).append(delimiter)
-                                                .append(fieldVertices.get(i).getXCoordinate()).append(delimiter)
-                                                .append(fieldVertices.get(i).getYCoordinate()).append("\r\n");
+                                                .append(fieldVerticesList.get(i).getLat()).append(delimiter)
+                                                .append(fieldVerticesList.get(i).getLng()).append(delimiter)
+                                                .append(fieldVerticesList.get(i).getX()).append(delimiter)
+                                                .append(fieldVerticesList.get(i).getY()).append("\r\n");
                                     }
 
                                     // 保存田地信息到外部文件
@@ -420,14 +410,26 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                                     //保存地块顶点数据到数据库
                                     String fNo = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
                                     String fDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
-                                    for (int i = 0; i < fieldVertices.size(); i++) {
+                                    boolean flag = false;
+                                    for (int i = 0; i < fieldVerticesList.size(); i++) {
                                         String fPNo = String.valueOf(i + 1);
-                                        String fPLat = String.valueOf(fieldVertices.get(i).getLatitude());
-                                        String fPLng = String.valueOf(fieldVertices.get(i).getLongitude());
-                                        String fPX = String.valueOf(fieldVertices.get(i).getXCoordinate());
-                                        String fPY = String.valueOf(fieldVertices.get(i).getYCoordinate());
-                                        myApp.getDatabaseManager().insertDataToField(new String[]{fNo, fName, fDate, fPNo, fPLat, fPLng, fPX, fPY});
+                                        String fPLat = String.valueOf(fieldVerticesList.get(i).getLat());
+                                        String fPLng = String.valueOf(fieldVerticesList.get(i).getLng());
+                                        String fPX = String.valueOf(fieldVerticesList.get(i).getX());
+                                        String fPY = String.valueOf(fieldVerticesList.get(i).getY());
+                                        flag = myApp.getDatabaseManager().insertDataToField(new String[]{fNo, fName, fDate, fPNo, fPLat, fPLng, fPX, fPY});
                                     }
+                                    if (flag) {
+                                        ToastUtil.showToast("已成功添加地块到数据库！", true);
+                                    }
+                                    finish();
+//                                    Runtime runtime = Runtime.getRuntime();
+//                                    try {
+//                                        runtime.exec("input keyevent " + KeyEvent.KEYCODE_BACK);
+//                                    } catch (IOException e) {
+//                                        // TODO Auto-generated catch block
+//                                        e.printStackTrace();
+//                                    }
                                 }
                             }
                         })
@@ -455,7 +457,7 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
         LatLng ll = new LatLng(latitude, longitude);
         MapStatusUpdate update = MapStatusUpdateFactory.newLatLng(ll);
         baiduMap.animateMapStatus(update);
-        update = MapStatusUpdateFactory.zoomTo(19);
+//        update = MapStatusUpdateFactory.zoomTo(19);
         baiduMap.animateMapStatus(update);//以这个为中心点显示地图
 
     }
@@ -484,7 +486,7 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
         btnBackStep = (Button) findViewById(R.id.btnBackStep);
         btnBackStep.setOnClickListener(this);
 
-        btnSwitch = (Button) findViewById(R.id.btnSwitchMode);
+        btnSwitch = (Button) findViewById(R.id.btnSwitch);
         btnSwitch.setOnClickListener(this);
 
         btnComplete = (Button) findViewById(R.id.btnComplete);
@@ -581,14 +583,14 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
         if (mPolygon != null) {
             mPolygon.remove();
         }
-        for (int i = 0; i < markers.size(); i++) {
-            markers.get(i).remove();
+        for (int i = 0; i < markerList.size(); i++) {
+            markerList.get(i).remove();
         }
-        markers.clear();
+        markerList.clear();
         points.clear();
         pointsTemporary.clear();
         polyLines.clear();
-        fieldVertices.clear();
+        fieldVerticesList.clear();
 
         if (D) {
             Log.e(TAG, "*** ON STOP ***");

@@ -52,7 +52,7 @@
                 android:layout_marginTop="3dp"
                 android:gravity="center"
                 android:text="@string/lateral_deviation"
-                android:textSize="25sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/txtSatellite"
@@ -141,6 +141,12 @@
                 android:layout_width="705dp"
                 android:layout_height="660dp">
 
+                <sjtu.me.tractor.surfaceview.MySurfaceView
+                    android:id="@+id/mySurfaceView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="3dp" />
+
                 <CheckBox
                     android:id="@+id/starTopLeft2"
                     style="?android:attr/starStyle"
@@ -186,6 +192,7 @@
                     android:textSize="15sp" />
 
                 <ImageView
+                    android:id="@+id/northSign"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top|right"
@@ -193,11 +200,7 @@
                     android:layout_marginTop="30dp"
                     android:src="@drawable/north_indicator" />
 
-                <sjtu.me.tractor.surfaceview.MySurfaceView
-                    android:id="@+id/mySurfaceView"
-                    android:layout_marginTop="3dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+
 
             </FrameLayout>
 
@@ -243,21 +246,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="32dp"
                     android:layout_below="@id/txtLineSpacing"
-                    android:layout_marginLeft="67dp"
+                    android:layout_marginLeft="65dp"
                     android:layout_marginTop="28dp"
                     android:text="@string/x_coordinate"
                     android:gravity="center_vertical"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/txtLocationY"
                     android:layout_width="match_parent"
                     android:layout_height="37dp"
                     android:layout_below="@id/txtLocationX"
-                    android:layout_marginLeft="67dp"
+                    android:layout_marginLeft="65dp"
                     android:layout_marginTop="24dp"
                     android:text="@string/y_coordinate"
-                    android:textSize="20sp" />
+                    android:gravity="center_vertical"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/txtVelocity"

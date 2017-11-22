@@ -31,7 +31,6 @@
     </style>
     
      <!-- icon风格，用于显示导航页的button风格 -->
-
     <style name="navi_menu_button_style">
         <item name="android:layout_width">90dp</item>
         <item name="android:layout_height">90dp</item>
@@ -41,6 +40,15 @@
         <item name="android:layout_width">60dp</item>
         <item name="android:layout_height">60dp</item>
         <item name="android:layout_margin">1dp</item>
+    </style>
+
+    <!-- icon风格，用于显示规划页的button风格 -->
+    <style name="button_planning">
+        <item name="android:layout_width">180dp</item>
+        <item name="android:layout_height">90dp</item>
+        <item name="android:layout_marginBottom">3dp</item>
+        <item name="android:layout_marginTop">3dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
     </style>
 
 	<!-- circle风格，用于显示车辆设置主页的八个圆圈风格风格 -->

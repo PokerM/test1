@@ -1,14 +1,15 @@
 package sjtu.me.tractor.util;
 
 /**
- * Created by billhu on 2017/11/19.
+ * Created by billhu on 2017/11/20.
  */
 
 public class DataWrapper {
+    public static final int DATA_NUMBER = 13;
     private double lat;
     private double lng;
-    private double x;
-    private double y;
+    private double xx;
+    private double yy;
     private int satellite;
     private int gps;
     private double north;
@@ -18,6 +19,9 @@ public class DataWrapper {
     private double lateral;
     private double turnning;
     private double seeding;
+
+    public DataWrapper() {
+    }
 
     public double getLat() {
         return lat;
@@ -35,20 +39,20 @@ public class DataWrapper {
         this.lng = lng;
     }
 
-    public double getX() {
-        return x;
+    public double getXx() {
+        return xx;
     }
 
-    public void setX(double x) {
-        this.x = x;
+    public void setXx(double xx) {
+        this.xx = xx;
     }
 
-    public double getY() {
-        return y;
+    public double getYy() {
+        return yy;
     }
 
-    public void setY(double y) {
-        this.y = y;
+    public void setYy(double yy) {
+        this.yy = yy;
     }
 
     public int getSatellite() {

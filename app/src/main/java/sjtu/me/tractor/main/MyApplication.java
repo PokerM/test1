@@ -50,13 +50,6 @@ public class MyApplication extends Application{
     }
 
     /**
-     * @param mDatabaseManager
-     */
-    public void setDatabaseManager(DatabaseManager mDatabaseManager) {
-        this.databaseManager = mDatabaseManager;
-    }
-
-    /**
      * @return
      */
     public static Context getContext() {

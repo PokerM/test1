@@ -167,7 +167,7 @@
                         android:visibility="gone" />
 
                     <Button
-                        android:id="@+id/btnSwitchMode"
+                        android:id="@+id/btnSwitch"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
                         android:background="@drawable/transfer"
