@@ -1,18 +1,23 @@
-package sjtu.me.tractor.main;
+package sjtu.me.tractor.navigation;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
@@ -36,7 +41,10 @@ import sjtu.me.tractor.field.FieldInfo;
 import sjtu.me.tractor.gis.GeoPoint;
 import sjtu.me.tractor.gis.GisAlgorithm;
 import sjtu.me.tractor.hellochart.LineChart;
+import sjtu.me.tractor.main.MyApplication;
+import sjtu.me.tractor.planning.ABLine;
 import sjtu.me.tractor.surfaceview.MySurfaceView;
+import sjtu.me.tractor.tractorinfo.TractorInfo;
 import sjtu.me.tractor.util.AlertDialogUtil;
 import sjtu.me.tractor.util.FileUtil;
 import sjtu.me.tractor.util.SysUtil;
@@ -46,17 +54,23 @@ import sjtu.me.tractor.util.ToastUtil;
  * @author billhu
  */
 @SuppressLint("UseSparseArrays")
-public class NaviActivity extends Activity implements OnClickListener {
+public class NavigationActivity extends Activity implements OnClickListener {
 
-    private static final String TAG = "NaviActivity";        //调试日志标签
+    private static final String TAG = "NavigationActivity";        //调试日志标签
     private static final boolean D = true;
+
+    private static final int SURFACE_VIEW_WIDTH = 705;
+    private static final int SURFACE_VIEW_HEIGHT = 660;
 
     private static final char END = '*'; // 串口通信字符串结束标志
     private static final char START = '#'; // 串口通信字符串开始标志
     private static final char SEPARATOR = ','; // 分隔符
     private static final int SEPARATOR_NUMBER = 12; // 分隔符个数
 
-    private static final int REQUEST_SELECT_FIELD = 3;   // 跳转到开启蓝牙连接页面的标志
+    private static final int REQUEST_SELECT_FIELD = 3;   // 跳转到选择地块列表的请求序号
+    private static final int REQUEST_SELECT_TRACTOR = 4;   // 跳转到选择车辆列表的请求序号
+    private static final int REQUEST_SELECT_AB_LINE = 5;   // 跳转到选择AB线列表的请求序号
+    private static final int REQUEST_SELECT_HISTORY_PATH = 6;   // 跳转到选择历史轨迹列表的请求序号
 
     public static final int DEFAULT_STATE_RESPONSE = 99999;
     public static final int SET_A_RESPONSE = 40103;
@@ -72,6 +86,9 @@ public class NaviActivity extends Activity implements OnClickListener {
     private static final String AB_LINE_DIRECTORY = "ab_lines";
 
     private static final String QUERY_ALL = "%%";
+
+    private static final String DEFAULT_FIELD = "default_field";
+    private static final String DEFAULT_TRACTOR = "default_tractor";
 
     ImageButton imgbtnBack;  //返回按钮
     ImageButton imgbtnConnectionStatus;  //连接状态显示按钮
@@ -97,8 +114,6 @@ public class NaviActivity extends Activity implements OnClickListener {
     TextView txtDeviance;  //横向偏差文本
     TextView txtSatellite;  //卫星数目文本
     TextView txtGpsState;  //GPS状态文本
-    TextView txtDistance2Bound1;    //到边界距离文本
-    TextView txtDistance2Bound2;    //到边界距离文本
     TextView txtFieldName;  //地块名称文本
     TextView txtTractorName;  //车辆名称文本
     TextView txtLineSpacing;    //行间距
@@ -122,13 +137,11 @@ public class NaviActivity extends Activity implements OnClickListener {
     private double locationY = 0;
     private double aX, aY, bX, bY; //AB点XY坐标
     private double aLat, aLng, bLat, bLng; //AB点经纬度
-    private float lineSpace = 0;
     private long startTimeMillis;
     private String fileNameToSave;
     private String currentTime;
 
     private boolean isDataToSave = false;
-    private boolean isPlotting = false;
     private boolean isPointASet = false;
     private boolean isPointBSet = false;
     private boolean isBoundP1Set = false;
@@ -146,15 +159,17 @@ public class NaviActivity extends Activity implements OnClickListener {
     private ArrayList<GeoPoint> fieldVertex;    //定义地块顶点数组
 
     private MyApplication myApp; // 程序全局变量
+    private SharedPreferences myPreferences; //默认偏好参数存储实例
     private MySurfaceView myView; // 绘图显示控件
+    private LinearLayout statisticsView;
     private LineChart lineChart;  // 折线图控件
+    private TextView txtAverageLateral;
+    private ScaleAnimation showAnimation;
+    private ScaleAnimation hideAnimation;
     private List<PointValue> mPointValues = new ArrayList<PointValue>(); // 折线图点数据集合
-
-    private int myViewWidth;
-    private int myViewHeight;
-    protected int pathPointNo;
-    protected Object mPath;
-
+    private String defaultFieldName;
+    private String defaultTractorName;
+    private double linespacing = 2.5; //作业行间距
     /*创建消息处理器，处理通信线程发送过来的数据。*/
     MyNaviHandler mNaviHandler = new MyNaviHandler(this);
 
@@ -177,21 +192,24 @@ public class NaviActivity extends Activity implements OnClickListener {
     private static double turnning;
     private static double seeding;
 
+    public NavigationActivity() {
+    }
+
     /**
      * 使用静态内部类避免Handler带来的内存泄漏问题;
      * 在handlerMessage()中写消息处理代码
      */
     private static class MyNaviHandler extends Handler {
         //持有弱引用MyFieldHandler，GC回收时会被回收掉
-        private final WeakReference<NaviActivity> mReferenceActivity;
+        private final WeakReference<NavigationActivity> mReferenceActivity;
 
-        MyNaviHandler(NaviActivity activity) {
+        MyNaviHandler(NavigationActivity activity) {
             mReferenceActivity = new WeakReference<>(activity);
         }
 
         @Override
         public void handleMessage(android.os.Message msg) {
-            final NaviActivity activity = mReferenceActivity.get();
+            final NavigationActivity activity = mReferenceActivity.get();
             super.handleMessage(msg);
             if (activity != null) {
                 switch (msg.what) {
@@ -203,11 +221,14 @@ public class NaviActivity extends Activity implements OnClickListener {
                     case BluetoothService.MESSAGE_SENT:
                         String writeMessage = msg.obj.toString();
                         String[] arrays = (writeMessage == null ? null : writeMessage.split(","));
-                        String sentMsg = ((arrays != null && arrays.length > 1) ? arrays[1] : "NULL" );
+                        String sentMsg = ((arrays != null && arrays.length > 1) ? arrays[1] : "NULL");
                         activity.txtSentString.setText(sentMsg);
                         break;
 
                     case BluetoothService.MESSAGE_CONNECT_RESULT:
+                        if (BluetoothService.CONNECTION_BROKEN_MESSAGE.equals(msg.obj.toString())) {
+                            activity.imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_broken);
+                        }
                         ToastUtil.showToast(msg.obj.toString(), true);
                         break;
 
@@ -238,7 +259,26 @@ public class NaviActivity extends Activity implements OnClickListener {
             Log.e(TAG, "+++ setHandler: mNaviHandler +++");
         }
 
-        initViews();
+        //实例化默认偏好设置
+        myPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        initViews(); //初始化各个控件
+
+         /* 读取默认偏车辆设置 */
+        defaultTractorName = myPreferences.getString(DEFAULT_TRACTOR, null);
+        if (!TextUtils.isEmpty(defaultTractorName)) {
+            Cursor resultCursor = myApp.getDatabaseManager().queryTractorByName(defaultTractorName);
+            Map<String, String> map = DatabaseManager.cursorToMap(resultCursor);
+            txtTractorName.setText(defaultTractorName);
+            txtLineSpacing.setText(map.get(TractorInfo.TRACTOR_OPERATION_LINESPACING) + "m");
+            try {
+                linespacing = Double.parseDouble(map.get(TractorInfo.TRACTOR_OPERATION_LINESPACING));
+            } catch (NumberFormatException e) {
+                ToastUtil.showToast("读取作业行间距数字格式错误!", true);
+            }
+        } else {
+            ToastUtil.showToast(getString(R.string.toast_set_defaut_tractor_tip), true);
+        }
 
         // ---CheckBox---
         CheckBox checkBox1 = (CheckBox) findViewById(R.id.starTopLeft2);
@@ -312,6 +352,31 @@ public class NaviActivity extends Activity implements OnClickListener {
         if (D) {
             Log.e(TAG, "+++ ON RESUME +++");
         }
+
+        //设置默认地块
+        defaultFieldName = myPreferences.getString(DEFAULT_FIELD, null);
+        if (!TextUtils.isEmpty(defaultFieldName)) {
+            Cursor resultCursor = myApp.getDatabaseManager().queryFieldWithPointsByName(defaultFieldName);
+            List<Map<String, String>> resultList = DatabaseManager.cursorToList(resultCursor);
+
+            fieldVertex.clear();
+            for (int i = 0; i < resultList.size(); i++) {
+                GeoPoint vertex = new GeoPoint(Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_X_COORDINATE)),
+                        Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_Y_COORDINATE)));
+                fieldVertex.add(vertex);
+            }
+            boolean b = myView.setFieldBoundary(fieldVertex, true);
+            if (b) {
+                txtFieldName.setText(defaultFieldName);
+            } else {
+                ToastUtil.showToast(getString(R.string.toast_set_defaut_field_tip), true);
+            }
+            if (D) {
+                Log.e(TAG, "set default field: " + defaultFieldName);
+            }
+        } else {
+            ToastUtil.showToast(getString(R.string.toast_set_defaut_field_tip), true);
+        }
     }
 
     @Override
@@ -353,12 +418,12 @@ public class NaviActivity extends Activity implements OnClickListener {
     @Override
     protected void onDestroy() {
 
-        super.onDestroy();
         if (D) {
             Log.e(TAG, "+++ ON DESTROY +++");
         }
         // 退出Activity，清除MessageQueue还没处理的消息
         mNaviHandler.removeCallbacksAndMessages(null);
+        super.onDestroy();
     }
 
     @Override
@@ -369,6 +434,8 @@ public class NaviActivity extends Activity implements OnClickListener {
                     bundle = data.getExtras();
                     String name = (bundle == null ? null : bundle.getString(FieldInfo.FIELD_NAME));
                     Log.e("selected item", name);
+                    /* 将当前选择的地块名称存到默认偏好设置，下次程序自动选择此次选择的地块 */
+
                     Cursor resultCursor = myApp.getDatabaseManager().queryFieldWithPointsByName(name);
                     List<Map<String, String>> resultList = DatabaseManager.cursorToList(resultCursor);
 
@@ -379,7 +446,50 @@ public class NaviActivity extends Activity implements OnClickListener {
                         fieldVertex.add(vertex);
                     }
 
-                    myView.setViewFieldBoundary(fieldVertex, true);
+                    boolean b = myView.setFieldBoundary(fieldVertex, true);
+                    if (b) {
+                        myPreferences.edit().putString(DEFAULT_FIELD, name).commit();
+                        txtFieldName.setText(name);
+                    } else {
+                        ToastUtil.showToast(getString(R.string.toast_reset_field_tip), true);
+                    }
+                }
+                break;
+
+            case REQUEST_SELECT_TRACTOR:
+                if (resultCode == RESULT_OK) {
+                    bundle = data.getExtras();
+                    String name = (bundle == null ? null : bundle.getString(TractorInfo.TRACTOR_NAME));
+                    Log.e("selected item", name);
+                    txtTractorName.setText(name);
+
+                    /* 将当前选择的地块名称存到默认偏好设置，下次程序自动选择此次选择的地块 */
+                    myPreferences.edit().putString(DEFAULT_TRACTOR, name).commit();
+
+                    Cursor resultCursor = myApp.getDatabaseManager().queryTractorByName(name);
+                    Map<String, String> map = DatabaseManager.cursorToMap(resultCursor);
+                    txtLineSpacing.setText(map.get(TractorInfo.TRACTOR_OPERATION_LINESPACING) + " m");
+                    try {
+                        linespacing = Double.parseDouble(map.get(TractorInfo.TRACTOR_OPERATION_LINESPACING));
+                    } catch (NumberFormatException e) {
+                        ToastUtil.showToast("读取作业行间距数字格式错误!", true);
+                    }
+                }
+                break;
+
+            case REQUEST_SELECT_AB_LINE:
+                if (resultCode == RESULT_OK) {
+                    bundle = data.getExtras();
+                    String name = (bundle == null ? null : bundle.getString(ABLine.AB_LINE_NAME_BY_DATE));
+                    // TODO
+                }
+                break;
+
+            case REQUEST_SELECT_HISTORY_PATH:
+                if (resultCode == RESULT_OK) {
+                    bundle = data.getExtras();
+                    String name = (bundle == null ? null : bundle.getString(HistoryPath.HISTORY_RECORD_FILE_NAME));
+                    // TODO
                 }
                 break;
 
@@ -405,18 +515,18 @@ public class NaviActivity extends Activity implements OnClickListener {
                 Cursor cursor = myApp.getDatabaseManager().queryFieldByName(QUERY_ALL);
                 Bundle data = new Bundle();
                 data.putSerializable("data", DatabaseManager.cursorToList(cursor));
-                Intent intent = new Intent("sjtu.me.tractor.fieldsetting.FieldResultActivity");
+                Intent intent = new Intent("sjtu.me.tractor.navigation.FieldResultActivity");
                 intent.putExtras(data);
                 startActivityForResult(intent, REQUEST_SELECT_FIELD);
                 break;
 
             case R.id.btnSetTractor:
-                Cursor cursor2 = myApp.getDatabaseManager().queryFieldByName(QUERY_ALL);
+                Cursor cursor2 = myApp.getDatabaseManager().queryTractorByName(QUERY_ALL);
                 Bundle data2 = new Bundle();
                 data2.putSerializable("data", DatabaseManager.cursorToList(cursor2));
-                Intent intent2 = new Intent("sjtu.me.tractor.fieldsetting.FieldResultActivity");
+                Intent intent2 = new Intent("sjtu.me.tractor.navigation.TractorResultActivity");
                 intent2.putExtras(data2);
-                startActivityForResult(intent2, REQUEST_SELECT_FIELD);
+                startActivityForResult(intent2, REQUEST_SELECT_TRACTOR);
                 break;
 
             case R.id.chkboxABMode:
@@ -428,21 +538,13 @@ public class NaviActivity extends Activity implements OnClickListener {
                 break;
 
             case R.id.btnHistoryAB:
-                Cursor cursor3 = myApp.getDatabaseManager().queryFieldByName(QUERY_ALL);
+                Cursor cursor3 = myApp.getDatabaseManager().queryABlineByDate(QUERY_ALL);
                 Bundle data3 = new Bundle();
                 data3.putSerializable("data", DatabaseManager.cursorToList(cursor3));
-                Intent intent3 = new Intent("sjtu.me.tractor.fieldsetting.FieldResultActivity");
+                Intent intent3 = new Intent("sjtu.me.tractor.navigation.ABLineResultActivity");
                 intent3.putExtras(data3);
-                startActivityForResult(intent3, REQUEST_SELECT_FIELD);
+                startActivityForResult(intent3, REQUEST_SELECT_AB_LINE);
                 
-                /*拷贝数据库文件到外部存储空间，开发测试时用*/
-                /*
-                Log.e(TAG, "HISTORY_AB IS PRESSED ");
-                String dbPath = getApplication().getDatabasePath(MyDatabaseHelper.DB_NAME).toString();
-                Log.e(TAG, "DB PATH IS " + dbPath);
-                boolean flag = FileUtil.copyDbFilesToExternalStorage(dbPath);
-                Log.e(TAG, "COPY DB FILES SUCCESSFULLY? " + flag);
-                */
                 break;
 
             case R.id.btnSetA:
@@ -457,11 +559,13 @@ public class NaviActivity extends Activity implements OnClickListener {
 
             case R.id.chkboxStartNavi:
                 if (((CheckBox) v).isChecked()) {
-                    startNavi();
+                    startNavigation();
                     startPlotAndSavePath();
+                    isStopNavi = false;
                 } else {
-                    stopNavi();
+                    stopNavigation();
                     stopPlotAndSavePath();
+                    isStartNavi = false;
                 }
                 break;
 
@@ -483,19 +587,28 @@ public class NaviActivity extends Activity implements OnClickListener {
                 break;
 
             case R.id.btnHistoryPath:
-                Cursor cursor4 = myApp.getDatabaseManager().queryFieldByName(QUERY_ALL);
+                Cursor cursor4 = myApp.getDatabaseManager().queryHistoryEntries(QUERY_ALL);
                 Bundle data4 = new Bundle();
                 data4.putSerializable("data", DatabaseManager.cursorToList(cursor4));
-                Intent intent4 = new Intent("sjtu.me.tractor.fieldsetting.FieldResultActivity");
+                Intent intent4 = new Intent("sjtu.me.tractor.navigation.HistoryPathResultActivity");
                 intent4.putExtras(data4);
-                startActivityForResult(intent4, REQUEST_SELECT_FIELD);
+                startActivityForResult(intent4, REQUEST_SELECT_HISTORY_PATH);
                 break;
 
             case R.id.chkboxStatistics:
                 if (((CheckBox) v).isChecked()) {
-                    lineChart.showChartView(true);
+                    lineChart.setPointValues(mPointValues);
+                    if (mPointValues != null && mPointValues.size() > 0) {
+                        float totalLateral = 0.0f;
+                        for (PointValue mPointValue : mPointValues) {
+                            totalLateral += mPointValue.getY();
+                        }
+                        float average = totalLateral / mPointValues.size();
+                        txtAverageLateral.setText("平均横向偏差为：" + String.valueOf(average) + " m");
+                    }
+                    showChartView(statisticsView);
                 } else {
-                    lineChart.showChartView(false);
+                    hideChartView(statisticsView);
                 }
                 break;
 
@@ -539,15 +652,22 @@ public class NaviActivity extends Activity implements OnClickListener {
 
     private void initViews() {
         myView = (MySurfaceView) findViewById(R.id.mySurfaceView);
-        myView.setCanvasSize(1400, 1330);
+        myView.setCanvasSize(SURFACE_VIEW_WIDTH * 2, SURFACE_VIEW_HEIGHT * 2);
 
+        statisticsView = (LinearLayout) findViewById(R.id.statisticView);
+        txtAverageLateral = (TextView) findViewById(R.id.txtAverageLateral);
         lineChart = new LineChart((LineChartView) findViewById(R.id.lineChartView));
+        showAnimation = new ScaleAnimation(1.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f);
+        showAnimation.setDuration(200);
+
+        hideAnimation = new ScaleAnimation(1.0f, 1.0f, 1.0f, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.0f);
+        hideAnimation.setDuration(200);
 
         txtDeviance = ((TextView) findViewById(R.id.txtDeviance));
         txtSatellite = (TextView) findViewById(R.id.txtSatellite);
         txtGpsState = (TextView) findViewById(R.id.txtGpsState);
-        txtDistance2Bound1 = (TextView) findViewById(R.id.txtDistance2Bound1);
-        txtDistance2Bound2 = (TextView) findViewById(R.id.txtDistance2Bound2);
         txtFieldName = (TextView) findViewById(R.id.txtFieldName);
         txtTractorName = (TextView) findViewById(R.id.txtTractorName);
         txtLineSpacing = (TextView) findViewById(R.id.txtLineSpacing);
@@ -682,18 +802,22 @@ public class NaviActivity extends Activity implements OnClickListener {
                 }
                 txtLocationX.setText(String.valueOf(xx));
                 txtLocationY.setText(String.valueOf(yy));
-                txtVelocity.setText(String.valueOf(velocity));
-                txtDirectionAngle.setText(String.valueOf(direction));
+                txtVelocity.setText(String.valueOf(velocity) + "Km/h");
+                txtDirectionAngle.setText(String.valueOf(direction) + "°");
                 txtTurningAngle.setText(String.valueOf(turnning));
                 txtPrecisionSeeding.setText(String.valueOf(seeding));
                 currentState = command;
                 txtReceivedString.setText(String.valueOf(command));
                 locationX = xx;
                 locationY = yy;
-                long timeMillis = System.currentTimeMillis();
 
+                if (!isStopNavi) { //记录横向偏差
+                    long timeMillis = System.currentTimeMillis();
                 /*以时间横轴，横向偏差为纵轴，添加偏差数据到集合*/
-                mPointValues.add(new PointValue((float) ((timeMillis - startTimeMillis) / 1000.0), (float) lateral));
+                    if (lateral < 20) {//不记录太大的横向偏差（计算错误产生的）
+                        mPointValues.add(new PointValue((float) ((timeMillis - startTimeMillis) / 1000.0), (float) lateral));
+                    }
+                }
 
                 /*绘制当前点*/
                 myView.setCurentPoint(dataNo, locationX, locationY);
@@ -704,8 +828,6 @@ public class NaviActivity extends Activity implements OnClickListener {
                         622422.2437, 3423929.17782, locationX, locationY);
                 double distance2 = GisAlgorithm.distanceFromPointToLine(622423.89173, 3424003.981122,
                         622446.48542, 3424005.692487, locationX, locationY);
-                txtDistance2Bound1.setText(getString(R.string.border_distance_1) + distance1);
-                txtDistance2Bound2.setText(getString(R.string.border_distance_2) + distance2);
 
                 /*设置A点*/
                 if (isPointASet && currentState == SET_A_RESPONSE) {// 判断此时是否点击设置A点
@@ -745,6 +867,8 @@ public class NaviActivity extends Activity implements OnClickListener {
                                     .toString();
                             // 保存AB线到外部文件
                             FileUtil.writeDataToExternalStorage(AB_LINE_DIRECTORY, fileABPoints, abLine, true, false);
+
+                            myApp.getDatabaseManager().insertABline(currentTime, new ABLine(aX, aY, bX, bY), defaultFieldName);
                         }
 
                         isPointBSet = false;
@@ -760,7 +884,7 @@ public class NaviActivity extends Activity implements OnClickListener {
                 }
 
                 /*停止导航后收到默认响应则切换为默认发送指令*/
-                if (isStopNavi == true && currentState == DEFAULT_STATE_RESPONSE    ) {
+                if (isStopNavi == true && currentState == DEFAULT_STATE_RESPONSE) {
                     isStopNavi = false;
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                 }
@@ -778,9 +902,9 @@ public class NaviActivity extends Activity implements OnClickListener {
                 }
 
                 if (currentState == LINE_NAVI_RESPONSE || currentState == HEADLAND_P1_RESPONSE
-						        || currentState == HEADLAND_P2_RESPONSE) {
-						    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
-						}
+                        || currentState == HEADLAND_P2_RESPONSE) {
+                    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
+                }
 
                 preState = currentState; // 保存当前状态
             }
@@ -829,7 +953,7 @@ public class NaviActivity extends Activity implements OnClickListener {
     /**
      * 开始导航操作方法
      */
-    private void startNavi() {
+    private void startNavigation() {
         /*发送启动导航命令*/
         myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_START_NAVI); //蓝牙发送开始导航指令
         startTimeMillis = System.currentTimeMillis(); //记录开始导航系统时间（毫秒）
@@ -840,10 +964,11 @@ public class NaviActivity extends Activity implements OnClickListener {
     /**
      * 停止导航操作方法
      */
-    private void stopNavi() {
+    private void stopNavigation() {
         /*发送停止导航命令*/
         myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_STOP_NAVI); //蓝牙发送停止导航指令
         lineChart.setPointValues(mPointValues); //将导航偏差数据集传到折线图
+        Log.e(TAG, "VALUES SIZE() IS :" + mPointValues.size());
         isStopNavi = true;
     }
 
@@ -851,20 +976,30 @@ public class NaviActivity extends Activity implements OnClickListener {
      * 开始绘制轨迹操作方法
      */
     private void startPlotAndSavePath() {
-        isPlotting = true; //设置开始绘制轨迹状态为真
         isDataToSave = true; //设置开始保存数据状态为真
         dataNo = 0; //将数据点编号重置为零
-        myView.drawPath(1, true); //设置绘制轨迹状态为真
+        myView.setOperationPathWidth(6.0);
+        myView.drawPointToPath(1, true); //设置绘制轨迹状态为真
         currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date()); //获取当前日期时间字符串
         fileNameToSave = "data_" + currentTime + ".txt"; //设置数据保存文件名
+    }
+
+    public void showChartView(View view) {
+        view.startAnimation(showAnimation);
+        view.setVisibility(View.VISIBLE);
+    }
+
+    public void hideChartView(View view) {
+        view.setAnimation(hideAnimation);
+        view.startAnimation(hideAnimation);
+        view.setVisibility(View.GONE);
     }
 
     /**
      * 停止绘制轨迹操作方法
      */
     private void stopPlotAndSavePath() {
-        isPlotting = false;
-        myView.drawPath(1, false);
+        myView.drawPointToPath(1, false);
         isDataToSave = false;
     }
 

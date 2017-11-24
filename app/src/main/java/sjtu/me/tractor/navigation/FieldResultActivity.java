@@ -1,4 +1,4 @@
-package sjtu.me.tractor.field;
+package sjtu.me.tractor.navigation;
 
 
 import java.util.List;
@@ -15,6 +15,7 @@ import android.widget.SimpleAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 
 import sjtu.me.tractor.R;
+import sjtu.me.tractor.field.FieldInfo;
 
 public class FieldResultActivity extends Activity {
 

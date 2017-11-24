@@ -9,6 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="2dp"
         android:layout_margin="2dp"
         android:layout_weight="1">
 
@@ -16,11 +17,11 @@
             android:id="@+id/hint1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="地块名称："
+            android:text="AB线："
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/fName"
+            android:id="@+id/nameBydate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
@@ -32,6 +33,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="2dp"
         android:layout_margin="2dp"
         android:layout_weight="1">
 
@@ -39,11 +41,11 @@
             android:id="@+id/hint2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="地块编号："
+            android:text="地块："
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/fNo"
+            android:id="@+id/field"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
@@ -52,50 +54,5 @@
             android:textSize="20sp" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="2dp"
-        android:layout_weight="1">
-
-        <TextView
-            android:id="@+id/fPNoHint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="顶点个数："
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/fPNo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_toRightOf="@id/fPNoHint"
-            android:text="3"
-            android:textSize="20sp" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="2dp"
-        android:layout_weight="1">
-
-        <TextView
-            android:id="@+id/fDateHint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="添加日期："
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/fDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_toRightOf="@id/fDateHint"
-            android:text="4"
-            android:textSize="20sp" />
-    </RelativeLayout>
 
 </LinearLayout>

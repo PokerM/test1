@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.FeatureInfo;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -79,7 +80,8 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
         }
 
     }
-//
+
+    //
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +114,45 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
         loaderManager = getActivity().getLoaderManager();
         loaderManager.initLoader(LOADER_ID, null, this);
 
+
+        /*向车辆数据库中添加两个默认的地块*/
+        Cursor cursor = mApp.getDatabaseManager().getFieldsNameSet();
+        List<Map<String, String>> list = DatabaseManager.cursorToList(cursor);
+        final String SONGJIANG1 = "SONGJIANG_S01";
+        final String SONGJIANG2 = "SONGJIANG_S02";
+        boolean flag1 = false;
+        boolean flag2 = false;
+        for (Map<String, String> map : list) {
+            String name = map.get(FieldInfo.FIELD_NAME);
+            if (SONGJIANG1.equals(name)) {
+                flag1 = true;
+            }
+            if (SONGJIANG2.equals(name)) {
+                flag2 = true;
+            }
+        }
+        if (!flag1) {
+            /*向数据库中插入默认松江试验田1数据*/
+            double[] x = {622499.361931, 622449.558854, 622449.858947, 622499.610201};
+            double[] y = {3423836.00652, 3423836.056613, 3423855.546672, 3423855.719806};
+            for (int vertexNumber = 0; vertexNumber < 4; vertexNumber++) {
+                mApp.getDatabaseManager().insertDataToField(
+                        new String[]{"2017001" + vertexNumber, SONGJIANG1, "2017-11-14 01:53:30",
+                                String.valueOf(vertexNumber + 1), "1", "2", String.valueOf(x[vertexNumber]),
+                                String.valueOf(y[vertexNumber])}); //test db
+            }
+        }
+        if (!flag2) {
+            /*向数据库中插入默认松江试验田2数据*/
+            double[] x2 = {622498.890583, 622448.508419, 622448.302793, 622498.405365};
+            double[] y2 = {3423834.509789, 3423834.598429, 3423812.084483, 3423812.083329};
+            for (int vertexNumber = 0; vertexNumber < 4; vertexNumber++) {
+                mApp.getDatabaseManager().insertDataToField(
+                        new String[]{"2017002" + vertexNumber, SONGJIANG2, "2017-11-14 01:53:30",
+                                String.valueOf(vertexNumber + 1), "1", "2", String.valueOf(x2[vertexNumber]),
+                                String.valueOf(y2[vertexNumber])}); //test db
+            }
+        }
         // 更新数据
         notifyDataChange();
     }
@@ -153,11 +194,11 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
 
     @Override
     public void onDestroy() {
+        mApp.getDatabaseManager().releaseDataBase();
         super.onDestroy();
         if (D) {
             Log.e(TAG, "++++ ON DESTROY ++++");
         }
-        mApp.getDatabaseManager().releaseDataBase();
     }
 
     private void initViews(View view) {
@@ -192,13 +233,7 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
                         .setPositiveButton(getString(R.string.affirm), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                /*向数据库中插入默认松江试验田数据*/
-        /*myApp.getDatabaseManager().insertDataToTractor(new String[]{"sjtu001", "jj", "lianshi", "700", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}); //test db*/
-                                double[] x = {622506.361931, 622445.558854, 622445.858947, 622506.610201};
-                                double[] y = {3423836.00652, 3423836.056613, 3423855.546672, 3423855.719806};
-                                for (int vertexNumber = 0; vertexNumber < 4; vertexNumber++) {
-                                     mApp.getDatabaseManager().insertDataToField(new String[]{"201700" + vertexNumber, "songjiang", "2017-11-14 01:53:30", String.valueOf(vertexNumber + 1), "1", "2", String.valueOf(x[vertexNumber]), String.valueOf(y[vertexNumber])}); //test db
-                                }
+
                                 notifyDataChange();
                             }
                         })

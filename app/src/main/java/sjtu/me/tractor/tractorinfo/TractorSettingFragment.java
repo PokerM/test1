@@ -87,16 +87,16 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
             if (list != null && list.size() != 0) {
                 Map<String, String> map = list.get(0);
                 ((TextView) getActivity().findViewById(R.id.txtName)).setText(name);
-                ((TextView) getActivity().findViewById(R.id.txtWheelbase)).setText(map.get(TractorInfo.T_WHEELBASE));
-                ((TextView) getActivity().findViewById(R.id.txtLateral)).setText(map.get(TractorInfo.T_ANTENNA_LATERAL));
-                ((TextView) getActivity().findViewById(R.id.txtRear)).setText(map.get(TractorInfo.T_ANTENNA_REAR));
-                ((TextView) getActivity().findViewById(R.id.txtHeight)).setText(map.get(TractorInfo.T_ANTENNA_HEIGHT));
-                ((TextView) getActivity().findViewById(R.id.txtRadius)).setText(map.get(TractorInfo.T_MIN_TURNING_RADIUS));
-                ((TextView) getActivity().findViewById(R.id.txtAngular)).setText(map.get(TractorInfo.T_ANGLE_CORRECTION));
-                ((TextView) getActivity().findViewById(R.id.txtWidth)).setText(map.get(TractorInfo.T_IMPLEMENT_WIDTH));
-                ((TextView) getActivity().findViewById(R.id.txtLength)).setText(map.get(TractorInfo.T_IMPLEMENT_LENGTH));
-                ((TextView) getActivity().findViewById(R.id.txtOffset)).setText(map.get(TractorInfo.T_IMPLEMENT_OFFSET));
-                ((TextView) getActivity().findViewById(R.id.txtSpace)).setText(map.get(TractorInfo.T_OPERATION_LINESPACING));
+                ((TextView) getActivity().findViewById(R.id.txtWheelbase)).setText(map.get(TractorInfo.TRACTOR_WHEELBASE) + getString(R.string.unit_meter));
+                ((TextView) getActivity().findViewById(R.id.txtLateral)).setText(map.get(TractorInfo.TRACTOR_ANTENNA_LATERAL) + getString(R.string.unit_meter));
+                ((TextView) getActivity().findViewById(R.id.txtRear)).setText(map.get(TractorInfo.TRACTOR_ANTENNA_REAR) + getString(R.string.unit_meter));
+                ((TextView) getActivity().findViewById(R.id.txtHeight)).setText(map.get(TractorInfo.TRACTOR_ANTENNA_HEIGHT) + getString(R.string.unit_meter));
+                ((TextView) getActivity().findViewById(R.id.txtRadius)).setText(map.get(TractorInfo.TRACTOR_MIN_TURNING_RADIUS) + getString(R.string.unit_meter));
+                ((TextView) getActivity().findViewById(R.id.txtAngular)).setText(map.get(TractorInfo.TRACTOR_ANGLE_CORRECTION));
+                ((TextView) getActivity().findViewById(R.id.txtWidth)).setText(map.get(TractorInfo.TRACTOR_IMPLEMENT_WIDTH) + getString(R.string.unit_meter));
+                ((TextView) getActivity().findViewById(R.id.txtLength)).setText(map.get(TractorInfo.TRACTOR_IMPLEMENT_LENGTH) + getString(R.string.unit_meter));
+                ((TextView) getActivity().findViewById(R.id.txtOffset)).setText(map.get(TractorInfo.TRACTOR_IMPLEMENT_OFFSET) + getString(R.string.unit_meter));
+                ((TextView) getActivity().findViewById(R.id.txtSpace)).setText(map.get(TractorInfo.TRACTOR_OPERATION_LINESPACING) + getString(R.string.unit_meter));
             }
         }
     };
@@ -116,6 +116,7 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
         }
         View view = inflater.inflate(R.layout.home_fragment_tractor_setting, container, false);
         initViews(view);
+
         return view;
     }
 
@@ -133,6 +134,21 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
         loaderManager = getActivity().getLoaderManager();
         Log.e(TAG, "is loaderManager not null? " + (loaderManager != null));
         loaderManager.initLoader(LOADER_ID, null, this);
+
+        /*向车辆数据库中添加一个默认的车辆*/
+        Cursor cursor = mApp.getDatabaseManager().getTractorsNameSet();
+        List<Map<String,String>> list = DatabaseManager.cursorToList(cursor);
+        final String SJTU = "SJTU01";
+        boolean flag = false;
+        for (Map<String, String> map : list) {
+            if (SJTU.equals(map.get(TractorInfo.TRACTOR_NAME))) {
+                flag = true;
+            }
+        }
+        if (!flag) {
+            String[] tractor = {SJTU, "悬挂式", "联适", "700", "2.20", "0.95", "-0.15", "2.12", "2.0", "0.05", "2.50", "0.0", "0.85", "2.50"};
+            mApp.getDatabaseManager().insertDataToTractor(tractor);
+        }
 
         /*更新数据*/
         notifyDataChange();
@@ -175,11 +191,11 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         if (D) {
             Log.e(TAG, "++++ ON DESTROY ++++");
         }
         mApp.getDatabaseManager().releaseDataBase();
+        super.onDestroy();
     }
 
     private void initViews(View v) {
@@ -381,7 +397,7 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
                         }
                     });
 
-            String message = getString(R.string.alert_msg_tractor_info_long_press_1) + map.get(TractorInfo.T_NAME).toString()
+            String message = getString(R.string.alert_msg_tractor_info_long_press_1) + map.get(TractorInfo.TRACTOR_NAME).toString()
                     + getString(R.string.alert_msg_tractor_info_long_press_2);
             longPressAlertBuilder.setMessage(message);
             longPressAlertBuilder.show();

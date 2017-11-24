@@ -6,20 +6,20 @@ import java.io.Serializable;
 public class TractorInfo implements Serializable {
 
     // 定义拖拉机车辆属性名称常量，以便在不同文件中统一名称
-    public static final String T_NAME = "tName";
-    public static final String T_TYPE = "tractorType";
-    public static final String T_MADE = "tractorMade";
-    public static final String T_TYPE_NUMBER = "tractorTypeNumber";
-    public static final String T_WHEELBASE = "wheelbase";
-    public static final String T_ANTENNA_LATERAL = "antennaLateral";
-    public static final String T_ANTENNA_REAR = "antennaRear";
-    public static final String T_ANTENNA_HEIGHT = "antennaHeight";
-    public static final String T_MIN_TURNING_RADIUS = "minTurningRadius";
-    public static final String T_ANGLE_CORRECTION = "angleCorrection";
-    public static final String T_IMPLEMENT_WIDTH = "implementWidth";
-    public static final String T_IMPLEMENT_OFFSET = "implementOffset";
-    public static final String T_IMPLEMENT_LENGTH = "implementLength";
-    public static final String T_OPERATION_LINESPACING = "operationLineSpacing";
+    public static final String TRACTOR_NAME = "tName";
+    public static final String TRACTOR_TYPE = "tractorType";
+    public static final String TRACTOR_MADE = "tractorMade";
+    public static final String TRACTOR_TYPE_NUMBER = "tractorTypeNumber";
+    public static final String TRACTOR_WHEELBASE = "wheelbase";
+    public static final String TRACTOR_ANTENNA_LATERAL = "antennaLateral";
+    public static final String TRACTOR_ANTENNA_REAR = "antennaRear";
+    public static final String TRACTOR_ANTENNA_HEIGHT = "antennaHeight";
+    public static final String TRACTOR_MIN_TURNING_RADIUS = "minTurningRadius";
+    public static final String TRACTOR_ANGLE_CORRECTION = "angleCorrection";
+    public static final String TRACTOR_IMPLEMENT_WIDTH = "implementWidth";
+    public static final String TRACTOR_IMPLEMENT_OFFSET = "implementOffset";
+    public static final String TRACTOR_IMPLEMENT_LENGTH = "implementLength";
+    public static final String TRACTOR_OPERATION_LINESPACING = "operationLineSpacing";
 
     private String tractorName; //拖拉机名称
     private Double wheelbase;   //拖拉机轴距

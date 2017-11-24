@@ -77,7 +77,7 @@ public class StartActivity extends Activity {
 	 * …Ë÷√Ã¯◊™Activity
 	 */
 	private void redirectTo() {
-//		startActivity(new Intent().setClass(this, NaviActivity.class));
+//		startActivity(new Intent().setClass(this, NavigationActivity.class));
 		startActivity(new Intent("sjtu.me.tractor.main.HomeActivity"));
 		overridePendingTransition(R.anim.alpha_out, R.anim.alpha_in);
 		this.finish();

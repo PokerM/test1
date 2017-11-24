@@ -1,9 +1,9 @@
 package sjtu.me.tractor.planning;
 
 import android.app.Activity;
-import android.content.pm.ActivityInfo;
-import android.database.Cursor;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -35,9 +35,11 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
     private static final String TAG = "PathPlanningActivity";
     private static final boolean D = true;
 
+    private static final String DEFAULT_PLANNING_FIELD = "default_planning_field";
     private static final String QUERY_ALL = "%%";
 
     private MyApplication myApp; // 程序全局变量
+    private SharedPreferences myPreferences; //默认偏好参数存储实例
     private ArrayList<GeoPoint> fieldVertices = new ArrayList<>(); // 定义地块顶点数组
     private HashMap<Integer, GeoPoint> fieldMap = new HashMap<>();
     private List<LatLng> points = new ArrayList<>();//多边形的点,点的记录
@@ -51,6 +53,8 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
     private MySurfaceView myView;
     private static final int SURFACE_VIEW_WIDTH = 710;
     private static final int SURFACE_VIEW_HEIGHT = 700;
+    private String planningFieldName;
+    private String planningTractorName;
 
 
     @Override
@@ -58,21 +62,22 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.path_planning_activity);
         myApp = (MyApplication) getApplication();
+        myPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         final List<String> fieldList = new ArrayList<>();
-        Cursor cursor = myApp.getDatabaseManager().getFieldsNameList();
-        List<Map<String, String>> cursorList = DatabaseManager.cursorToList(cursor);
-        for (Map<String, String> map : cursorList) {
+        List<Map<String, String>> fieldMapList = DatabaseManager.cursorToList(myApp.getDatabaseManager().getFieldsNameSet());
+        for (Map<String, String> map : fieldMapList) {
             fieldList.add(map.get(FieldInfo.FIELD_NAME));
         }
-        fieldList.add("sjtu001");
-        fieldList.add("sjtu002");
-        fieldList.add("sjtu003");
+//        fieldList.add("sjtu001");
+
+        final List<String> tractorList = new ArrayList<>();
+        List<Map<String, String>> tractorMapList = DatabaseManager.cursorToList(myApp.getDatabaseManager().getTractorsNameSet());
+        for (Map<String, String> map : tractorMapList) {
+            tractorList.add(map.get(TractorInfo.TRACTOR_NAME));
+        }
 
         final List<String> abList = new ArrayList<>();
-        final List<String> tractorList = new ArrayList<>();
-
-        tractorList.add("sjtu");
 
 //        abList.add("20171120_140357");
 
@@ -94,6 +99,9 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 ToastUtil.showToast(fieldList.get(i), true);
+                SharedPreferences.Editor editor = myPreferences.edit();
+                editor.putString(DEFAULT_PLANNING_FIELD, planningFieldName);
+                editor.commit();
             }
 
             @Override

@@ -50,6 +50,11 @@ import sjtu.me.tractor.util.SysUtil;
 import sjtu.me.tractor.util.ToastUtil;
 
 
+/**
+ * 地块添加模块
+ * （注意：本模块中调用了百度地图APK，如果换了一个开发环境需要重新申请密钥，并在manifest文件中替换过来；
+ * 否则，百度地图会只显示网格，不能加载地图。）
+ */
 public class FieldAddingActivity extends Activity implements View.OnClickListener {
 
     private static final LatLng SHANGHAI = new LatLng(31.238068, 121.501654);
@@ -391,13 +396,17 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                                 } else {
                                     // 自动按时间生成文件名
                                     String currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
-                                    String fileField = "field_" + fName + "_" + currentTime + ".txt";
+                                    String fileField = "field_" + fName + "_" + currentTime + ".shp";
+                                    String fNo = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
+                                    String fDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
 
                                     // 读出所有田地顶点坐标按格式写到字符串
                                     String delimiter = ",";
-                                    StringBuilder fieldInfo = new StringBuilder("vertex_ID,latitude,longitude,x_coordinate,y_coordinate \r\n");
+                                    StringBuilder fieldInfo = new StringBuilder();
+                                    fieldInfo.append(fName).append("\r\n")
+                                            .append(fNo).append("\r\n");
                                     for (int i = 0; i < fieldVerticesList.size(); i++) {
-                                        fieldInfo.append(i).append(delimiter)
+                                        fieldInfo.append(i + 1).append(delimiter)
                                                 .append(fieldVerticesList.get(i).getLat()).append(delimiter)
                                                 .append(fieldVerticesList.get(i).getLng()).append(delimiter)
                                                 .append(fieldVerticesList.get(i).getX()).append(delimiter)
@@ -408,8 +417,6 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                                     FileUtil.writeDataToExternalStorage(FIELD_DIRECTORY, fileField, fieldInfo.toString(), false, false);
 
                                     //保存地块顶点数据到数据库
-                                    String fNo = new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date());
-                                    String fDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
                                     boolean flag = false;
                                     for (int i = 0; i < fieldVerticesList.size(); i++) {
                                         String fPNo = String.valueOf(i + 1);
@@ -599,10 +606,10 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mapView.onDestroy();
         // 退出Activity，清除MessageQueue还没处理的消息
         mFieldHandler.removeCallbacksAndMessages(null);
+        super.onDestroy();
     }
 }
 

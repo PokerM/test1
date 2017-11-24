@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -12,6 +13,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import sjtu.me.tractor.field.FieldInfo;
+import sjtu.me.tractor.navigation.HistoryPath;
+import sjtu.me.tractor.planning.ABLine;
 import sjtu.me.tractor.tractorinfo.TractorInfo;
 
 
@@ -232,20 +235,20 @@ public class DatabaseManager {
             return false;
         }
         ContentValues values = new ContentValues();
-        values.put(TractorInfo.T_NAME, tractorInfo[0]);
-        values.put(TractorInfo.T_TYPE, tractorInfo[1]);
-        values.put(TractorInfo.T_MADE, tractorInfo[2]);
-        values.put(TractorInfo.T_TYPE_NUMBER, tractorInfo[3]);
-        values.put(TractorInfo.T_WHEELBASE, tractorInfo[4]);
-        values.put(TractorInfo.T_ANTENNA_LATERAL, tractorInfo[5]);
-        values.put(TractorInfo.T_ANTENNA_REAR, tractorInfo[6]);
-        values.put(TractorInfo.T_ANTENNA_HEIGHT, tractorInfo[7]);
-        values.put(TractorInfo.T_ANGLE_CORRECTION, tractorInfo[8]);
-        values.put(TractorInfo.T_MIN_TURNING_RADIUS, tractorInfo[9]);
-        values.put(TractorInfo.T_IMPLEMENT_WIDTH, tractorInfo[10]);
-        values.put(TractorInfo.T_IMPLEMENT_OFFSET, tractorInfo[11]);
-        values.put(TractorInfo.T_IMPLEMENT_LENGTH, tractorInfo[12]);
-        values.put(TractorInfo.T_OPERATION_LINESPACING, tractorInfo[13]);
+        values.put(TractorInfo.TRACTOR_NAME, tractorInfo[0]);
+        values.put(TractorInfo.TRACTOR_TYPE, tractorInfo[1]);
+        values.put(TractorInfo.TRACTOR_MADE, tractorInfo[2]);
+        values.put(TractorInfo.TRACTOR_TYPE_NUMBER, tractorInfo[3]);
+        values.put(TractorInfo.TRACTOR_WHEELBASE, tractorInfo[4]);
+        values.put(TractorInfo.TRACTOR_ANTENNA_LATERAL, tractorInfo[5]);
+        values.put(TractorInfo.TRACTOR_ANTENNA_REAR, tractorInfo[6]);
+        values.put(TractorInfo.TRACTOR_ANTENNA_HEIGHT, tractorInfo[7]);
+        values.put(TractorInfo.TRACTOR_ANGLE_CORRECTION, tractorInfo[8]);
+        values.put(TractorInfo.TRACTOR_MIN_TURNING_RADIUS, tractorInfo[9]);
+        values.put(TractorInfo.TRACTOR_IMPLEMENT_WIDTH, tractorInfo[10]);
+        values.put(TractorInfo.TRACTOR_IMPLEMENT_OFFSET, tractorInfo[11]);
+        values.put(TractorInfo.TRACTOR_IMPLEMENT_LENGTH, tractorInfo[12]);
+        values.put(TractorInfo.TRACTOR_OPERATION_LINESPACING, tractorInfo[13]);
         connectDatabase(); //连接数据库
         long count = mDatabase.insert(MyDatabaseHelper.TABLE_TRACTOR, null, values);
         return count > 0;
@@ -263,23 +266,23 @@ public class DatabaseManager {
             return false;
         }
         ContentValues values = new ContentValues();
-        values.put(TractorInfo.T_NAME, tractorInfo[0]);
-        values.put(TractorInfo.T_TYPE, tractorInfo[1]);
-        values.put(TractorInfo.T_MADE, tractorInfo[2]);
-        values.put(TractorInfo.T_TYPE_NUMBER, tractorInfo[3]);
-        values.put(TractorInfo.T_WHEELBASE, tractorInfo[4]);
-        values.put(TractorInfo.T_ANTENNA_LATERAL, tractorInfo[5]);
-        values.put(TractorInfo.T_ANTENNA_REAR, tractorInfo[6]);
-        values.put(TractorInfo.T_ANTENNA_HEIGHT, tractorInfo[7]);
-        values.put(TractorInfo.T_ANGLE_CORRECTION, tractorInfo[8]);
-        values.put(TractorInfo.T_MIN_TURNING_RADIUS, tractorInfo[9]);
-        values.put(TractorInfo.T_IMPLEMENT_WIDTH, tractorInfo[10]);
-        values.put(TractorInfo.T_IMPLEMENT_OFFSET, tractorInfo[11]);
-        values.put(TractorInfo.T_IMPLEMENT_LENGTH, tractorInfo[12]);
-        values.put(TractorInfo.T_OPERATION_LINESPACING, tractorInfo[13]);
+        values.put(TractorInfo.TRACTOR_NAME, tractorInfo[0]);
+        values.put(TractorInfo.TRACTOR_TYPE, tractorInfo[1]);
+        values.put(TractorInfo.TRACTOR_MADE, tractorInfo[2]);
+        values.put(TractorInfo.TRACTOR_TYPE_NUMBER, tractorInfo[3]);
+        values.put(TractorInfo.TRACTOR_WHEELBASE, tractorInfo[4]);
+        values.put(TractorInfo.TRACTOR_ANTENNA_LATERAL, tractorInfo[5]);
+        values.put(TractorInfo.TRACTOR_ANTENNA_REAR, tractorInfo[6]);
+        values.put(TractorInfo.TRACTOR_ANTENNA_HEIGHT, tractorInfo[7]);
+        values.put(TractorInfo.TRACTOR_ANGLE_CORRECTION, tractorInfo[8]);
+        values.put(TractorInfo.TRACTOR_MIN_TURNING_RADIUS, tractorInfo[9]);
+        values.put(TractorInfo.TRACTOR_IMPLEMENT_WIDTH, tractorInfo[10]);
+        values.put(TractorInfo.TRACTOR_IMPLEMENT_OFFSET, tractorInfo[11]);
+        values.put(TractorInfo.TRACTOR_IMPLEMENT_LENGTH, tractorInfo[12]);
+        values.put(TractorInfo.TRACTOR_OPERATION_LINESPACING, tractorInfo[13]);
         connectDatabase(); //连接数据库
         String[] names = {tractorName};
-        int count = mDatabase.update(MyDatabaseHelper.TABLE_TRACTOR, values, TractorInfo.T_NAME + " = ?", names);
+        int count = mDatabase.update(MyDatabaseHelper.TABLE_TRACTOR, values, TractorInfo.TRACTOR_NAME + " = ?", names);
         return (count > 0);
     }
 
@@ -293,7 +296,7 @@ public class DatabaseManager {
     public boolean deleteTractorByName(String name) {
         connectDatabase();
         String[] names = {name};
-        int count = mDatabase.delete(MyDatabaseHelper.TABLE_TRACTOR, TractorInfo.T_NAME + " = ?", names);
+        int count = mDatabase.delete(MyDatabaseHelper.TABLE_TRACTOR, TractorInfo.TRACTOR_NAME + " = ?", names);
         return (count > 0);
     }
 
@@ -307,23 +310,39 @@ public class DatabaseManager {
         connectDatabase();
         Cursor cursor = mDatabase.rawQuery(new StringBuilder()
                 .append("select ")
-                .append(TractorInfo.T_NAME).append(", ")
-                .append(TractorInfo.T_TYPE).append(", ")
-                .append(TractorInfo.T_MADE).append(", ")
-                .append(TractorInfo.T_TYPE_NUMBER).append(", ")
-                .append(TractorInfo.T_WHEELBASE).append(", ")
-                .append(TractorInfo.T_ANTENNA_LATERAL).append(", ")
-                .append(TractorInfo.T_ANTENNA_REAR).append(", ")
-                .append(TractorInfo.T_ANTENNA_HEIGHT).append(", ")
-                .append(TractorInfo.T_MIN_TURNING_RADIUS).append(", ")
-                .append(TractorInfo.T_ANGLE_CORRECTION).append(", ")
-                .append(TractorInfo.T_IMPLEMENT_WIDTH).append(", ")
-                .append(TractorInfo.T_IMPLEMENT_OFFSET).append(", ")
-                .append(TractorInfo.T_IMPLEMENT_LENGTH).append(", ")
-                .append(TractorInfo.T_OPERATION_LINESPACING)
+                .append(TractorInfo.TRACTOR_NAME).append(", ")
+                .append(TractorInfo.TRACTOR_TYPE).append(", ")
+                .append(TractorInfo.TRACTOR_MADE).append(", ")
+                .append(TractorInfo.TRACTOR_TYPE_NUMBER).append(", ")
+                .append(TractorInfo.TRACTOR_WHEELBASE).append(", ")
+                .append(TractorInfo.TRACTOR_ANTENNA_LATERAL).append(", ")
+                .append(TractorInfo.TRACTOR_ANTENNA_REAR).append(", ")
+                .append(TractorInfo.TRACTOR_ANTENNA_HEIGHT).append(", ")
+                .append(TractorInfo.TRACTOR_MIN_TURNING_RADIUS).append(", ")
+                .append(TractorInfo.TRACTOR_ANGLE_CORRECTION).append(", ")
+                .append(TractorInfo.TRACTOR_IMPLEMENT_WIDTH).append(", ")
+                .append(TractorInfo.TRACTOR_IMPLEMENT_OFFSET).append(", ")
+                .append(TractorInfo.TRACTOR_IMPLEMENT_LENGTH).append(", ")
+                .append(TractorInfo.TRACTOR_OPERATION_LINESPACING)
                 .append(" from ").append(MyDatabaseHelper.TABLE_TRACTOR)
-                .append(" where ").append(TractorInfo.T_NAME).append(" like ?")
+                .append(" where ").append(TractorInfo.TRACTOR_NAME).append(" like ?")
                 .toString(), new String[]{queryName});
+        return cursor;
+    }
+
+    /**
+     * 获取所有车辆名称
+     *
+     * @return
+     */
+    public Cursor getTractorsNameSet() {
+        connectDatabase();
+        Cursor cursor = mDatabase.rawQuery(new StringBuilder()
+                .append("select ")
+                .append(TractorInfo.TRACTOR_NAME)
+                .append(" from ").append(MyDatabaseHelper.TABLE_TRACTOR)
+                .append(" where ").append(TractorInfo.TRACTOR_NAME).append(" like ?")
+                .toString(), new String[]{"%%"});
         return cursor;
     }
 
@@ -394,14 +413,14 @@ public class DatabaseManager {
     }
 
     /**
-     * 获取地块名称列表
+     * 获取所有地块名称
      *
      * @return 结果游标
      */
-    public Cursor getFieldsNameList() {
+    public Cursor getFieldsNameSet() {
         connectDatabase();
         //SQL查询语句，先建立一个分表，然后从分表中根据名称查询
-        Cursor cursor  = mDatabase.rawQuery(new StringBuilder()
+        Cursor cursor = mDatabase.rawQuery(new StringBuilder()
                 .append("select ")
                 .append(FieldInfo.FIELD_NAME)
                 .append(" from ").append(MyDatabaseHelper.TABLE_FIELD)
@@ -450,8 +469,107 @@ public class DatabaseManager {
         connectDatabase();
         String[] names = {name};
         int count = mDatabase.delete(MyDatabaseHelper.TABLE_FIELD, FieldInfo.FIELD_NAME + " = ?", names);
-        boolean flag = (count > 0);
-        return flag;
+        return (count > 0);
+    }
+
+    /**
+     * 向AB线表中插入条目
+     *
+     * @param date      日期
+     * @param line      AB线
+     * @param fieldName 地块标志
+     * @return 成功标志
+     */
+    public boolean insertABline(String date, ABLine line, String fieldName) {
+        if (line == null) {
+            return false;
+        }
+        ContentValues values = new ContentValues();
+        values.put(ABLine.AB_LINE_NAME_BY_DATE, date);
+        values.put(ABLine.A_POINT_X_COORDINATE, line.getAX());
+        values.put(ABLine.A_POINT_Y_COORDINATE, line.getAY());
+        values.put(ABLine.B_POINT_X_COORDINATE, line.getBX());
+        values.put(ABLine.B_POINT_Y_COORDINATE, line.getBY());
+        values.put(ABLine.FIELD_NAME, fieldName);
+        connectDatabase();
+        long count = mDatabase.insert(MyDatabaseHelper.TABLE_AB_LINE, null, values);
+        return count > 0;
+    }
+
+    /**
+     * @param nameByDate 以时间命名的AB线
+     * @return 成功标志
+     */
+    public boolean deleteABLine(String nameByDate) {
+        connectDatabase();
+        String[] args = {nameByDate};
+        int count = mDatabase.delete(MyDatabaseHelper.TABLE_AB_LINE, ABLine.AB_LINE_NAME_BY_DATE + " = ?", args);
+        return (count > 0);
+    }
+
+    /**
+     * @param date 日期
+     * @return 结果游标
+     */
+    public Cursor queryABlineByDate(String date) {
+        connectDatabase();
+        return mDatabase.rawQuery(new StringBuilder()
+                .append("select * from ").append(MyDatabaseHelper.TABLE_AB_LINE)
+                .append(" where ").append(ABLine.AB_LINE_NAME_BY_DATE)
+                .append(" like ?").toString(), new String[]{date});
+    }
+
+    /**
+     * 获取所有AB线
+     *
+     * @return 结果游标
+     */
+    public Cursor getAllABlines() {
+        connectDatabase();
+        return mDatabase.rawQuery(new StringBuilder()
+                .append("select * from ").append(MyDatabaseHelper.TABLE_AB_LINE)
+                .append(" where ").append(ABLine.AB_LINE_NAME_BY_DATE)
+                .append(" like ?").toString(), new String[]{"%%"});
+    }
+
+    /**
+     * @param fileName  历史记录文件名
+     * @param fieldName 地块名
+     * @return 成功标志
+     */
+    public boolean insertHistoryEntry(String fileName, String fieldName) {
+        if (TextUtils.isEmpty(fieldName) || TextUtils.isEmpty(fieldName)) {
+            return false;
+        }
+        ContentValues values = new ContentValues();
+        values.put(HistoryPath.HISTORY_RECORD_FILE_NAME, fileName);
+        values.put(HistoryPath.FIELD_NAME, fieldName);
+        connectDatabase();
+        long count = mDatabase.insert(MyDatabaseHelper.TABLE_HISTORY, null, values);
+        return count > 0;
+    }
+
+    /**
+     * @param fileName 历史记录文件名
+     * @return 结果游标
+     */
+    public Cursor queryHistoryEntries(String fileName) {
+        connectDatabase();
+        return mDatabase.rawQuery(new StringBuilder()
+                .append("select * from ").append(MyDatabaseHelper.TABLE_HISTORY)
+                .append(" where ").append(HistoryPath.HISTORY_RECORD_FILE_NAME)
+                .append(" like ?").toString(), new String[]{fileName});
+    }
+
+    /**
+     * @param fileName 历史记录文件名
+     * @return 成功标志
+     */
+    public boolean deleteHistoryEntries(String fileName) {
+        connectDatabase();
+        String[] args = {fileName};
+        int count = mDatabase.delete(MyDatabaseHelper.TABLE_HISTORY, HistoryPath.HISTORY_RECORD_FILE_NAME + " = ?", args);
+        return (count > 0);
     }
 
     /**

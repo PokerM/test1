@@ -56,6 +56,9 @@ public class BluetoothService {
     public static final int COMMAND_HEADLAND_POINT_1 = 9;
     public static final int COMMAND_HEADLAND_POINT_2 = 10;
 
+    public static String CONNECTION_BROKEN_MESSAGE = "接收数据通信已断开!";
+
+
     //发送指令
     public static final String HEARTBEAT = "11111"; // 没有任何操作时发送的指令
     public static final String START_NAVI = "10000"; // 启动导航指令
@@ -473,8 +476,8 @@ public class BluetoothService {
 //                tmp = mmDevice.createRfcommSocketToServiceRecord(MY_UUID);
 //            } catch (IOException e) {
 //                Log.e(TAG, "create() failed", e);
-//                String connectResult = "无法创建长连接！";
-//                mHandler.obtainMessage(MESSAGE_CONNECT_RESULT, -1, -1, connectResult).sendToTarget();
+//                String CONNECTION_BROKEN_MESSAGE = "无法创建长连接！";
+//                mHandler.obtainMessage(MESSAGE_CONNECT_RESULT, -1, -1, CONNECTION_BROKEN_MESSAGE).sendToTarget();
 //                
 //            }
 //            mSocket = tmp;
@@ -489,13 +492,13 @@ public class BluetoothService {
 //                try {
 //                    mSocket.connect();
 //                    Log.e(TAG, mDevice.getName() + "已经成功连接！可以传送数据！");
-//                    String connectResult = "已经成功连接!可以传送数据！";
-//                    mHandler.obtainMessage(MESSAGE_CONNECT_RESULT, -1, -1, connectResult).sendToTarget();
+//                    String CONNECTION_BROKEN_MESSAGE = "已经成功连接!可以传送数据！";
+//                    mHandler.obtainMessage(MESSAGE_CONNECT_RESULT, -1, -1, CONNECTION_BROKEN_MESSAGE).sendToTarget();
 //                    setState(STATE_CONNECTED);
 //                } catch (IOException connectException) {
 //                    Log.e(TAG, mDevice.getName() + "未连接成功！不能传送数据！");
-//                    String connectResult = "未连接成功！不能传送数据！";
-//                    mHandler.obtainMessage(MESSAGE_CONNECT_RESULT, -1, -1, connectResult).sendToTarget();
+//                    String CONNECTION_BROKEN_MESSAGE = "未连接成功！不能传送数据！";
+//                    mHandler.obtainMessage(MESSAGE_CONNECT_RESULT, -1, -1, CONNECTION_BROKEN_MESSAGE).sendToTarget();
 //                    try {
 //                        mSocket.close();
 //                        mSocket = null;
@@ -621,8 +624,7 @@ public class BluetoothService {
 
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
-                    String connectResult = "接收数据通信已断开！";
-                    mHandler.obtainMessage(MESSAGE_CONNECT_RESULT, -1, -1, connectResult).sendToTarget();
+                    mHandler.obtainMessage(MESSAGE_CONNECT_RESULT, -1, -1, CONNECTION_BROKEN_MESSAGE).sendToTarget();
                     isCancel = true;
                 }
             }

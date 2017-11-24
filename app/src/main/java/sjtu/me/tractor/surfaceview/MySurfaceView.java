@@ -44,11 +44,11 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private Canvas canvas;
     private Path mPath;
     private Path lastPath;
-    private Path fieldBoundPath;
-    private Paint pathLinePaint;
-    private Paint widePathPaint;
-    private Paint pathHistoryPaint;
-    private Paint endCirclePaint;
+    private Path fieldBoundPath; //地块边界
+    private Paint pathLinePaint; //拖拉机中心轨迹画笔
+    private Paint operationPathPaint; //作业轨迹画笔
+    private Paint pathHistoryPaint;  //上一步轨迹画笔
+    private Paint endCirclePaint; //圆点画笔
     private Paint fieldBoundPaint;
     private Paint fieldShaderPaint;
     private Paint paintABline;
@@ -66,6 +66,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private int pointBHeight;
 
     private int pointNo;
+    private int pathWidth = 45;
     private int pathPointNo = 0;
     private double fieldX, fieldY; //田地坐标
     private double APointX, APointY, BPointX, BPointY; //田地A、B点坐标
@@ -119,6 +120,8 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         setFocusable(true);
         setFocusableInTouchMode(true);
         this.setKeepScreenOn(true);
+
+        initializeViews();
     }
 
     /**
@@ -148,12 +151,12 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         pathLinePaint.setStyle(Style.STROKE);
         pathLinePaint.setStrokeWidth(3);
 
-        widePathPaint = new Paint();
-        widePathPaint.setAntiAlias(true);
-        widePathPaint.setDither(true);
-        widePathPaint.setColor(0x88ffff00);
-        widePathPaint.setStyle(Style.STROKE);
-        widePathPaint.setStrokeWidth(50);
+        operationPathPaint = new Paint();
+        operationPathPaint.setAntiAlias(true);
+        operationPathPaint.setDither(true);
+        operationPathPaint.setColor(0x88ffff00);
+        operationPathPaint.setStyle(Style.STROKE);
+        operationPathPaint.setStrokeWidth(pathWidth);
 
         pathHistoryPaint = new Paint();
         pathHistoryPaint.setAntiAlias(true);
@@ -187,7 +190,6 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        initializeViews();
         new Thread(this).start();
     }
 
@@ -214,13 +216,24 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     }
 
     /**
+     * 设置当初始坐标点
+     *
+     * @param x 当前点地理X坐标
+     * @param y 当前点地理Y坐标
+     */
+    public void setInitPoint(double x, double y) {
+        this.fieldX = x;
+        this.fieldY = y;
+    }
+
+    /**
      * 设置田地在地图中显示的大小
      *
      * @param xMap 田地轮廓X坐标
      * @param yMap 田地轮廓Y坐标
      * @param df   是否绘制田地轮廓
      */
-    public void setViewFieldBoundary(HashMap<Integer, Double> xMap, HashMap<Integer, Double> yMap, boolean df) {
+    public void setFieldBoundary(HashMap<Integer, Double> xMap, HashMap<Integer, Double> yMap, boolean df) {
         if (D) {
             Log.e(TAG, "setFieldViewSize(HashMap<Integer,Double> xMap, HashMap<Integer,Double> yMap, boolean df)被调用");
         }
@@ -265,10 +278,15 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
      *
      * @param fieldVertex 田地轮廓顶点列表
      * @param df          是否绘制田地轮廓
+     * @return 成功标志
      */
-    public void setViewFieldBoundary(ArrayList<GeoPoint> fieldVertex, boolean df) {
+    public boolean setFieldBoundary(ArrayList<GeoPoint> fieldVertex, boolean df) {
         if (D) {
-            Log.e(TAG, "setViewFieldBoundary(ArrayList<GeoPoint> fieldVertex, boolean df)被调用");
+            Log.e(TAG, "setFieldBoundary(ArrayList<GeoPoint> fieldVertex, boolean df)被调用");
+        }
+
+        if (fieldVertex.size() < 3) {
+            return false;
         }
 
         double[] xx = new double[fieldVertex.size()];
@@ -280,15 +298,15 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         for (int i = 0; i < fieldVertex.size(); i++) {
             yy[i] = fieldVertex.get(i).getY();
         }
-
         double minXX = minimum(xx);
         double maxXX = maximum(xx);
         double minYY = minimum(yy);
         double maxYY = maximum(yy);
-//        double minXX = 637640.7136;
-//        double maxXX = 637662.5025;
-//        double minYY = 3434840.5795;
-//        double maxYY = 3434854.7956;
+
+       /* 如果给定的地块顶点坐标相距太近，则返回设置边界失败 */
+        if (Math.abs(minXX - maxXX) < 1.0 != Math.abs(minYY - maxYY) < 1.0) {
+            return false;
+        }
 
         // 设置X方向最大跨度为场地宽度
         this.fieldWidth = (float) (maxXX - minXX);
@@ -299,7 +317,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         // 设置原点为最大包络矩形中心
         setOrigin((minXX + maxXX) / 2, (minYY + maxYY) / 2);
 
-        // 刷新地图比例尺
+        // 更新地图比例尺
         scale = calculateScale(fieldLength, fieldWidth, canvasHeight - canvasMargin, canvasWidth - canvasMargin);
         if (D) {
             Log.e(TAG, "比例尺：" + scale);
@@ -323,6 +341,16 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 //        Log.e("p2x,p2y", fieldToImage(fieldVertex.get(1))[0] + "," + fieldToImage(fieldVertex.get(1))[1]);
 //        Log.e("p3x,p3y", fieldToImage(fieldVertex.get(2))[0] + "," + fieldToImage(fieldVertex.get(2))[1]);
 //        Log.e("p4x,p4y", fieldToImage(fieldVertex.get(3))[0] + "," + fieldToImage(fieldVertex.get(3))[1]);
+        return true;
+    }
+
+    /**
+     * 设置作业路径宽度
+     * @param width
+     */
+    public void setOperationPathWidth(double width) {
+        this.pathWidth = (int) (width * scale + 0.5);
+        operationPathPaint.setStrokeWidth(pathWidth);
     }
 
     /**
@@ -430,9 +458,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
      * @param pathPointsNo  当前点序号
      * @param isDrawingPath 是否绘制轨迹
      */
-    public void drawPath(int pathPointsNo, boolean isDrawingPath) {
+    public void drawPointToPath(int pathPointsNo, boolean isDrawingPath) {
         if (D) {
-            Log.e(TAG, "drawPath(int pathPointsNo, boolean isDrawingPath)被调用");
+            Log.e(TAG, "drawPointToPath(int pathPointsNo, boolean isDrawingPath)被调用");
         }
 
         this.pathPointNo = pathPointsNo;
@@ -443,21 +471,21 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     /**
      * 计算地图比例尺
      *
-     * @param fl 田地地理长度
-     * @param fw 田地地理宽度
-     * @param vh 显示区域高度
-     * @param vw 显示区域宽度
-     * @return 比例尺
+     * @param fieldLength 田地地理长度
+     * @param fieldWidth 田地地理宽度
+     * @param viewHeight 显示区域高度
+     * @param viewWidth 显示区域宽度
+     * @return 比例尺（图像尺寸比地理尺寸）
      */
-    private double calculateScale(double fl, double fw, float vh, float vw) {
+    private double calculateScale(double fieldLength, double fieldWidth, float viewHeight, float viewWidth) {
         if (D) {
-            Log.e(TAG, "calculateScale(double fl, double fw, float vh, float vw)被调用");
+            Log.e(TAG, "calculateScale(double fieldLength, double fw, float vh, float vw)被调用");
         }
 
-        if ((fl / fw) < (vh / vw)) {
-            return (vw / fw);
+        if ((fieldLength / fieldWidth) < (viewHeight / viewWidth)) {
+            return (viewWidth / fieldWidth);
         } else {
-            return (vh / fl);
+            return (viewHeight / fieldLength);
         }
     }
 
@@ -550,7 +578,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
                 //绘制轨迹
                 if (isDrawingPath) {
-                    canvas.drawPath(mPath, widePathPaint);
+                    canvas.drawPath(mPath, operationPathPaint);
                     canvas.drawPath(mPath, pathLinePaint);
                 } else {
                     canvas.drawPath(lastPath, pathHistoryPaint);

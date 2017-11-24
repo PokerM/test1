@@ -181,6 +181,13 @@
     <string name="satellite_gps_rtk_fixed">RTK固定</string>
     <string name="satellite_gps_float">RTK浮点</string>
     <string name="alert_message_navi_download">\t\t启动规划路径自动导航模式\n\n点击确定装载规划路径到下位机</string>
+    <string name="toast_set_defaut_tractor_tip">请设置车辆！</string>
+    <string name="toast_set_defaut_field_tip">请先设置地块！</string>
+    <string name="toast_reset_field_tip">请先设置地块！</string>
+    <string name="history_paths_list">历史轨迹列表</string>
+    <string name="ab_lines_list">AB线列表</string>
+    <string name="tractors_list">车辆列表</string>
+    <string name="fields_list">地块列表</string>
 
     <drawable name="color_normal">#69541b</drawable>
     <drawable name="color_pressed">#b2d235</drawable>

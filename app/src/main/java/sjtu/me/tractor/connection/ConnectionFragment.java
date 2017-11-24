@@ -329,9 +329,6 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
 
     @Override
     public void onDestroy() {
-
-        super.onDestroy();
-
         // 关闭服务查找
         if (mBluetoothAdapter != null) {
             mBluetoothAdapter.cancelDiscovery();
@@ -346,6 +343,7 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
         // 清除MessageQueue里面消息
         mHomeHandler.removeCallbacksAndMessages(null);
 
+        super.onDestroy();
         if (D) {
             Log.e(TAG, "++++ ON DESTROY ++++");
         }

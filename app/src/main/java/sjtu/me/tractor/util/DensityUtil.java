@@ -11,13 +11,22 @@ import android.util.DisplayMetrics;
 public class DensityUtil {
     private static final String TAG = "DensityUtil";
 
+    /**
+     * 根据手机的分辨率的单位从 dp 转成为 px(像素)
+     * @param context
+     * @param dip
+     * @return
+     */
     public static int dipToPixel(Context context, float dip) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dip * scale + 0.5f);
     }
 
     /**
-     * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
+     * 根据手机的分辨率的单位从 px(像素) 转成为 dp
+     * @param context
+     * @param pxValue
+     * @return
      */
     public static int pixelToDip(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;

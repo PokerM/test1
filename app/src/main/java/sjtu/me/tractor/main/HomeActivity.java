@@ -20,8 +20,11 @@ import java.util.TimerTask;
 
 import sjtu.me.tractor.R;
 import sjtu.me.tractor.connection.ConnectionFragment;
+import sjtu.me.tractor.database.MyDatabaseHelper;
 import sjtu.me.tractor.field.FieldSettingFragment;
+import sjtu.me.tractor.planning.ABLine;
 import sjtu.me.tractor.tractorinfo.TractorSettingFragment;
+import sjtu.me.tractor.util.FileUtil;
 import sjtu.me.tractor.util.SysUtil;
 import sjtu.me.tractor.util.ToastUtil;
 
@@ -51,13 +54,21 @@ public class HomeActivity extends Activity implements OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.home_activity);
         initViews();
         mFragmentManager = getFragmentManager();
         selectFragment(0);
 
+        for (int i = 0; i < 5; i++) {
+            ((MyApplication) getApplication()).getDatabaseManager().insertABline("20171124_" + i, new ABLine(622518.64095, 3423839.105289,
+                    622518.641109, 3423839.108775), "songjiang001");
+        }
+
+        for (int i = 0; i < 5; i++) {
+            ((MyApplication) getApplication()).getDatabaseManager().insertHistoryEntry("20171124_" + i, "songjiang001");
+        }
 
         if (D) {
             Log.e(TAG, "+++ ON CREATE +++");
@@ -66,7 +77,6 @@ public class HomeActivity extends Activity implements OnClickListener {
 
     @Override
     protected void onStart() {
-
         super.onStart();
 
         if (D) {
@@ -76,9 +86,7 @@ public class HomeActivity extends Activity implements OnClickListener {
 
     @Override
     protected void onRestart() {
-
         super.onRestart();
-
         /*
          * 为了省电和防止后台通信线程长期运行，可以在程序进入后台运行时关闭通信；
          * 在restart中重启通信，这样会降低程序启动速度。
@@ -95,10 +103,7 @@ public class HomeActivity extends Activity implements OnClickListener {
 
     @Override
     protected void onStop() {
-        // TODO Auto-generated method stub
-        super.onStop();
-
-		/*
+        /*
 		* 为了省电和防止后台通信线程长期运行，可以在程序进入后台运行时关闭通信；
         * 在restart中重启通信，这样会降低程序启动速度。
         */
@@ -109,6 +114,9 @@ public class HomeActivity extends Activity implements OnClickListener {
 //		        myApp.getBluetoothService().stopConnection();
 //		    }
         }
+
+        super.onStop();
+
         if (D) {
             Log.e(TAG, "+++ ON STOP +++");
         }
@@ -137,11 +145,19 @@ public class HomeActivity extends Activity implements OnClickListener {
     @Override
     protected void onDestroy() {
 
-        super.onDestroy();
+        /* 拷贝数据库文件到外部目录 */
+        new Thread("copy db thread") {
+            @Override
+            public void run() {
+                String dbPath = getApplication().getDatabasePath(MyDatabaseHelper.DB_NAME).toString();
+                FileUtil.copyDbFilesToExternalStorage(dbPath);
+            }
+        }.start();
 
         if (D) {
             Log.e(TAG, "+++ ON DESTROY +++");
         }
+        super.onDestroy();
     }
 
     @Override
@@ -165,7 +181,7 @@ public class HomeActivity extends Activity implements OnClickListener {
                 break;
 
             case R.id.btnNavigation:
-                startActivity(new Intent("sjtu.me.tractor.main.NaviActivity"));
+                startActivity(new Intent("sjtu.me.tractor.navigation.NavigationActivity"));
                 break;
 
             case R.id.btnBack:

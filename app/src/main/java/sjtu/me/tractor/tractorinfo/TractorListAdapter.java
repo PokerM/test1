@@ -63,10 +63,10 @@ public class TractorListAdapter extends BaseAdapter {
         TextView tMade = (TextView) currentView.findViewById(R.id.cellTextTractorMade);
         TextView tTypeNumber = (TextView) currentView.findViewById(R.id.cellTextTractorTypeNumber);
 
-        tName.setText(list.get(position).get(TractorInfo.T_NAME));
-        tType.setText(list.get(position).get(TractorInfo.T_TYPE));
-        tMade.setText(list.get(position).get(TractorInfo.T_MADE));
-        tTypeNumber.setText(list.get(position).get(TractorInfo.T_TYPE_NUMBER));
+        tName.setText(list.get(position).get(TractorInfo.TRACTOR_NAME));
+        tType.setText(list.get(position).get(TractorInfo.TRACTOR_TYPE));
+        tMade.setText(list.get(position).get(TractorInfo.TRACTOR_MADE));
+        tTypeNumber.setText(list.get(position).get(TractorInfo.TRACTOR_TYPE_NUMBER));
 
         return currentView;
     }

@@ -171,11 +171,11 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
             editTextTractorName.setVisibility(View.GONE);
             txtTractorName.setVisibility(View.VISIBLE);
 
-            editTextTractorName.setText(bundle.getString(TractorInfo.T_NAME));
-            txtTractorName.setText(bundle.getString(TractorInfo.T_NAME));
-            txtTractorType.setText(bundle.getString(TractorInfo.T_TYPE));
-            txtTractorMade.setText(bundle.getString(TractorInfo.T_MADE));
-            txtTractorTypeNumber.setText(bundle.getString(TractorInfo.T_TYPE_NUMBER));
+            editTextTractorName.setText(bundle.getString(TractorInfo.TRACTOR_NAME));
+            txtTractorName.setText(bundle.getString(TractorInfo.TRACTOR_NAME));
+            txtTractorType.setText(bundle.getString(TractorInfo.TRACTOR_TYPE));
+            txtTractorMade.setText(bundle.getString(TractorInfo.TRACTOR_MADE));
+            txtTractorTypeNumber.setText(bundle.getString(TractorInfo.TRACTOR_TYPE_NUMBER));
 
             AlertDialog dialog = new AlertDialog.Builder(TractorAddingActivity.this)
                     .setTitle(getString(R.string.alert_dialog_title_edit_tractor))
@@ -185,16 +185,16 @@ public class TractorAddingActivity extends FragmentActivity implements OnClickLi
 
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    tractorAttributeValue[0] = bundle.getString(TractorInfo.T_WHEELBASE);
-                                    tractorAttributeValue[1] = bundle.getString(TractorInfo.T_ANTENNA_LATERAL);
-                                    tractorAttributeValue[2] = bundle.getString(TractorInfo.T_ANTENNA_REAR);
-                                    tractorAttributeValue[3] = bundle.getString(TractorInfo.T_ANTENNA_HEIGHT);
-                                    tractorAttributeValue[4] = bundle.getString(TractorInfo.T_MIN_TURNING_RADIUS);
-                                    tractorAttributeValue[5] = bundle.getString(TractorInfo.T_ANGLE_CORRECTION);
-                                    tractorAttributeValue[6] = bundle.getString(TractorInfo.T_IMPLEMENT_WIDTH);
-                                    tractorAttributeValue[7] = bundle.getString(TractorInfo.T_IMPLEMENT_LENGTH);
-                                    tractorAttributeValue[8] = bundle.getString(TractorInfo.T_IMPLEMENT_OFFSET);
-                                    tractorAttributeValue[9] = bundle.getString(TractorInfo.T_OPERATION_LINESPACING);
+                                    tractorAttributeValue[0] = bundle.getString(TractorInfo.TRACTOR_WHEELBASE);
+                                    tractorAttributeValue[1] = bundle.getString(TractorInfo.TRACTOR_ANTENNA_LATERAL);
+                                    tractorAttributeValue[2] = bundle.getString(TractorInfo.TRACTOR_ANTENNA_REAR);
+                                    tractorAttributeValue[3] = bundle.getString(TractorInfo.TRACTOR_ANTENNA_HEIGHT);
+                                    tractorAttributeValue[4] = bundle.getString(TractorInfo.TRACTOR_MIN_TURNING_RADIUS);
+                                    tractorAttributeValue[5] = bundle.getString(TractorInfo.TRACTOR_ANGLE_CORRECTION);
+                                    tractorAttributeValue[6] = bundle.getString(TractorInfo.TRACTOR_IMPLEMENT_WIDTH);
+                                    tractorAttributeValue[7] = bundle.getString(TractorInfo.TRACTOR_IMPLEMENT_LENGTH);
+                                    tractorAttributeValue[8] = bundle.getString(TractorInfo.TRACTOR_IMPLEMENT_OFFSET);
+                                    tractorAttributeValue[9] = bundle.getString(TractorInfo.TRACTOR_OPERATION_LINESPACING);
 
                                     updateItems();
 

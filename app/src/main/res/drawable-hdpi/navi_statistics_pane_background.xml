@@ -4,8 +4,8 @@
     <solid android:color="@color/snow" />
 
     <stroke
-        android:width="5dp"
-        android:color="@color/yellow" />
+        android:width="2dp"
+        android:color="@color/darkgray" />
 
     <corners
         android:bottomLeftRadius="10dp"

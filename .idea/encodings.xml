@@ -9,7 +9,6 @@
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/field/FieldAddingActivity.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/field/FieldInfo.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/field/FieldListAdapter.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/field/FieldResultActivity.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/field/FieldSettingFragment.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/gis/GeoField.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/gis/GeoLine.java" charset="GBK" />
@@ -18,8 +17,8 @@
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/hellochart/LineChart.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/main/HomeActivity.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/main/MyApplication.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/main/NaviActivity.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/main/NaviActivityOldVersion.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/navigation/FieldResultActivity.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/navigation/NavigationActivity.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/start/StartActivity.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/surfaceview/MySurfaceView.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/tractorinfo/Info0Wheelbase.java" charset="GBK" />
