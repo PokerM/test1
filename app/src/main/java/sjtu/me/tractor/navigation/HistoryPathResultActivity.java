@@ -80,7 +80,7 @@ public class HistoryPathResultActivity extends Activity {
             int position = info.position;
             Map<String, String> map = list.get(position);
             final String name = map.get(HistoryPath.HISTORY_RECORD_FILE_NAME);
-            AlertDialog longPressAlertBuilder = new AlertDialog.Builder(HistoryPathResultActivity.this)
+            AlertDialog longPressAlertBuilder = new AlertDialog.Builder(getApplicationContext())
                     .setTitle(getString(R.string.alert_title))
                     .setMessage(getString(R.string.delete_entries))
                     .setIcon(R.drawable.alert)

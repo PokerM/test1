@@ -1,7 +1,5 @@
 package sjtu.me.tractor.gis;
 
-import android.webkit.GeolocationPermissions;
-
 import java.util.List;
 
 public final class GisAlgorithm {
@@ -86,7 +84,14 @@ public final class GisAlgorithm {
         }
     }
 
-    public static double[] minXmaxXminYmaxY(List<GeoPoint> fieldVertices) {
+    /**
+     * @param fieldVertices
+     * @return
+     */
+    public static double[] getBoundaryLimits(List<GeoPoint> fieldVertices) {
+        if (fieldVertices == null) {
+            return null;
+        }
         double minX = Double.MAX_VALUE;
         double maxX = Double.MIN_VALUE;
         double minY = Double.MAX_VALUE;
@@ -112,6 +117,12 @@ public final class GisAlgorithm {
         return new double[]{minX, maxX, minY, maxY};
     }
 
+
+    /**
+     * @param fieldVertices
+     * @param point
+     * @return
+     */
     public static boolean pointInPolygon(List<GeoPoint> fieldVertices, GeoPoint point) {
         if (fieldVertices == null || point == null) {
             return false;
@@ -123,10 +134,10 @@ public final class GisAlgorithm {
             return false;
         }
 
-        if (point.getX() < minXmaxXminYmaxY(fieldVertices)[0]
-                || point.getX() > minXmaxXminYmaxY(fieldVertices)[1]
-                || point.getY() < minXmaxXminYmaxY(fieldVertices)[2]
-                || point.getY() > minXmaxXminYmaxY(fieldVertices)[3]) {
+        if (point.getX() < getBoundaryLimits(fieldVertices)[0]
+                || point.getX() > getBoundaryLimits(fieldVertices)[1]
+                || point.getY() < getBoundaryLimits(fieldVertices)[2]
+                || point.getY() > getBoundaryLimits(fieldVertices)[3]) {
             return false;
         }
 

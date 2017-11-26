@@ -30,7 +30,6 @@ import java.lang.ref.WeakReference;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -97,20 +96,20 @@ public class NavigationActivity extends Activity implements OnClickListener {
     ImageButton imgbtnConnectionStatus;  //连接状态显示按钮
     Button btnSetField;  //设置田地按钮
     Button btnSetTractor;  //设置田地按钮
-    CheckBox chkboxABMode;  //AB线导航模式按钮
+    CheckBox checkboxABMode;  //AB线导航模式按钮
     Button btnPlanningMode; //规划导航模式按钮
-    CheckBox chkboxHistory;  //历史记录按钮
-    CheckBox chxboxStatistics; //统计数据按钮
-    CheckBox chxboxRemoteMode; //遥控器模式按钮
+    CheckBox checkboxHistory;  //历史记录按钮
+    CheckBox checkboxStatistics; //统计数据按钮
+    CheckBox checkboxRemoteMode; //遥控器模式按钮
     LinearLayout layoutABModePane;
     Button btnHistoryAB;  //历史AB线按钮
     Button btnSetA;  //设置A点按钮
     Button btnSetB;  //设置B点按钮
-    CheckBox chkboxStartNavi; //启动导航
+    CheckBox checkboxStartNavigation; //启动导航
     LinearLayout layoutRemotePane;
     Button btnAccelerate; //加速按钮
     Button btnTurnLeft;  //左转按钮
-    CheckBox chkboxStartSwitch;  //启动开关按钮
+    CheckBox checkboxStartSwitch;  //启动开关按钮
     Button btnTurnRight;  //右转按钮
     ImageButton imgbtnEmergencyStop;    //急停按钮
 
@@ -152,19 +151,15 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private boolean isBoundP2Set = false;
     private boolean isBoundP3Set = false;
     private boolean isBoundP4Set = false;
-    private boolean isStartNavi = false;
-    private boolean isStopNavi = false;
+    private boolean isStartNavigation = false;
+    private boolean isStopNavigation = false;
     private boolean isToTurnRight = false;
     private boolean isToTurnLeft = false;
     private boolean isOnQueryingHistory = false; //是否历史记录
 
 
-    private ArrayList<Double> pathListX, pathListY;
-    // private ArrayList<Double> boundListX,boundListY;
-    private HashMap<Integer, Double> boundTempMapX, boundTempMapY;
-    private ArrayList<GeoPoint> fieldVertex;    //定义地块顶点数组
-
     private MyApplication myApp; // 程序全局变量
+
     private SharedPreferences myPreferences; //默认偏好参数存储实例
     private MySurfaceView myView; // 绘图显示控件
     private LinearLayout statisticsView;
@@ -177,9 +172,10 @@ public class NavigationActivity extends Activity implements OnClickListener {
     List<PointValue> historyPointValues = new ArrayList<>(); //历史记录折线图点数据集合
     private String defaultFieldName;
     private String defaultTractorName;
+    private ArrayList<GeoPoint> defaultFieldVertexList;    //定义地块顶点数组
     private double linespacing = 2.5; //作业行间距
     /*创建消息处理器，处理通信线程发送过来的数据。*/
-    MyNaviHandler mNaviHandler = new MyNaviHandler(this);
+    MyNavigationHandler mNavigationHandler = new MyNavigationHandler(this);
 
     /*handler的message字符串处理，使用StringBuilder类的性能远高于String类；
     另外，使用全局静态变量比使用局部变量速度快一倍以上。*/
@@ -201,17 +197,18 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private static double seeding;
 
     public NavigationActivity() {
+        super();
     }
 
     /**
      * 使用静态内部类避免Handler带来的内存泄漏问题;
      * 在handlerMessage()中写消息处理代码
      */
-    private static class MyNaviHandler extends Handler {
+    private static class MyNavigationHandler extends Handler {
         //持有弱引用MyFieldHandler，GC回收时会被回收掉
         private final WeakReference<NavigationActivity> mReferenceActivity;
 
-        MyNaviHandler(NavigationActivity activity) {
+        MyNavigationHandler(NavigationActivity activity) {
             mReferenceActivity = new WeakReference<>(activity);
         }
 
@@ -257,14 +254,14 @@ public class NavigationActivity extends Activity implements OnClickListener {
         }
 
         //实例化地块顶点列表对象
-        fieldVertex = new ArrayList<GeoPoint>();
+        defaultFieldVertexList = new ArrayList<GeoPoint>();
 
         //获取全局类实例
         myApp = (MyApplication) getApplication();
         //设置蓝牙连接的消息处理器为当前界面处理器
-        myApp.getBluetoothService().setHandler(mNaviHandler);
+        myApp.getBluetoothService().setHandler(mNavigationHandler);
         if (D) {
-            Log.e(TAG, "+++ setHandler: mNaviHandler +++");
+            Log.e(TAG, "+++ setHandler: mNavigationHandler +++");
         }
 
         //实例化默认偏好设置
@@ -328,14 +325,8 @@ public class NavigationActivity extends Activity implements OnClickListener {
         });
 
 
-        pathListX = new ArrayList<Double>();
-        pathListY = new ArrayList<Double>();
         // boundListX = new ArrayList<Double>();
         // boundListY = new ArrayList<Double>();
-
-
-        boundTempMapX = new HashMap<Integer, Double>();
-        boundTempMapY = new HashMap<Integer, Double>();
 
 
     }
@@ -367,13 +358,13 @@ public class NavigationActivity extends Activity implements OnClickListener {
             Cursor resultCursor = myApp.getDatabaseManager().queryFieldWithPointsByName(defaultFieldName);
             List<Map<String, String>> resultList = DatabaseManager.cursorToList(resultCursor);
 
-            fieldVertex.clear();
+            defaultFieldVertexList.clear();
             for (int i = 0; i < resultList.size(); i++) {
                 GeoPoint vertex = new GeoPoint(Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_X_COORDINATE)),
                         Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_Y_COORDINATE)));
-                fieldVertex.add(vertex);
+                defaultFieldVertexList.add(vertex);
             }
-            boolean b = myView.setFieldBoundary(fieldVertex, true);
+            boolean b = myView.setFieldBoundary(defaultFieldVertexList, true);
             if (b) {
                 txtFieldName.setText(defaultFieldName);
             } else {
@@ -405,7 +396,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
         }
 
         // 重新进入界面时设置消息处理器为当前处理器
-        myApp.getBluetoothService().setHandler(mNaviHandler);
+        myApp.getBluetoothService().setHandler(mNavigationHandler);
 
         if (myApp.getBluetoothService().getState() == BluetoothService.STATE_NONE) {
             imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_broken);
@@ -430,7 +421,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
             Log.e(TAG, "+++ ON DESTROY +++");
         }
         // 退出Activity，清除MessageQueue还没处理的消息
-        mNaviHandler.removeCallbacksAndMessages(null);
+        mNavigationHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
 
@@ -447,14 +438,14 @@ public class NavigationActivity extends Activity implements OnClickListener {
                     Cursor resultCursor = myApp.getDatabaseManager().queryFieldWithPointsByName(name);
                     List<Map<String, String>> resultList = DatabaseManager.cursorToList(resultCursor);
 
-                    fieldVertex.clear();
+                    defaultFieldVertexList.clear();
                     for (int i = 0; i < resultList.size(); i++) {
                         GeoPoint vertex = new GeoPoint(Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_X_COORDINATE)),
                                 Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_Y_COORDINATE)));
-                        fieldVertex.add(vertex);
+                        defaultFieldVertexList.add(vertex);
                     }
 
-                    boolean b = myView.setFieldBoundary(fieldVertex, true);
+                    boolean b = myView.setFieldBoundary(defaultFieldVertexList, true);
                     if (b) {
                         myPreferences.edit().putString(DEFAULT_FIELD, name).commit();
                         txtFieldName.setText(name);
@@ -594,18 +585,18 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 if (((CheckBox) v).isChecked()) {
                     startNavigation();
                     startPlotAndSavePath();
-                    isStartNavi = true;
-                    isStopNavi = false;
+                    isStartNavigation = true;
+                    isStopNavigation = false;
                     /*导航过程中设置历史查询按钮为不可点击状态*/
-                    chkboxHistory.setClickable(false);
-                    chkboxHistory.setChecked(false);
+                    checkboxHistory.setClickable(false);
+                    checkboxHistory.setChecked(false);
                 } else {
                     stopNavigation();
                     stopPlotAndSavePath();
-                    isStartNavi = false;
-                    isStopNavi = true;
+                    isStartNavigation = false;
+                    isStopNavigation = true;
                     /*导航结束后设置历史查询按钮为可点击状态*/
-                    chkboxHistory.setClickable(true);
+                    checkboxHistory.setClickable(true);
                 }
                 break;
 
@@ -641,7 +632,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 } else {
                     isOnQueryingHistory = false;
                     myView.hideHistoryPath();
-                    myView.setFieldBoundary(fieldVertex, true);
+                    myView.setFieldBoundary(defaultFieldVertexList, true);
                      /*田地设置按钮设为可点击状态*/
                     btnSetField.setClickable(true);
                 }
@@ -712,7 +703,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 break;
 
             case R.id.imgbtnEmergencyStop:
-                isStopNavi = true;
+                isStopNavigation = true;
                 myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_STOP_NAVI);
                 break;
 
@@ -764,20 +755,20 @@ public class NavigationActivity extends Activity implements OnClickListener {
         btnSetTractor = (Button) findViewById(R.id.btnSetTractor);
         btnSetTractor.setOnClickListener(this);
 
-        chkboxABMode = (CheckBox) findViewById(R.id.chkboxABMode);
-        chkboxABMode.setOnClickListener(this);
+        checkboxABMode = (CheckBox) findViewById(R.id.chkboxABMode);
+        checkboxABMode.setOnClickListener(this);
 
         btnPlanningMode = (Button) findViewById(R.id.btnPlanningMode);
         btnPlanningMode.setOnClickListener(this);
 
-        chkboxHistory = (CheckBox) findViewById(R.id.chkboxHistory);
-        chkboxHistory.setOnClickListener(this);
+        checkboxHistory = (CheckBox) findViewById(R.id.chkboxHistory);
+        checkboxHistory.setOnClickListener(this);
 
-        chxboxStatistics = (CheckBox) findViewById(R.id.chkboxStatistics);
-        chxboxStatistics.setOnClickListener(this);
+        checkboxStatistics = (CheckBox) findViewById(R.id.chkboxStatistics);
+        checkboxStatistics.setOnClickListener(this);
 
-        chxboxRemoteMode = (CheckBox) findViewById(R.id.chkboxRemoteMode);
-        chxboxRemoteMode.setOnClickListener(this);
+        checkboxRemoteMode = (CheckBox) findViewById(R.id.chkboxRemoteMode);
+        checkboxRemoteMode.setOnClickListener(this);
 
         layoutABModePane = (LinearLayout) findViewById(R.id.layoutABMode);
 
@@ -790,8 +781,8 @@ public class NavigationActivity extends Activity implements OnClickListener {
         btnSetB = (Button) findViewById(R.id.btnSetB);
         btnSetB.setOnClickListener(this);
 
-        chkboxStartNavi = (CheckBox) findViewById(R.id.chkboxStartNavi);
-        chkboxStartNavi.setOnClickListener(this);
+        checkboxStartNavigation = (CheckBox) findViewById(R.id.chkboxStartNavi);
+        checkboxStartNavigation.setOnClickListener(this);
 
         layoutRemotePane = (LinearLayout) findViewById(R.id.layoutRemotePane);
 
@@ -801,8 +792,8 @@ public class NavigationActivity extends Activity implements OnClickListener {
         btnTurnLeft = (Button) findViewById(R.id.btnTurnLeft);
         btnTurnLeft.setOnClickListener(this);
 
-        chkboxStartSwitch = (CheckBox) findViewById(R.id.chkboxStartSwitch);
-        chkboxStartSwitch.setOnClickListener(this);
+        checkboxStartSwitch = (CheckBox) findViewById(R.id.chkboxStartSwitch);
+        checkboxStartSwitch.setOnClickListener(this);
 
         btnTurnRight = (Button) findViewById(R.id.btnTurnRight);
         btnTurnRight.setOnClickListener(this);
@@ -882,7 +873,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 locationX = xx;
                 locationY = yy;
 
-                if (!isStopNavi) { //记录横向偏差
+                if (!isStopNavigation) { //记录横向偏差
                     long timeMillis = System.currentTimeMillis();
                 /*以时间横轴，横向偏差为纵轴，添加偏差数据到集合*/
                     if (Math.abs(lateral) < 3) {//不记录太大的横向偏差（计算错误产生的）
@@ -891,14 +882,14 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 }
 
                 /*绘制当前点*/
-                myView.setCurentPoint(dataNo, locationX, locationY);
-                Log.e(TAG, "setCurrentPoint");
-
-                 /*计算到地头的距离*/
-                double distance1 = GisAlgorithm.distanceFromPointToLine(622420.828635, 3423930.259849,
-                        622422.2437, 3423929.17782, locationX, locationY);
-                double distance2 = GisAlgorithm.distanceFromPointToLine(622423.89173, 3424003.981122,
-                        622446.48542, 3424005.692487, locationX, locationY);
+                if ((GisAlgorithm.getBoundaryLimits(defaultFieldVertexList) == null)
+                        || (locationX > GisAlgorithm.getBoundaryLimits(defaultFieldVertexList)[0] - 20
+                        && locationX < GisAlgorithm.getBoundaryLimits(defaultFieldVertexList)[1] + 20
+                        && locationY > GisAlgorithm.getBoundaryLimits(defaultFieldVertexList)[2] - 20
+                        && locationY < GisAlgorithm.getBoundaryLimits(defaultFieldVertexList)[3] + 20)) {
+                    myView.setCurentPoint(dataNo, locationX, locationY);
+                    Log.e(TAG, "myView.setCurrentPoint");
+                }
 
                 /*设置A点*/
                 if (isPointASet && currentState == SET_A_RESPONSE) {// 判断此时是否点击设置A点
@@ -939,7 +930,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                             // 保存AB线到外部文件
                             FileUtil.writeDataToExternalStorage(AB_LINE_DIRECTORY, fileABPoints, abLine, true, false);
 
-                            myApp.getDatabaseManager().insertABline(currentTime, new ABLine(aX, aY, bX, bY), defaultFieldName);
+                            myApp.getDatabaseManager().insertABline(currentTime + "_ab", new ABLine(aX, aY, bX, bY), defaultFieldName);
                         }
 
                         isPointBSet = false;
@@ -949,14 +940,14 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 }
 
                 /*启动导航后收到直线行驶响应则切换为默认发送指令*/
-                if (isStartNavi == true && currentState == LINE_NAVI_RESPONSE) {
-                    isStartNavi = false;
+                if (isStartNavigation == true && currentState == LINE_NAVI_RESPONSE) {
+                    isStartNavigation = false;
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                 }
 
                 /*停止导航后收到默认响应则切换为默认发送指令*/
-                if (isStopNavi == true && currentState == DEFAULT_STATE_RESPONSE) {
-                    isStopNavi = false;
+                if (isStopNavigation == true && currentState == DEFAULT_STATE_RESPONSE) {
+                    isStopNavigation = false;
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                 }
 
@@ -972,7 +963,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                 }
 
-                if (!isStopNavi) {
+                if (!isStopNavigation) {
                     if (currentState == LINE_NAVI_RESPONSE || currentState == HEADLAND_P1_RESPONSE
                             || currentState == HEADLAND_P2_RESPONSE) {
                         myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
@@ -1031,7 +1022,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
         myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_START_NAVI); //蓝牙发送开始导航指令
         startNavigationTime = System.currentTimeMillis(); //记录开始导航系统时间（毫秒）
         mPointValues.clear(); //导航横向偏差数据集合清零
-        isStartNavi = true; //设置导航状态为真
+        isStartNavigation = true; //设置导航状态为真
     }
 
     /**
@@ -1042,7 +1033,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
         myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_STOP_NAVI); //蓝牙发送停止导航指令
         lineChart.setPointValues(mPointValues); //将导航偏差数据集传到折线图
         Log.e(TAG, "VALUES SIZE() IS :" + mPointValues.size());
-        isStopNavi = true;
+        isStopNavigation = true;
         stopNavigationTime = System.currentTimeMillis();
         /*如果点击停止导航和点击开始导航时间差大于20秒则保存该次轨迹到数据库*/
         if ((stopNavigationTime - startNavigationTime) / 1000 > 20) {

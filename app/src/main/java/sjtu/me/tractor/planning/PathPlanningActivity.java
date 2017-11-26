@@ -45,7 +45,6 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
     private List<LatLng> points = new ArrayList<>();//多边形的点,点的记录
     private List<LatLng> pointsTemporary = new ArrayList<>();//暂时存放的点
 
-    private Button btnBack;//返回按钮
     private Button btnSwitch;//开始停止切换按钮
     private Spinner spField;
     private Spinner spTractor;
@@ -85,7 +84,7 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
             abList.add(map.get(ABLine.AB_LINE_NAME_BY_DATE));
         }
 
-        btnBack = (Button) findViewById(R.id.btnBack);
+        Button btnBack = (Button) findViewById(R.id.btnBack);
         btnBack.setOnClickListener(this);
 
         btnSwitch = (Button) findViewById(R.id.btnSwitch);
