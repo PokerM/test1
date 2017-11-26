@@ -133,7 +133,7 @@
         <activity
             android:name=".navigation.ABLineResultActivity"
             android:label="@string/ab_lines_list"
-            android:theme="@android:style/Theme.Material.Dialog"
+            android:theme="@android:style/Theme.Dialog"
             tools:targetApi="lollipop">
             <intent-filter>
                 <action android:name="sjtu.me.tractor.navigation.ABLineResultActivity" />
@@ -145,7 +145,7 @@
         <activity
             android:name=".navigation.HistoryPathResultActivity"
             android:label="@string/history_paths_list"
-            android:theme="@android:style/Theme.Material.Dialog"
+            android:theme="@android:style/Theme.Dialog"
             tools:targetApi="lollipop">
             <intent-filter>
                 <action android:name="sjtu.me.tractor.navigation.HistoryPathResultActivity" />

@@ -5,7 +5,7 @@ package sjtu.me.tractor.planning;
  */
 
 public class ABLine {
-    public static final String AB_LINE_NAME_BY_DATE = "date"; // 创建日期
+    public static final String AB_LINE_NAME_BY_DATE = "date"; // 用日期作为名称
     public static final String A_POINT_X_COORDINATE = "ax"; // A点X坐标
     public static final String A_POINT_Y_COORDINATE = "ay"; // A点Y坐标
     public static final String B_POINT_X_COORDINATE = "bx"; // B点X坐标

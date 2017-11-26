@@ -16,7 +16,9 @@ public class AlertDialogUtil {
         // 利用AlertDialog提供的方法改变原生AlertDialog中的按钮的颜色和字体
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLUE);
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextSize(20);
-        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+        dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextColor(Color.RED);
+        dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextSize(20);
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.DKGRAY);
         dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextSize(20);
 
         // 利用反射改变原生AlertDialog中的按钮的颜色和字体
