@@ -65,21 +65,25 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
         myPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         final List<String> fieldList = new ArrayList<>();
+        fieldList.add(getString(R.string.spinner_tip));
         List<Map<String, String>> fieldMapList = DatabaseManager.cursorToList(myApp.getDatabaseManager().getFieldsNameSet());
         for (Map<String, String> map : fieldMapList) {
             fieldList.add(map.get(FieldInfo.FIELD_NAME));
         }
-//        fieldList.add("sjtu001");
 
         final List<String> tractorList = new ArrayList<>();
+        tractorList.add(getString(R.string.spinner_tip));
         List<Map<String, String>> tractorMapList = DatabaseManager.cursorToList(myApp.getDatabaseManager().getTractorsNameSet());
         for (Map<String, String> map : tractorMapList) {
             tractorList.add(map.get(TractorInfo.TRACTOR_NAME));
         }
 
         final List<String> abList = new ArrayList<>();
-
-//        abList.add("20171120_140357");
+        abList.add(getString(R.string.spinner_tip));
+        List<Map<String, String>> abMapList = DatabaseManager.cursorToList(myApp.getDatabaseManager().getAllABlines());
+        for (Map<String, String> map : abMapList) {
+            abList.add(map.get(ABLine.AB_LINE_NAME_BY_DATE));
+        }
 
         btnBack = (Button) findViewById(R.id.btnBack);
         btnBack.setOnClickListener(this);

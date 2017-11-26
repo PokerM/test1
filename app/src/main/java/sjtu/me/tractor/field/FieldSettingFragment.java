@@ -47,7 +47,7 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
     private Button btnRemoveField;
     private Button btnClearAllFields;
 
-    public static MyApplication mApp;
+    private static MyApplication mApp;
     private LoaderManager loaderManager;
     private Loader<Cursor> loader;
     private List<Map<String, String>> fieldList;
@@ -133,7 +133,7 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
         }
         if (!flag1) {
             /*向数据库中插入默认松江试验田1数据*/
-            double[] x = {622499.361931, 622449.558854, 622449.858947, 622499.610201};
+            double[] x = {622508.361931, 622439.558854, 622439.858947, 622508.610201};
             double[] y = {3423836.00652, 3423836.056613, 3423855.546672, 3423855.719806};
             for (int vertexNumber = 0; vertexNumber < 4; vertexNumber++) {
                 mApp.getDatabaseManager().insertDataToField(
@@ -144,8 +144,8 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
         }
         if (!flag2) {
             /*向数据库中插入默认松江试验田2数据*/
-            double[] x2 = {622498.890583, 622448.508419, 622448.302793, 622498.405365};
-            double[] y2 = {3423834.509789, 3423834.598429, 3423812.084483, 3423812.083329};
+            double[] x2 = {622508.390583, 622439.508419, 622439.302793, 622508.405365};
+            double[] y2 = {3423835.009789, 3423835.198429, 3423812.084483, 3423812.083329};
             for (int vertexNumber = 0; vertexNumber < 4; vertexNumber++) {
                 mApp.getDatabaseManager().insertDataToField(
                         new String[]{"2017002" + vertexNumber, SONGJIANG2, "2017-11-14 01:53:30",
@@ -389,7 +389,7 @@ public class FieldSettingFragment extends Fragment implements OnClickListener, L
             //这三步可以获取选中的条目的田地的名称，方可进行下一步操作
             int position = info.position;
             Map<String, String> map = fieldList.get(position);
-            final String name = map.get("fName");
+            final String name = map.get(FieldInfo.FIELD_NAME);
 
             longPressAlertBuilder.setPositiveButton(getString(R.string.delete_field), new DialogInterface.OnClickListener() {
                 @Override

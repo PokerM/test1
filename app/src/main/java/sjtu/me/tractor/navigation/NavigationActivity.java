@@ -24,12 +24,15 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import lecho.lib.hellocharts.model.PointValue;
@@ -96,7 +99,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
     Button btnSetTractor;  //设置田地按钮
     CheckBox chkboxABMode;  //AB线导航模式按钮
     Button btnPlanningMode; //规划导航模式按钮
-    Button btnHistoryPath;  //历史轨迹按钮
+    CheckBox chkboxHistory;  //历史记录按钮
     CheckBox chxboxStatistics; //统计数据按钮
     CheckBox chxboxRemoteMode; //遥控器模式按钮
     LinearLayout layoutABModePane;
@@ -137,7 +140,8 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private double locationY = 0;
     private double aX, aY, bX, bY; //AB点XY坐标
     private double aLat, aLng, bLat, bLng; //AB点经纬度
-    private long startTimeMillis;
+    private long startNavigationTime; //每次导航启动时间
+    private long stopNavigationTime; //每次导航关闭时间
     private String fileNameToSave;
     private String currentTime;
 
@@ -152,6 +156,8 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private boolean isStopNavi = false;
     private boolean isToTurnRight = false;
     private boolean isToTurnLeft = false;
+    private boolean isOnQueryingHistory = false; //是否历史记录
+
 
     private ArrayList<Double> pathListX, pathListY;
     // private ArrayList<Double> boundListX,boundListY;
@@ -167,6 +173,8 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private ScaleAnimation showAnimation;
     private ScaleAnimation hideAnimation;
     private List<PointValue> mPointValues = new ArrayList<PointValue>(); // 折线图点数据集合
+    List<GeoPoint> historyPathPoints = new ArrayList<>(); //历史记录轨迹点集合
+    List<PointValue> historyPointValues = new ArrayList<>(); //历史记录折线图点数据集合
     private String defaultFieldName;
     private String defaultTractorName;
     private double linespacing = 2.5; //作业行间距
@@ -488,8 +496,34 @@ public class NavigationActivity extends Activity implements OnClickListener {
             case REQUEST_SELECT_HISTORY_PATH:
                 if (resultCode == RESULT_OK) {
                     bundle = data.getExtras();
-                    String name = (bundle == null ? null : bundle.getString(HistoryPath.HISTORY_RECORD_FILE_NAME));
-                    // TODO
+                    Map<String, String> map = (Map<String, String>) bundle.getSerializable("history_entry");
+                    String name = (map == null ? null : map.get(HistoryPath.HISTORY_RECORD_FILE_NAME));
+                    String field = (map == null ? null : map.get(HistoryPath.FIELD_NAME));
+                    Log.e(TAG, "HISTORY FIELD IS " + field);
+
+                    getHistoryDataFromFiles(name, historyPathPoints, historyPointValues); //读取历史记录；
+
+                    if (!TextUtils.isEmpty(field)) {
+                        Cursor resultCursor = myApp.getDatabaseManager().queryFieldWithPointsByName(field);
+                        List<Map<String, String>> resultList = DatabaseManager.cursorToList(resultCursor);
+
+                        //获取历史轨迹所在地块；
+                        ArrayList<GeoPoint> hField = new ArrayList<>();
+                        for (int i = 0; i < resultList.size(); i++) {
+                            GeoPoint vertex = new GeoPoint(Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_X_COORDINATE)),
+                                    Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_Y_COORDINATE)));
+                            hField.add(vertex);
+                        }
+
+                        //设置历史轨迹地块;
+                        boolean b = myView.setFieldBoundary(hField, true);
+                        if (b) {
+                            txtFieldName.setText(field);
+                        } else {
+                            ToastUtil.showToast("找不到地块数据!", true);
+                        }
+                    }
+                    myView.drawHistoryPath(historyPathPoints);
                 }
                 break;
 
@@ -544,7 +578,6 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 Intent intent3 = new Intent("sjtu.me.tractor.navigation.ABLineResultActivity");
                 intent3.putExtras(data3);
                 startActivityForResult(intent3, REQUEST_SELECT_AB_LINE);
-                
                 break;
 
             case R.id.btnSetA:
@@ -561,11 +594,18 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 if (((CheckBox) v).isChecked()) {
                     startNavigation();
                     startPlotAndSavePath();
+                    isStartNavi = true;
                     isStopNavi = false;
+                    /*导航过程中设置历史查询按钮为不可点击状态*/
+                    chkboxHistory.setClickable(false);
+                    chkboxHistory.setChecked(false);
                 } else {
                     stopNavigation();
                     stopPlotAndSavePath();
                     isStartNavi = false;
+                    isStopNavi = true;
+                    /*导航结束后设置历史查询按钮为可点击状态*/
+                    chkboxHistory.setClickable(true);
                 }
                 break;
 
@@ -586,25 +626,55 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 AlertDialogUtil.changeDialogTheme(planningDialog);
                 break;
 
-            case R.id.btnHistoryPath:
-                Cursor cursor4 = myApp.getDatabaseManager().queryHistoryEntries(QUERY_ALL);
-                Bundle data4 = new Bundle();
-                data4.putSerializable("data", DatabaseManager.cursorToList(cursor4));
-                Intent intent4 = new Intent("sjtu.me.tractor.navigation.HistoryPathResultActivity");
-                intent4.putExtras(data4);
-                startActivityForResult(intent4, REQUEST_SELECT_HISTORY_PATH);
+            case R.id.chkboxHistory:
+                if (((CheckBox) v).isChecked()) {
+                    Cursor cursor4 = myApp.getDatabaseManager().queryHistoryEntries(QUERY_ALL);
+                    Bundle data4 = new Bundle();
+                    data4.putSerializable("data", DatabaseManager.cursorToList(cursor4));
+                    Intent intent4 = new Intent("sjtu.me.tractor.navigation.HistoryPathResultActivity");
+                    intent4.putExtras(data4);
+                    startActivityForResult(intent4, REQUEST_SELECT_HISTORY_PATH);
+
+                    isOnQueryingHistory = true; //切换是否历史记录标志
+                    /*田地设置按钮设为不可点击状态*/
+                    btnSetField.setClickable(false);
+                } else {
+                    isOnQueryingHistory = false;
+                    myView.hideHistoryPath();
+                    myView.setFieldBoundary(fieldVertex, true);
+                     /*田地设置按钮设为可点击状态*/
+                    btnSetField.setClickable(true);
+                }
+
                 break;
 
             case R.id.chkboxStatistics:
                 if (((CheckBox) v).isChecked()) {
-                    lineChart.setPointValues(mPointValues);
-                    if (mPointValues != null && mPointValues.size() > 0) {
-                        float totalLateral = 0.0f;
-                        for (PointValue mPointValue : mPointValues) {
-                            totalLateral += mPointValue.getY();
+                    if (!isOnQueryingHistory) {
+                        lineChart.setPointValues(mPointValues);
+                        if (mPointValues != null && mPointValues.size() > 0) {
+                            float totalLateral = 0.0f;
+                            for (PointValue mPointValue : mPointValues) {
+                                totalLateral += mPointValue.getY();
+                            }
+                            float average = totalLateral / mPointValues.size();
+                            txtAverageLateral.setText("平均横向偏差为：" + String.valueOf(average) + " m");
                         }
-                        float average = totalLateral / mPointValues.size();
-                        txtAverageLateral.setText("平均横向偏差为：" + String.valueOf(average) + " m");
+                    } else {
+                        if (historyPointValues.size() != 0) {
+                            lineChart.setPointValues(historyPointValues);
+                            Log.e(TAG, "HISTORY LINECHART POINTVALUES SET");
+                            if (historyPointValues != null && historyPointValues.size() > 0) {
+                                float totalLateral = 0.0f;
+                                for (PointValue mPointValue : historyPointValues) {
+                                    totalLateral += mPointValue.getY();
+                                }
+                                float average = totalLateral / historyPathPoints.size();
+                                txtAverageLateral.setText("平均横向偏差为：" + String.valueOf(average) + " m");
+                                lineChart.setPointValues(historyPointValues);
+                                Log.e(TAG, "HISTORY AVERAGE SET");
+                            }
+                        }
                     }
                     showChartView(statisticsView);
                 } else {
@@ -642,6 +712,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 break;
 
             case R.id.imgbtnEmergencyStop:
+                isStopNavi = true;
                 myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_STOP_NAVI);
                 break;
 
@@ -699,8 +770,8 @@ public class NavigationActivity extends Activity implements OnClickListener {
         btnPlanningMode = (Button) findViewById(R.id.btnPlanningMode);
         btnPlanningMode.setOnClickListener(this);
 
-        btnHistoryPath = (Button) findViewById(R.id.btnHistoryPath);
-        btnHistoryPath.setOnClickListener(this);
+        chkboxHistory = (CheckBox) findViewById(R.id.chkboxHistory);
+        chkboxHistory.setOnClickListener(this);
 
         chxboxStatistics = (CheckBox) findViewById(R.id.chkboxStatistics);
         chxboxStatistics.setOnClickListener(this);
@@ -814,8 +885,8 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 if (!isStopNavi) { //记录横向偏差
                     long timeMillis = System.currentTimeMillis();
                 /*以时间横轴，横向偏差为纵轴，添加偏差数据到集合*/
-                    if (lateral < 20) {//不记录太大的横向偏差（计算错误产生的）
-                        mPointValues.add(new PointValue((float) ((timeMillis - startTimeMillis) / 1000.0), (float) lateral));
+                    if (Math.abs(lateral) < 3) {//不记录太大的横向偏差（计算错误产生的）
+                        mPointValues.add(new PointValue((float) ((timeMillis - startNavigationTime) / 1000.0), (float) lateral));
                     }
                 }
 
@@ -859,7 +930,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                             ToastUtil.showToast(getString(R.string.b_point_already_set), true);
                             myView.drawABline(aX, aY, bX, bY, true);
                             currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
-                            String fileABPoints = currentTime + "_AB_Points.txt";
+                            String fileABPoints = currentTime + "_ab_points.ab";
                             String abLine = new StringBuilder()
                                     .append(aX).append(",").append(aY).append(",").append(aLat).append(",").append(aLng)
                                     .append("\r\n")
@@ -901,9 +972,11 @@ public class NavigationActivity extends Activity implements OnClickListener {
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                 }
 
-                if (currentState == LINE_NAVI_RESPONSE || currentState == HEADLAND_P1_RESPONSE
-                        || currentState == HEADLAND_P2_RESPONSE) {
-                    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
+                if (!isStopNavi) {
+                    if (currentState == LINE_NAVI_RESPONSE || currentState == HEADLAND_P1_RESPONSE
+                            || currentState == HEADLAND_P2_RESPONSE) {
+                        myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
+                    }
                 }
 
                 preState = currentState; // 保存当前状态
@@ -956,7 +1029,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private void startNavigation() {
         /*发送启动导航命令*/
         myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_START_NAVI); //蓝牙发送开始导航指令
-        startTimeMillis = System.currentTimeMillis(); //记录开始导航系统时间（毫秒）
+        startNavigationTime = System.currentTimeMillis(); //记录开始导航系统时间（毫秒）
         mPointValues.clear(); //导航横向偏差数据集合清零
         isStartNavi = true; //设置导航状态为真
     }
@@ -970,6 +1043,11 @@ public class NavigationActivity extends Activity implements OnClickListener {
         lineChart.setPointValues(mPointValues); //将导航偏差数据集传到折线图
         Log.e(TAG, "VALUES SIZE() IS :" + mPointValues.size());
         isStopNavi = true;
+        stopNavigationTime = System.currentTimeMillis();
+        /*如果点击停止导航和点击开始导航时间差大于20秒则保存该次轨迹到数据库*/
+        if ((stopNavigationTime - startNavigationTime) / 1000 > 20) {
+            myApp.getDatabaseManager().insertHistoryEntry(fileNameToSave, defaultFieldName);
+        }
     }
 
     /**
@@ -978,10 +1056,18 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private void startPlotAndSavePath() {
         isDataToSave = true; //设置开始保存数据状态为真
         dataNo = 0; //将数据点编号重置为零
-        myView.setOperationPathWidth(6.0);
+        myView.setOperationPathWidth(linespacing);
         myView.drawPointToPath(1, true); //设置绘制轨迹状态为真
         currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date()); //获取当前日期时间字符串
-        fileNameToSave = "data_" + currentTime + ".txt"; //设置数据保存文件名
+        fileNameToSave = "data_" + currentTime + ".dt"; //设置数据保存文件名
+    }
+
+    /**
+     * 停止绘制轨迹操作方法
+     */
+    private void stopPlotAndSavePath() {
+        myView.drawPointToPath(1, false);
+        isDataToSave = false;
     }
 
     public void showChartView(View view) {
@@ -996,14 +1082,6 @@ public class NavigationActivity extends Activity implements OnClickListener {
     }
 
     /**
-     * 停止绘制轨迹操作方法
-     */
-    private void stopPlotAndSavePath() {
-        myView.drawPointToPath(1, false);
-        isDataToSave = false;
-    }
-
-    /**
      * 判断是否需要拐弯
      * （这方法暂时是不能用的，因为车辆来回两次穿越距离边界一定距离的直线，但是只有一次转弯）
      *
@@ -1013,6 +1091,58 @@ public class NavigationActivity extends Activity implements OnClickListener {
      */
     public boolean isToTurn(double distance, double limit) {
         return distance > limit && (distance - limit) < 0.1;
+    }
+
+    /**
+     * @param fileName           历史记录文件名
+     * @param historyPathPoints  读取历史文件后保存历史轨迹的缓存列表
+     * @param historyPointValues 读取历史文件后保存历史横向偏差记录的缓存列表
+     * @return 成功标志
+     */
+    public static boolean getHistoryDataFromFiles(String fileName,
+                                                  List<GeoPoint> historyPathPoints,
+                                                  List<PointValue> historyPointValues) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SSS", Locale.SIMPLIFIED_CHINESE);
+        String dataDirectory = FileUtil.getAlbumStorageDir(NavigationActivity.DATA_DIRECTORY).toString();
+        Log.e(TAG, "data dir is: " + dataDirectory);
+        String filePath = dataDirectory + File.separator + fileName;
+        String[] lines = FileUtil.readFileFromExternalStorage(filePath, null);
+        if (lines == null || lines.length == 0) {
+            return false;
+        }
+        historyPathPoints.clear();
+        historyPointValues.clear();
+        long startTime = 0;
+        try {
+            startTime = sdf.parse(lines[0].split(",")[13]).getTime();
+            for (int i = 0; i < lines.length; i++) {
+                String[] arrays = lines[i].split(",");
+                if (arrays.length == 14) {
+                    try {
+                        double hX = Double.parseDouble(arrays[2]);
+                        double hY = Double.parseDouble(arrays[3]);
+                        double hLateral = Double.parseDouble(arrays[10]);
+                        long hTime = sdf.parse(arrays[13]).getTime();
+                        historyPathPoints.add(new GeoPoint(hX, hY)); //添加历史轨迹各个点
+                        if (hLateral < 2.0) {
+                            /*忽略过大的横向偏差(接收数据跳动引起的)*/
+                            historyPointValues.add(new PointValue((float) ((hTime - startTime) / 1000.0), (float) hLateral));
+                        }
+                    } catch (NumberFormatException e) {
+                        ToastUtil.showToast("历史数据数字格式不对!", true);
+                        return false;
+                    } catch (java.text.ParseException e) {
+                        ToastUtil.showToast("历史数据日期格式解析错误!", true);
+                        return false;
+                    }
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
     }
 
 }

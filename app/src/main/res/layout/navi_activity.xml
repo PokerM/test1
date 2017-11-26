@@ -95,19 +95,17 @@
                 <Button
                     android:id="@+id/btnSetField"
                     style="@style/navi_menu_button_style"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="4dp"
                     android:background="@drawable/imgbtn_navi_select_field" />
 
                 <Button
                     android:id="@+id/btnSetTractor"
                     style="@style/navi_menu_button_style"
-                    android:layout_marginTop="5dp"
                     android:background="@drawable/imgbtn_navi_select_tractor" />
 
                 <CheckBox
                     android:id="@+id/chkboxABMode"
                     style="@style/navi_menu_button_style"
-                    android:layout_gravity="top|left"
                     android:background="@drawable/checkbox_navi_ab_mode"
                     android:button="@null" />
 
@@ -116,10 +114,11 @@
                     style="@style/navi_menu_button_style"
                     android:background="@drawable/imgbtn_navi_planning_mode" />
 
-                <Button
-                    android:id="@+id/btnHistoryPath"
+                <CheckBox
+                    android:id="@+id/chkboxHistory"
                     style="@style/navi_menu_button_style"
-                    android:background="@drawable/imgbtn_navi_history_path" />
+                    android:background="@drawable/checkbox_navi_history"
+                    android:button="@null" />
 
                 <CheckBox
                     android:id="@+id/chkboxStatistics"
@@ -406,8 +405,8 @@
         android:layout_width="300dp"
         android:layout_height="170dp"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="110dp"
+        android:layout_marginBottom="25dp"
+        android:layout_marginLeft="100dp"
         android:background="@drawable/navi_remote_pane_background"
         android:orientation="vertical"
         android:visibility="invisible">
@@ -456,24 +455,26 @@
         android:id="@+id/statisticView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/navi_statistics_pane_background"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
         android:orientation="vertical"
-        android:padding="10dp"
         android:visibility="invisible">
 
         <lecho.lib.hellocharts.view.LineChartView
             android:id="@+id/lineChartView"
             android:layout_width="fill_parent"
             android:layout_height="360dp"
-            android:layout_marginTop="10dp" />
+            android:background="@drawable/navi_statistics_pane_background" />
 
         <TextView
             android:id="@+id/txtAverageLateral"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:background="@drawable/navi_statistics_pane_background"
+            android:gravity="center_horizontal"
+            android:padding="5dp"
             android:textSize="20dp" />
 
     </LinearLayout>

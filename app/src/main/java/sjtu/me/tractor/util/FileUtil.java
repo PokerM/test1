@@ -84,7 +84,7 @@ public final class FileUtil {
      * @param albumName 用户程序数据目录名
      * @return 生成好的目录
      */
-    private static File getAlbumStorageDir(String albumName) {
+    public static File getAlbumStorageDir(String albumName) {
         String dir = new StringBuilder()
                 .append(ROOT_DIRECTORY)
                 .append(File.separator)

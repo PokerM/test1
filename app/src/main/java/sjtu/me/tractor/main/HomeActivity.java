@@ -61,14 +61,27 @@ public class HomeActivity extends Activity implements OnClickListener {
         mFragmentManager = getFragmentManager();
         selectFragment(0);
 
-        for (int i = 0; i < 5; i++) {
-            ((MyApplication) getApplication()).getDatabaseManager().insertABline("20171124_" + i, new ABLine(622518.64095, 3423839.105289,
-                    622518.641109, 3423839.108775), "songjiang001");
-        }
+//       /* *******************************************测试数据库用*********************************************/
+//        for (int i = 0; i < 5; i++) {
+//            ((MyApplication) getApplication()).getDatabaseManager().insertABline("20171124_" + i, new ABLine(622518.64095, 3423839.105289,
+//                    622518.641109, 3423839.108775), "songjiang001");
+//        }
+//
+//        for (int i = 0; i < 5; i++) {
+//            ((MyApplication) getApplication()).getDatabaseManager().insertHistoryEntry("20171124_" + i, "songjiang001");
+//        }
 
-        for (int i = 0; i < 5; i++) {
-            ((MyApplication) getApplication()).getDatabaseManager().insertHistoryEntry("20171124_" + i, "songjiang001");
-        }
+//        for (int i = 0; i < 5; i++) {
+//            ((MyApplication) getApplication()).getDatabaseManager().deleteABLine("20171124_" + i);
+//        }
+//
+//        for (int i = 0; i < 5; i++) {
+//            ((MyApplication) getApplication()).getDatabaseManager().deleteHistoryEntries("20171124_" + i);
+//        }
+
+//        ((MyApplication) getApplication()).getDatabaseManager().insertHistoryEntry("data_20171120_145451.txt", "SONGJIANG_S01");
+//        ((MyApplication) getApplication()).getDatabaseManager().deleteHistoryEntries("data_20171120_145451.txt");
+//       /* *******************************************测试数据库用*********************************************/
 
         if (D) {
             Log.e(TAG, "+++ ON CREATE +++");
@@ -104,7 +117,7 @@ public class HomeActivity extends Activity implements OnClickListener {
     @Override
     protected void onStop() {
         /*
-		* 为了省电和防止后台通信线程长期运行，可以在程序进入后台运行时关闭通信；
+        * 为了省电和防止后台通信线程长期运行，可以在程序进入后台运行时关闭通信；
         * 在restart中重启通信，这样会降低程序启动速度。
         */
         if (!SysUtil.isAppOnForeground(this)) {

@@ -188,6 +188,8 @@
     <string name="ab_lines_list">AB线列表</string>
     <string name="tractors_list">车辆列表</string>
     <string name="fields_list">地块列表</string>
+    <string name="spinner_tip">点击下拉菜单</string>
+    <string name="delete_entries">点击确定将删除记录，点击取消退回。</string>
 
     <drawable name="color_normal">#69541b</drawable>
     <drawable name="color_pressed">#b2d235</drawable>

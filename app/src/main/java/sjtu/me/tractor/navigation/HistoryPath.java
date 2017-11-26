@@ -8,5 +8,4 @@ package sjtu.me.tractor.navigation;
 public class HistoryPath {
     public static final String HISTORY_RECORD_FILE_NAME = "file_name";
     public static final String FIELD_NAME = "field";
-
 }
