@@ -1,6 +1,7 @@
 package sjtu.me.tractor.navigation;
 
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +37,7 @@ public class FieldResultActivity extends Activity {
 		
 		//从Bundle数据包中取出数据
 		list = (List<Map<String, String>>) data.getSerializable("data");
+		Collections.reverse(list);
 		//将List封装成SimpleAdapter
 		SimpleAdapter adapter = new SimpleAdapter(FieldResultActivity.this, list, R.layout.field_result_list_cell,
 				new String[] {FieldInfo.FIELD_ID, FieldInfo.FIELD_NAME, FieldInfo.FIELD_DATE, FieldInfo.FIELD_POINT_NO},

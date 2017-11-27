@@ -460,6 +460,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                     bundle = data.getExtras();
                     String name = (bundle == null ? null : bundle.getString(TractorInfo.TRACTOR_NAME));
                     Log.e("selected item", name);
+                    defaultTractorName = name;
                     txtTractorName.setText(name);
 
                     /* 将当前选择的地块名称存到默认偏好设置，下次程序自动选择此次选择的地块 */
@@ -882,14 +883,15 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 }
 
                 /*绘制当前点*/
-                if ((GisAlgorithm.getBoundaryLimits(defaultFieldVertexList) == null)
-                        || (locationX > GisAlgorithm.getBoundaryLimits(defaultFieldVertexList)[0] - 20
-                        && locationX < GisAlgorithm.getBoundaryLimits(defaultFieldVertexList)[1] + 20
-                        && locationY > GisAlgorithm.getBoundaryLimits(defaultFieldVertexList)[2] - 20
-                        && locationY < GisAlgorithm.getBoundaryLimits(defaultFieldVertexList)[3] + 20)) {
-                    myView.setCurentPoint(dataNo, locationX, locationY);
-                    Log.e(TAG, "myView.setCurrentPoint");
-                }
+//                if ((GisAlgorithm.getBoundaryLimits(defaultFieldVertexList) == null)
+//                        || (locationX > GisAlgorithm.getBoundaryLimits(defaultFieldVertexList)[0] - 20
+//                        && locationX < GisAlgorithm.getBoundaryLimits(defaultFieldVertexList)[1] + 20
+//                        && locationY > GisAlgorithm.getBoundaryLimits(defaultFieldVertexList)[2] - 20
+//                        && locationY < GisAlgorithm.getBoundaryLimits(defaultFieldVertexList)[3] + 20)) {
+//                    Log.e(TAG, "myView.setCurrentPoint");
+//                    myView.setCurentPoint(dataNo, locationX, locationY);
+//                }
+                myView.setCurentPoint(dataNo, locationX, locationY);
 
                 /*设置A点*/
                 if (isPointASet && currentState == SET_A_RESPONSE) {// 判断此时是否点击设置A点
@@ -963,12 +965,14 @@ public class NavigationActivity extends Activity implements OnClickListener {
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                 }
 
+                /*
+                //这一段本来是按照通信协议写的，加上去之后，下位机貌似不稳定（由于计算能力限制？）
                 if (!isStopNavigation) {
                     if (currentState == LINE_NAVI_RESPONSE || currentState == HEADLAND_P1_RESPONSE
                             || currentState == HEADLAND_P2_RESPONSE) {
                         myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                     }
-                }
+                }*/
 
                 preState = currentState; // 保存当前状态
             }

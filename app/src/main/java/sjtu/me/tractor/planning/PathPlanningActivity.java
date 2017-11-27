@@ -2,6 +2,7 @@ package sjtu.me.tractor.planning;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -12,17 +13,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-import com.baidu.mapapi.model.LatLng;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import sjtu.me.tractor.R;
 import sjtu.me.tractor.database.DatabaseManager;
 import sjtu.me.tractor.field.FieldInfo;
+import sjtu.me.tractor.gis.GeoLine;
 import sjtu.me.tractor.gis.GeoPoint;
 import sjtu.me.tractor.main.MyApplication;
 import sjtu.me.tractor.surfaceview.MySurfaceView;
@@ -40,10 +39,13 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
 
     private MyApplication myApp; // 程序全局变量
     private SharedPreferences myPreferences; //默认偏好参数存储实例
-    private ArrayList<GeoPoint> fieldVertices = new ArrayList<>(); // 定义地块顶点数组
-    private HashMap<Integer, GeoPoint> fieldMap = new HashMap<>();
-    private List<LatLng> points = new ArrayList<>();//多边形的点,点的记录
-    private List<LatLng> pointsTemporary = new ArrayList<>();//暂时存放的点
+    private ArrayList<GeoPoint> planningFieldVertices = new ArrayList<>(); // 定义地块顶点数组
+    private List<GeoPoint> lineAB;
+    private double minTurning;
+    private double linespacing;
+    private List<GeoPoint> headland1 = new ArrayList<>(); // 多边形的点,点的记录
+    private List<GeoPoint> headland2= new ArrayList<>(); // 多边形的点,点的记录
+    private List<GeoLine> plannedPaths = new ArrayList<>(); // 暂时存放的点
 
     private Button btnSwitch;//开始停止切换按钮
     private Spinner spField;
@@ -54,14 +56,19 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
     private static final int SURFACE_VIEW_HEIGHT = 700;
     private String planningFieldName;
     private String planningTractorName;
+    private boolean isFieldSet = false;
+    private boolean isTractorSet = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.path_planning_activity);
+
         myApp = (MyApplication) getApplication();
         myPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        myView = (MySurfaceView) findViewById(R.id.myView);
+        myView.setCanvasSize(SURFACE_VIEW_WIDTH * 2, SURFACE_VIEW_HEIGHT * 2);
 
         final List<String> fieldList = new ArrayList<>();
         fieldList.add(getString(R.string.spinner_tip));
@@ -101,10 +108,25 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
         spField.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                ToastUtil.showToast(fieldList.get(i), true);
-                SharedPreferences.Editor editor = myPreferences.edit();
-                editor.putString(DEFAULT_PLANNING_FIELD, planningFieldName);
-                editor.commit();
+                if (i > 0) {
+                    ToastUtil.showToast(fieldList.get(i), true);
+                    planningFieldName = fieldList.get(i);
+//                    SharedPreferences.Editor editor = myPreferences.edit();
+//                    editor.putString(DEFAULT_PLANNING_FIELD, planningFieldName);
+//                    editor.commit();
+
+                    Cursor resultCursor = myApp.getDatabaseManager().queryFieldWithPointsByName(planningFieldName);
+                    List<Map<String, String>> resultList = DatabaseManager.cursorToList(resultCursor);
+
+                    planningFieldVertices.clear();
+                    for (int n = 0; n < resultList.size(); n++) {
+                        GeoPoint vertex = new GeoPoint(Double.valueOf(resultList.get(n).get(FieldInfo.FIELD_POINT_X_COORDINATE)),
+                                Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_Y_COORDINATE)));
+                        planningFieldVertices.add(vertex);
+                    }
+                    Log.e(TAG, planningFieldName + planningFieldVertices.size());
+                    isFieldSet = myView.setFieldBoundary(planningFieldVertices, true);
+                }
             }
 
             @Override
@@ -121,7 +143,19 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
         spTractor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                ToastUtil.showToast(tractorList.get(i), true);
+                if (i > 0) {
+                    ToastUtil.showToast(tractorList.get(i), true);
+                    planningTractorName = tractorList.get(i);
+                    Cursor cursor = myApp.getDatabaseManager().queryTractorByName(planningTractorName);
+                    Map<String, String> map = DatabaseManager.cursorToMap(cursor);
+                    try {
+                        linespacing = Double.parseDouble(map.get(TractorInfo.TRACTOR_OPERATION_LINESPACING));
+                        minTurning = Double.parseDouble(map.get(TractorInfo.TRACTOR_MIN_TURNING_RADIUS));
+                        isTractorSet = true;
+                    } catch (NumberFormatException e) {
+                        ToastUtil.showToast("读取作业行间距数字格式错误!", true);
+                    }
+                }
             }
 
             @Override
@@ -139,7 +173,11 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
         spABLine.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                ToastUtil.showToast(abList.get(i), true);
+                if (i > 1) {
+                    ToastUtil.showToast(abList.get(i), true);
+
+
+                }
             }
 
             @Override

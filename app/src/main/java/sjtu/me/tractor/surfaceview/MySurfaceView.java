@@ -78,17 +78,11 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private double scale = 1; //绘制地图比例尺
     private float fieldWidth = 60;
     private float fieldLength = 60;
-    private double cotThelta;
-    private float lineSpace = 0;
 
     private int REFRESH_PERIOD = 100;
     private int viewX, viewY; //视图坐标
     private int viewAX, viewAY, viewBX, viewBY; //视图A、B点坐标
     private final int canvasMargin = 40;
-    private final int END_RECT_LENGTH = 8;
-//    private int canvasWidth = 1200;
-//    private int canvasHeight = 1200;
-
     private int canvasWidth = 1400;
     private int canvasHeight = 1300;
 

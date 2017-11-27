@@ -11,6 +11,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +37,7 @@ public class TractorResultActivity extends Activity {
 
         //从Bundle数据包中取出数据
         list = (List<Map<String, String>>) data.getSerializable("data");
+        Collections.reverse(list);
         //将List封装成SimpleAdapter
         SimpleAdapter adapter = new SimpleAdapter(TractorResultActivity.this, list, R.layout.tractor_result_list_cell,
                 new String[]{TractorInfo.TRACTOR_NAME}, new int[]{R.id.tractorName});

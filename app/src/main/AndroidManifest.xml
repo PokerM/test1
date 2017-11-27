@@ -109,7 +109,7 @@
         <activity
             android:name=".navigation.FieldResultActivity"
             android:label="@string/fields_list"
-            android:theme="@android:style/Theme.Material.Dialog"
+            android:theme="@android:style/Theme.Dialog"
             tools:targetApi="lollipop">
             <intent-filter>
                 <action android:name="sjtu.me.tractor.navigation.FieldResultActivity" />
@@ -121,7 +121,7 @@
         <activity
             android:name=".navigation.TractorResultActivity"
             android:label="@string/tractors_list"
-            android:theme="@android:style/Theme.Material.Dialog"
+            android:theme="@android:style/Theme.Dialog"
             tools:targetApi="lollipop">
             <intent-filter>
                 <action android:name="sjtu.me.tractor.navigation.TractorResultActivity" />

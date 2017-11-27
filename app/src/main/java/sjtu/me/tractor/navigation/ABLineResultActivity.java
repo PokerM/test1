@@ -14,6 +14,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,7 @@ public class ABLineResultActivity extends Activity {
             final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) contextMenuInfo;
             final int position = info.position;
             Map<String, String> map = list.get(position);
+            Collections.reverse(list);
             final String name = map.get(ABLine.AB_LINE_NAME_BY_DATE);
             AlertDialog longPressAlertBuilder = new AlertDialog.Builder(ABLineResultActivity.this)
                     .setTitle(getString(R.string.please_select_an_operation))

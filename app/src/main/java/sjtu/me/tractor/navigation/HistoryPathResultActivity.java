@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +50,7 @@ public class HistoryPathResultActivity extends Activity {
 
         //从Bundle数据包中取出数据
         list = (List<Map<String, String>>) data.getSerializable("data");
+        Collections.reverse(list);
         //将List封装成SimpleAdapter
         adapter = new SimpleAdapter(HistoryPathResultActivity.this, list, R.layout.history_result_list_cell,
                 new String[]{HistoryPath.HISTORY_RECORD_FILE_NAME, HistoryPath.FIELD_NAME}, new int[]{R.id.historyFileName, R.id.fieldName});

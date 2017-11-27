@@ -21,6 +21,7 @@ public class PlanningPathGenerator {
     private List<GeoPoint> headLand1;
     private List<GeoPoint> headLand2;
 
+
     public PlanningPathGenerator(List<GeoPoint> fieldVertices, GeoLine ab, double space, double minTurning) {
         this.fieldVertices = fieldVertices;
         this.lineAB = ab;
@@ -225,6 +226,18 @@ public class PlanningPathGenerator {
             }
 
         }
+    }
+
+    public List<GeoLine> getGeneratedPathList() {
+        return generatedPathList;
+    }
+
+    public List<GeoPoint> getHeadLand1() {
+        return headLand1;
+    }
+
+    public List<GeoPoint> getHeadLand2() {
+        return headLand2;
     }
 
 }

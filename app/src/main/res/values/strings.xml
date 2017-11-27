@@ -2,9 +2,9 @@
 <resources>
 
     <string name="copyright">CopyRight 版本：v1.0</string>
+    <string name="app_name">导航1号</string>
 
     <!-- 蓝牙列表选择页面的所有字符 -->
-    <string name="app_name">AutoTractor</string>
     <string name="connection_setting">请选择连接设备</string>
     <string name="car_settings">参数设置</string>
     <string name="paired_devices">已配对设备</string>
