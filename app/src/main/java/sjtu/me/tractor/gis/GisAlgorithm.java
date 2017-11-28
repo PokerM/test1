@@ -102,7 +102,7 @@ public final class GisAlgorithm {
             }
 
             if (maxX < fieldVertices.get(i).getX()) {
-                minX = fieldVertices.get(i).getX();
+                maxX = fieldVertices.get(i).getX();
             }
 
             if (minY > fieldVertices.get(i).getY()) {
@@ -171,16 +171,16 @@ public final class GisAlgorithm {
         if (d1 == 0) {
             return null;
         } else {
-            double d2 = co1[2] * co2[1] - co1[1] * co2[2];
-            double d3 = co1[0] * co2[2] - co1[2] * co2[0];
+            double d2 = co1[1] * co2[2] - co1[2] * co2[1];
+            double d3 = co1[2] * co2[0] - co1[0] * co2[2];
             return new GeoPoint(d2 / d1, d3 / d1);
         }
     }
 
     public static GeoLine parallelLine(GeoLine line, double distance) {
         double[] co = line.getLineCoeffients();
-        double dx = distance * co[1] / Math.sqrt(co[0] * co[0] + co[1] * co[1]);
-        double dy = distance * co[0] / Math.sqrt(co[0] * co[0] + co[1] * co[1]);
+        double dx = distance * co[0] / Math.sqrt(co[0] * co[0] + co[1] * co[1]);
+        double dy = distance * co[1] / Math.sqrt(co[0] * co[0] + co[1] * co[1]);
         double x1 = line.getP1().getX() + dx;
         double y1 = line.getP1().getY() + dy;
         double x2 = line.getP2().getX() + dx;

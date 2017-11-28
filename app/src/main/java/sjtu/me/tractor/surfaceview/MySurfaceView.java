@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import sjtu.me.tractor.R;
+import sjtu.me.tractor.gis.GeoLine;
 import sjtu.me.tractor.gis.GeoPoint;
 
 import android.content.Context;
@@ -39,6 +40,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private boolean isDrawing = true;
     private boolean isDrawingAB = false;
     private boolean isOnHistoryDrawing = false;
+    private boolean isDrawingPlannedPath = false;
     private boolean isDrawingPath = false;
     private boolean isDrawingField = false;
 
@@ -47,6 +49,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private Path mPath;
     private Path lastPath;
     private Path historyPath;
+    private Path headlandPath1;
+    private Path headlandPath2;
+    private Path planedPath;
     private Path fieldBoundPath; //地块边界
     private Paint pathLinePaint; //拖拉机中心轨迹画笔
     private Paint operationPathPaint; //作业轨迹画笔
@@ -55,7 +60,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private Paint endCirclePaint; //圆点画笔
     private Paint fieldBoundPaint;
     private Paint fieldShaderPaint;
-    private Paint paintABline;
+    private Paint paintABLine;
+    private Paint paintPlannedLines;
+    private Paint paintHeadland;
     private Resources res = getResources();
     private Bitmap tractorMarker = BitmapFactory.decodeResource(res, R.drawable.tractor_marker);
     //    private Bitmap grassTexture = BitmapFactory.decodeResource(res, R.drawable.field_texture);
@@ -73,15 +80,14 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private int pathWidth = 45;
     private int pathPointNo = 0;
     private double fieldX, fieldY; //田地坐标
-    private double APointX, APointY, BPointX, BPointY; //田地A、B点坐标
-    private double originX, originY; //田地原点坐标
+    private double fieldOriginX, fieldOriginY; //田地原点坐标
     private double scale = 1; //绘制地图比例尺
     private float fieldWidth = 60;
     private float fieldLength = 60;
 
-    private int REFRESH_PERIOD = 100;
     private int viewX, viewY; //视图坐标
     private int viewAX, viewAY, viewBX, viewBY; //视图A、B点坐标
+    private int lineStartX, lineStartY, lineEndX, lineEndY; //视图A、B点坐标
     private final int canvasMargin = 40;
     private int canvasWidth = 1400;
     private int canvasHeight = 1300;
@@ -143,9 +149,13 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         lastPath = new Path();
         fieldBoundPath = new Path();
         historyPath = new Path();
+        planedPath = new Path();
+        headlandPath1 = new Path();
+        headlandPath2 = new Path();
 
         pathLinePaint = new Paint();
         pathLinePaint.setAntiAlias(true);
+        pathLinePaint.setDither(true);
         pathLinePaint.setColor(Color.WHITE);
         pathLinePaint.setStyle(Style.STROKE);
         pathLinePaint.setStrokeWidth(3);
@@ -159,7 +169,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         prePathPaint = new Paint();
         prePathPaint.setAntiAlias(true);
-        prePathPaint.setColor(Color.BLUE);
+        prePathPaint.setColor(Color.YELLOW);
         prePathPaint.setStyle(Style.STROKE);
         prePathPaint.setStrokeWidth(5);
 
@@ -171,25 +181,38 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         endCirclePaint = new Paint();
         endCirclePaint.setAntiAlias(true);
-        endCirclePaint.setColor(Color.YELLOW);
+        endCirclePaint.setColor(Color.BLUE);
 
         fieldBoundPaint = new Paint();
         fieldBoundPaint.setAntiAlias(true);
         fieldBoundPaint.setColor(Color.RED);
         fieldBoundPaint.setStyle(Style.STROKE);
-        fieldBoundPaint.setStrokeWidth(6);
-        PathEffect effect = new DashPathEffect(new float[]{4, 4,}, 1);
+        fieldBoundPaint.setStrokeWidth(28);
+        PathEffect effect = new DashPathEffect(new float[]{4,4}, 1);
         fieldBoundPaint.setPathEffect(effect);
 
         fieldShaderPaint = new Paint();
         Shader mShader = new BitmapShader(grassTexture, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
         fieldShaderPaint.setShader(mShader);
 
-        paintABline = new Paint();
-        paintABline.setAntiAlias(true);
-        paintABline.setColor(Color.RED);
-        paintABline.setStyle(Style.STROKE);
-        paintABline.setStrokeWidth(3);
+        paintHeadland = new Paint();
+        paintHeadland.setAntiAlias(true);
+        paintHeadland.setColor(Color.GRAY);
+        paintHeadland.setStyle(Style.FILL);
+
+        paintABLine = new Paint();
+        paintABLine.setAntiAlias(true);
+        paintABLine.setColor(Color.RED);
+        paintABLine.setStyle(Style.STROKE);
+        paintABLine.setStrokeWidth(3);
+
+        paintPlannedLines = new Paint();
+        paintPlannedLines.setAntiAlias(true);
+        paintPlannedLines.setColor(Color.BLACK);
+        paintPlannedLines.setStyle(Style.STROKE);
+        PathEffect effect2 = new DashPathEffect(new float[]{4, 4,}, 1);
+        paintPlannedLines.setPathEffect(effect2);
+        paintPlannedLines.setStrokeWidth(4);
 
     }
 
@@ -265,17 +288,6 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         fieldBoundPath.lineTo(fieldToImage(xMap.get(3), yMap.get(3))[0], fieldToImage(xMap.get(3), yMap.get(3))[1]);
         fieldBoundPath.lineTo(fieldToImage(xMap.get(4), yMap.get(4))[0], fieldToImage(xMap.get(4), yMap.get(4))[1]);
         fieldBoundPath.close();
-
-//    	Log.e("fWidth,fLength", fieldWidth + "," + fieldLength);
-//    	Log.e("fp1x,fp1y", xMap.get(1) + "," + yMap.get(1));
-//    	Log.e("fp2x,fp2y", xMap.get(2) + "," + yMap.get(2));
-//    	Log.e("fp3x,fp3y", xMap.get(3) + "," + yMap.get(3));
-//    	Log.e("fp4x,fp4y", xMap.get(4) + "," + yMap.get(4));
-//    	Log.e("p1x,p1y", fieldToImage(xMap.get(1), yMap.get(1))[0]+ "," + fieldToImage(xMap.get(1), yMap.get(1))[1]);
-//    	Log.e("p2x,p2y", fieldToImage(xMap.get(2), yMap.get(2))[0]+ "," + fieldToImage(xMap.get(2), yMap.get(2))[1]);
-//    	Log.e("p3x,p3y", fieldToImage(xMap.get(3), yMap.get(3))[0]+ "," + fieldToImage(xMap.get(3), yMap.get(3))[1]);
-//    	Log.e("p4x,p4y", fieldToImage(xMap.get(4), yMap.get(4))[0]+ "," + fieldToImage(xMap.get(4), yMap.get(4))[1]);
-
     }
 
     /**
@@ -385,68 +397,47 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             Log.e(TAG, "setOrigin(double oX, double oY)被调用");
         }
 
-        this.originX = oX;
-        this.originY = oY;
+        this.fieldOriginX = oX;
+        this.fieldOriginY = oY;
 
-        Log.e("fOx,fOy", originX + "," + originY);
+        Log.e("fOx,fOy", fieldOriginX + "," + fieldOriginY);
     }
 
     /**
      * 绘制地图AB线
      *
-     * @param ApX         A点地理X坐标
-     * @param ApY         A点地理Y坐标
-     * @param BpX         B点地理X坐标
-     * @param BpY         B点地理Y坐标
+     * @param fieldAX     A点地理X坐标
+     * @param fieldAY     A点地理Y坐标
+     * @param fieldBX     B点地理X坐标
+     * @param fieldBY     B点地理Y坐标
      * @param isDrawingAB 是否绘制AB线
      */
-    public void drawABline(double ApX, double ApY, double BpX, double BpY, boolean isDrawingAB) {
+    public void drawABline(double fieldAX, double fieldAY, double fieldBX, double fieldBY, boolean isDrawingAB) {
         if (D) {
             Log.e(TAG, "drawABline()被调用");
         }
 
         this.isDrawingAB = isDrawingAB;
-        this.APointX = ApX;
-        this.APointY = ApY;
-        this.BPointX = BpX;
-        this.BPointY = BpY;
+        viewAX = fieldToImage(fieldAX, fieldAY)[0];
+        viewAY = fieldToImage(fieldAX, fieldAY)[1];
+        viewBX = fieldToImage(fieldBX, fieldBY)[0];
+        viewBY = fieldToImage(fieldBX, fieldBY)[1];
 
-        viewAX = fieldToImage(APointX, APointY)[0];
-        viewAY = fieldToImage(APointX, APointY)[1];
-        viewBX = fieldToImage(BPointX, BPointY)[0];
-        viewBY = fieldToImage(BPointX, BPointY)[1];
-
-//    	viewAX = calculateABline(field2Image(APointX, APointY)[0], field2Image(APointX, APointY)[1], 
-//    			field2Image(BPointX, BPointY)[0],field2Image(BPointX, BPointY)[1])[0];
-//    	viewAY = calculateABline(field2Image(APointX, APointY)[0], field2Image(APointX, APointY)[1], 
-//    			field2Image(BPointX, BPointY)[0],field2Image(BPointX, BPointY)[1])[1];
-//    	viewBX = calculateABline(field2Image(APointX, APointY)[0], field2Image(APointX, APointY)[1], 
-//    			field2Image(BPointX, BPointY)[0],field2Image(BPointX, BPointY)[1])[2];
-//    	viewBY = calculateABline(field2Image(APointX, APointY)[0], field2Image(APointX, APointY)[1], 
-//    			field2Image(BPointX, BPointY)[0],field2Image(BPointX, BPointY)[1])[3];
-
-    }
-
-    //计算AB线在画布中起始点的坐标
-    public float[] calculateABline(float aX, float aY, float bX, float bY) {
-        if (D) {
-            Log.e(TAG, "calculateABline(float aX, float aY, float bX, float bY)被调用");
-        }
-
-        float startX, startY, endX, endY;
-        if (aY == bY) {
-            startX = 0;
-            startY = aY;
-            endX = canvasWidth;
-            endY = aY;
+        if (fieldAY == fieldBY) {
+            lineStartX = 0;
+            lineStartY = viewAY;
+            lineEndX = canvasWidth;
+            lineEndY = viewAY;
         } else {
-            startY = canvasHeight;
-            endY = 0;
-            startX = aX + (startY - aY) * (aX - bX) / (aY - bY);
-            endX = bX + (endY - bY) * (bX - aX) / (bY - aY);
+            lineStartY = canvasHeight;
+            lineEndY = 0;
+            double fieldStartY = fieldOriginY - (lineStartY - canvasHeight / 2) / scale;
+            double fieldEndY = fieldOriginY - (lineEndY - canvasHeight / 2) / scale;
+            double fieldStartX = fieldAX + (fieldStartY - fieldAY) * (fieldAX - fieldBX) / (fieldAY - fieldBY);
+            double fieldEndX = fieldBX + (fieldEndY - fieldBY) * (fieldBX - fieldAX) / (fieldBY - fieldAY);
+            lineStartX = fieldToImage(fieldStartX, fieldStartY)[0];
+            lineEndX = fieldToImage(fieldEndX, fieldEndY)[0];
         }
-
-        return new float[]{startX, startY, endX, endY};
     }
 
     /**
@@ -464,6 +455,11 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         this.isDrawingPath = isDrawingPath;
     }
 
+    /**
+     * 绘制历史轨迹
+     *
+     * @param historyPathPoints
+     */
     public void drawHistoryPath(List<GeoPoint> historyPathPoints) {
         this.isOnHistoryDrawing = true;
         boolean isFirstPoint = true;
@@ -475,6 +471,79 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
                     isFirstPoint = false;
                 } else {
                     this.historyPath.lineTo(fieldToImage(hPoint)[0], fieldToImage(hPoint)[1]);
+                }
+            }
+        }
+    }
+
+    /**
+     * 绘制地头
+     *
+     * @param headland1
+     */
+    public void drawHeadland1(List<GeoPoint> headland1) {
+        this.isDrawingPlannedPath = true;
+        boolean isFirstPoint = true;
+        if (headland1 != null && headland1.size() != 0) {
+            for (GeoPoint hPoint : headland1) {
+                if (isFirstPoint) {
+                    this.headlandPath1.reset();
+                    this.headlandPath1.moveTo(fieldToImage(hPoint)[0], fieldToImage(hPoint)[1]);
+                    isFirstPoint = false;
+                } else {
+                    this.headlandPath1.lineTo(fieldToImage(hPoint)[0], fieldToImage(hPoint)[1]);
+                }
+            }
+        }
+    }
+
+    /**
+     * 绘制地头
+     *
+     * @param headland2
+     */
+    public void drawHeadland2(List<GeoPoint> headland2) {
+        this.isDrawingPlannedPath = true;
+        boolean isFirstPoint = true;
+        if (headland2 != null && headland2.size() != 0) {
+            for (GeoPoint hPoint : headland2) {
+                if (isFirstPoint) {
+                    this.headlandPath2.reset();
+                    this.headlandPath2.moveTo(fieldToImage(hPoint)[0], fieldToImage(hPoint)[1]);
+                    isFirstPoint = false;
+                } else {
+                    this.headlandPath2.lineTo(fieldToImage(hPoint)[0], fieldToImage(hPoint)[1]);
+                }
+            }
+        }
+    }
+
+    /**
+     * 绘制规划轨迹
+     *
+     * @param lines
+     */
+    public void drawPlannedPath(List<GeoLine> lines) {
+        this.isDrawingPlannedPath = true;
+        boolean isFirst = true;
+        boolean flag = true;
+        if (lines != null && lines.size() != 0) {
+            for (GeoLine line : lines) {
+                if (isFirst) {
+                    this.planedPath.reset();
+                    this.planedPath.moveTo(fieldToImage(line.getP1())[0], fieldToImage(line.getP1())[1]);
+                    this.planedPath.lineTo(fieldToImage(line.getP2())[0], fieldToImage(line.getP2())[1]);
+                    isFirst = false;
+                } else {
+                    if (flag) {
+                        this.planedPath.lineTo(fieldToImage(line.getP2())[0], fieldToImage(line.getP2())[1]);
+                        this.planedPath.lineTo(fieldToImage(line.getP1())[0], fieldToImage(line.getP1())[1]);
+                        flag = !flag;
+                    } else {
+                        this.planedPath.lineTo(fieldToImage(line.getP1())[0], fieldToImage(line.getP1())[1]);
+                        this.planedPath.lineTo(fieldToImage(line.getP2())[0], fieldToImage(line.getP2())[1]);
+                        flag = !flag;
+                    }
                 }
             }
         }
@@ -510,20 +579,20 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     /**
      * 把地理坐标转换为屏幕坐标
      *
-     * @param xF 地理坐标
-     * @param yF 田地坐标
+     * @param fieldX 地理坐标
+     * @param fieldY 田地坐标
      * @return 地图坐标点数组
      */
-    private int[] fieldToImage(double xF, double yF) {
+    private int[] fieldToImage(double fieldX, double fieldY) {
 
         //刷新地图比例尺
 //        scale = calculateScale(fieldLength, fieldWidth, canvasHeight - canvasMargin, canvasWidth - canvasMargin);
 
-        int xV = canvasWidth / 2 + (int) ((xF - originX) * scale + 0.5);
-        int yV = canvasHeight / 2 - (int) ((yF - originY) * scale + 0.5);
-        int[] viewPoint = {xV, yV};
-        return viewPoint;
+        int imgX = canvasWidth / 2 + (int) ((fieldX - fieldOriginX) * scale + 0.5);
+        int imgY = canvasHeight / 2 - (int) ((fieldY - fieldOriginY) * scale + 0.5);
+        return new int[]{imgX, imgY};
     }
+
 
     /**
      * 把地理坐标转换为屏幕坐标
@@ -533,10 +602,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
      */
     private int[] fieldToImage(GeoPoint point) {
 
-        int xV = canvasWidth / 2 + (int) ((point.getX() - originX) * scale + 0.5);
-        int yV = canvasHeight / 2 - (int) ((point.getY() - originY) * scale + 0.5);
-        int[] viewPoint = {xV, yV};
-        return viewPoint;
+        int xV = canvasWidth / 2 + (int) ((point.getX() - fieldOriginX) * scale + 0.5);
+        int yV = canvasHeight / 2 - (int) ((point.getY() - fieldOriginY) * scale + 0.5);
+        return new int[]{xV, yV};
     }
 
     @Override
@@ -567,6 +635,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             drawCanvas();
 
             long end = System.currentTimeMillis();
+            int REFRESH_PERIOD = 100;
             if (end - start < REFRESH_PERIOD) {
                 try {
                     Thread.sleep(REFRESH_PERIOD - (end - start));
@@ -580,7 +649,6 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public void drawCanvas() {
-
         try {
             canvas = holder.lockCanvas();
             if (canvas != null) {
@@ -595,6 +663,21 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 }
 
                 if (!isOnHistoryDrawing) {
+
+                    //绘制规划路径及地头区域
+                    if (isDrawingPlannedPath) {
+                        canvas.drawPath(headlandPath1, paintHeadland);
+                        canvas.drawPath(headlandPath2, paintHeadland);
+                        canvas.drawPath(planedPath, paintPlannedLines);
+                    }
+
+                    //绘制AB线以及A、B标记
+                    if (isDrawingAB) {
+                        canvas.drawLine(lineStartX, lineStartY, lineEndX, lineEndY, paintABLine);
+                        canvas.drawBitmap(pointAMarker, viewAX - pointAWidth / 2, viewAY - pointAHeight / 2, null);
+                        canvas.drawBitmap(pointBMarker, viewBX - pointBWidth / 2, viewBY - pointBHeight / 2, null);
+                    }
+
                     //绘制轨迹
                     if (isDrawingPath) {
 //                        canvas.drawPath(mPath, operationPathPaint);
@@ -603,22 +686,12 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
                         canvas.drawPath(lastPath, prePathPaint);
                     }
 
-                    //绘制AB线以及A、B标记
-                    if (isDrawingAB) {
-                        canvas.drawLine(calculateABline(viewAX, viewAY, viewBX, viewBY)[0],
-                                calculateABline(viewAX, viewAY, viewBX, viewBY)[1],
-                                calculateABline(viewAX, viewAY, viewBX, viewBY)[2],
-                                calculateABline(viewAX, viewAY, viewBX, viewBY)[3],
-                                paintABline);
-                        canvas.drawBitmap(pointAMarker, viewAX - pointAWidth / 2, viewAY - pointAHeight / 2, null);
-                        canvas.drawBitmap(pointBMarker, viewBX - pointBWidth / 2, viewBY - pointBHeight / 2, null);
-                    }
-
                     //绘制拖拉机即时位置标志
-                    canvas.drawCircle(viewX, viewY, 5, endCirclePaint);
+                    canvas.drawCircle(viewX, viewY, 7, endCirclePaint);
                     canvas.drawBitmap(tractorMarker, viewX - markerWidth / 2, viewY - markerHeight, null);
 
                 } else {
+
                     canvas.drawPath(historyPath, historyPathPaint);
 //                    canvas.drawPath(historyPath, operationPathPaint);
                 }
