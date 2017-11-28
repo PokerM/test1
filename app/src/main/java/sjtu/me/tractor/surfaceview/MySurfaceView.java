@@ -648,6 +648,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     }
 
+    /**
+     * 绘制各种曲线
+     */
     public void drawCanvas() {
         try {
             canvas = holder.lockCanvas();
