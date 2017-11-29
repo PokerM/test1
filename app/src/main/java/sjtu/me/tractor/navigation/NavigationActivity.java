@@ -41,6 +41,7 @@ import sjtu.me.tractor.bluetooth.BluetoothService;
 import sjtu.me.tractor.database.DatabaseManager;
 import sjtu.me.tractor.field.FieldInfo;
 import sjtu.me.tractor.gis.GeoPoint;
+import sjtu.me.tractor.gis.GisAlgorithm;
 import sjtu.me.tractor.hellochart.LineChart;
 import sjtu.me.tractor.main.MyApplication;
 import sjtu.me.tractor.planning.ABLine;
@@ -173,6 +174,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private String defaultFieldName;
     private String defaultTractorName;
     private ArrayList<GeoPoint> defaultFieldVertexList;    //定义地块顶点数组
+    private double[] fieldBoundsLimits = new double[] {0, 1000000, 0, 10000000};
     private double linespacing = 2.5; //作业行间距
     /*创建消息处理器，处理通信线程发送过来的数据。*/
     MyNavigationHandler mNavigationHandler = new MyNavigationHandler(this);
@@ -883,15 +885,20 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 }
 
                 /*绘制当前点*/
-//                if ((GisAlgorithm.getBoundaryLimits(defaultFieldVertexList) == null)
-//                        || (locationX > GisAlgorithm.getBoundaryLimits(defaultFieldVertexList)[0] - 20
-//                        && locationX < GisAlgorithm.getBoundaryLimits(defaultFieldVertexList)[1] + 20
-//                        && locationY > GisAlgorithm.getBoundaryLimits(defaultFieldVertexList)[2] - 20
-//                        && locationY < GisAlgorithm.getBoundaryLimits(defaultFieldVertexList)[3] + 20)) {
+                double THRESHOLD = 20;
+                if ((locationX > fieldBoundsLimits[0] - THRESHOLD
+                        && locationX < fieldBoundsLimits[1] + THRESHOLD
+                        && locationY > fieldBoundsLimits[2] - THRESHOLD
+                        && locationY < fieldBoundsLimits[3] + THRESHOLD)) {
+//                    Log.e(TAG, "****" + fieldBoundsLimits[0]);
+//                    Log.e(TAG, "****" + fieldBoundsLimits[1]);
+//                    Log.e(TAG, "****" + fieldBoundsLimits[2]);
+//                    Log.e(TAG, "****" + fieldBoundsLimits[3]);
+//                    Log.e(TAG, "****" + locationX);
+//                    Log.e(TAG, "****" + locationY);
 //                    Log.e(TAG, "myView.setCurrentPoint");
-//                    myView.setCurentPoint(dataNo, locationX, locationY);
-//                }
-                myView.setCurentPoint(dataNo, locationX, locationY);
+                    myView.setCurrentPoint(dataNo, locationX, locationY);
+                }
 
                 /*设置A点*/
                 if (isPointASet && currentState == SET_A_RESPONSE) {// 判断此时是否点击设置A点
@@ -1043,8 +1050,9 @@ public class NavigationActivity extends Activity implements OnClickListener {
         Log.e(TAG, "VALUES SIZE() IS :" + mPointValues.size());
         isStopNavigation = true;
         stopNavigationTime = System.currentTimeMillis();
-        /*如果点击停止导航和点击开始导航时间差大于20秒则保存该次轨迹到数据库*/
-        if ((stopNavigationTime - startNavigationTime) / 1000 > 20) {
+
+        /*如果点击停止导航和点击开始导航时间差大于30秒则保存该次轨迹到数据库*/
+        if ((stopNavigationTime - startNavigationTime) / 1000 > 30) {
             myApp.getDatabaseManager().insertHistoryEntry(fileNameToSave, defaultFieldName);
         }
     }
@@ -1055,6 +1063,9 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private void startPlotAndSavePath() {
         isDataToSave = true; //设置开始保存数据状态为真
         dataNo = 0; //将数据点编号重置为零
+        if (GisAlgorithm.getBoundaryLimits(defaultFieldVertexList) != null) {
+            fieldBoundsLimits = GisAlgorithm.getBoundaryLimits(defaultFieldVertexList);
+        }
         myView.setOperationPathWidth(linespacing);
         myView.drawPointToPath(1, true); //设置绘制轨迹状态为真
         currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date()); //获取当前日期时间字符串

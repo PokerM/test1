@@ -161,35 +161,35 @@ public class BluetoothService {
      * session in listening (server) mode. Called by the Activity onResume().
      * 不作为服务器端侦听，所以用不上该函数
      */
-    // public synchronized void start() {
-    // if (D)
-    // Log.e(TAG, "start");
-    //
-    // // 停止所有尝试蓝牙连接的线程
-    // if (mConnectThread != null) {
-    // mConnectThread.cancel();
-    // mConnectThread = null;
-    // }
-    //
-    // // 停止所有正在连接的线程
-    // if (mSendingThread != null) {
-    // mSendingThread.cancel();
-    // mSendingThread = null;
-    // }
-    //
-    // if (mReceivingThread != null) {
-    // mReceivingThread.cancel();
-    // mReceivingThread = null;
-    // }
-    //
-    // // 开始监听蓝牙服务套接字的线程
-    // if (mAcceptThread == null) {
-    // mAcceptThread = new AcceptThread();
-    // mAcceptThread.start();
-    // }
-    //
-    // setState(STATE_LISTEN);
-    // }
+    /*public synchronized void start() {
+        if (D)
+            Log.e(TAG, "start");
+
+        // 停止所有尝试蓝牙连接的线程
+        if (mConnectThread != null) {
+            mConnectThread.cancel();
+            mConnectThread = null;
+        }
+
+        // 停止所有正在连接的线程
+        if (mSendingThread != null) {
+            mSendingThread.cancel();
+            mSendingThread = null;
+        }
+
+        if (mReceivingThread != null) {
+            mReceivingThread.cancel();
+            mReceivingThread = null;
+        }
+
+        // 开始监听蓝牙服务套接字的线程
+        if (mAcceptThread == null) {
+            mAcceptThread = new AcceptThread();
+            mAcceptThread.start();
+        }
+
+        setState(STATE_LISTEN);
+    }*/
 
     /**
      * 方法名：connect(BluetoothDevice device) 功能：开始连接远程设备 参数：device - 要连接的蓝牙设备

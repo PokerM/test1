@@ -223,9 +223,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
      * @param x 当前点地理X坐标
      * @param y 当前点地理Y坐标
      */
-    public void setCurentPoint(int n, double x, double y) {
+    public void setCurrentPoint(int n, double x, double y) {
         if (D) {
-            Log.e(TAG, "setCurentPoint(int n,double x,double y)被调用");
+            Log.e(TAG, "setCurrentPoint(int n,double x,double y)被调用");
         }
 
         this.pointNo = n;
@@ -625,10 +625,10 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             drawCanvas();
 
             long end = System.currentTimeMillis();
-            int REFRESH_PERIOD = 100;
-            if (end - start < REFRESH_PERIOD) {
+            int REFRESHING_PERIOD = 100; //设置绘图刷新周期（这个周期要和数据刷新频率一致或者大于数据刷新频率）
+            if (end - start < REFRESHING_PERIOD) {
                 try {
-                    Thread.sleep(REFRESH_PERIOD - (end - start));
+                    Thread.sleep(REFRESHING_PERIOD - (end - start));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
