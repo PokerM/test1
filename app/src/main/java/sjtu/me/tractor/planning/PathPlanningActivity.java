@@ -22,7 +22,6 @@ import sjtu.me.tractor.database.DatabaseManager;
 import sjtu.me.tractor.field.FieldInfo;
 import sjtu.me.tractor.gis.GeoLine;
 import sjtu.me.tractor.gis.GeoPoint;
-import sjtu.me.tractor.gis.GisAlgorithm;
 import sjtu.me.tractor.main.MyApplication;
 import sjtu.me.tractor.surfaceview.MySurfaceView;
 import sjtu.me.tractor.tractorinfo.TractorInfo;
@@ -39,14 +38,7 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
     private GeoLine lineAB;
     private double minTurning;
     private double linespacing;
-    private List<GeoPoint> headland1 = new ArrayList<>(); // 多边形的点,点的记录
-    private List<GeoPoint> headland2 = new ArrayList<>(); // 多边形的点,点的记录
-    private List<GeoLine> plannedPaths = new ArrayList<>(); // 暂时存放的点
 
-    private Button btnSwitch;//开始停止切换按钮
-    private Spinner spField;
-    private Spinner spTractor;
-    private Spinner spABLine;
     private MySurfaceView myView;
     private static final int SURFACE_VIEW_WIDTH = 710;
     private static final int SURFACE_VIEW_HEIGHT = 700;
@@ -92,7 +84,7 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
         Button btnBack = (Button) findViewById(R.id.btnBack);
         btnBack.setOnClickListener(this);
 
-        btnSwitch = (Button) findViewById(R.id.btnSwitch);
+        Button btnSwitch = (Button) findViewById(R.id.btnSwitch);
         btnSwitch.setOnClickListener(this);
 
         myView = (MySurfaceView) findViewById(R.id.myView);
@@ -100,7 +92,7 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
         ArrayAdapter<String> fieldAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, fieldList);
         fieldAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
-        spField = (Spinner) findViewById(R.id.spField);
+        Spinner spField = (Spinner) findViewById(R.id.spField);
         spField.setAdapter(fieldAdapter);
         spField.setSelection(0, true);
         spField.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -134,7 +126,7 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
         ArrayAdapter<String> TractorAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, tractorList);
         TractorAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
-        spTractor = (Spinner) findViewById(R.id.spTractor);
+        Spinner spTractor = (Spinner) findViewById(R.id.spTractor);
         spTractor.setAdapter(TractorAdapter);
         spTractor.setSelection(0, true);
         spTractor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -166,7 +158,7 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
         ArrayAdapter<String> abAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, abList);
         abAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
-        spABLine = (Spinner) findViewById(R.id.spABLine);
+        Spinner spABLine = (Spinner) findViewById(R.id.spABLine);
         spABLine.setAdapter(abAdapter);
         spABLine.setSelection(0, true);
         spABLine.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -226,9 +218,9 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
                     PlanningPathGenerator planningPathGenerator =
                             new PlanningPathGenerator(planningFieldVertices, lineAB, linespacing, minTurning);
                     planningPathGenerator.planningField();
-                    headland1 = planningPathGenerator.getHeadLand1();
-                    headland2 = planningPathGenerator.getHeadLand2();
-                    plannedPaths = planningPathGenerator.getGeneratedPathList();
+                    List<GeoPoint> headland1 = planningPathGenerator.getHeadLand1();
+                    List<GeoPoint> headland2 = planningPathGenerator.getHeadLand2();
+                    List<GeoLine> plannedPaths = planningPathGenerator.getGeneratedPathList();
                     myView.drawHeadland1(headland1);
                     myView.drawHeadland2(headland2);
                     myView.drawPlannedPath(plannedPaths);
@@ -237,8 +229,8 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
                     Log.e(TAG, "lines.size = : " + plannedPaths.size());
 
 
-
                    /*
+                   //测试路径规划功能
                     List<GeoPoint> l = new ArrayList<>();
                     l.add(new GeoPoint(0, 0));
                     l.add(new GeoPoint(0, 100));

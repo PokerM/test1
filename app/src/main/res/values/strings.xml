@@ -146,8 +146,11 @@
     <string name="speed_unit">km/h</string>
     <string name="a_point_already_set">A点已设置!</string>
     <string name="b_point_already_set">B点已设置!</string>
+    <string name="turning_right_successfully">右转成功!</string>
+    <string name="turning_left_successfully">左转成功!</string>
+    <string name="line_navigating">开始直线行驶...</string>
     <string name="received_data_type_error">传入数据类型错误!</string>
-    <string name="stop_navi">停止导航</string>
+    <string name="stop_navigation">停止导航</string>
     <string name="stop_plot_path">停止绘制</string>
     <string name="scan_for_new_bluetooth">搜索蓝牙设备中…</string>
     <string name="select_a_bluetooth_device_to_connect">选择一个设备进行连接</string>

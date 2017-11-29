@@ -41,7 +41,6 @@ import sjtu.me.tractor.bluetooth.BluetoothService;
 import sjtu.me.tractor.database.DatabaseManager;
 import sjtu.me.tractor.field.FieldInfo;
 import sjtu.me.tractor.gis.GeoPoint;
-import sjtu.me.tractor.gis.GisAlgorithm;
 import sjtu.me.tractor.hellochart.LineChart;
 import sjtu.me.tractor.main.MyApplication;
 import sjtu.me.tractor.planning.ABLine;
@@ -77,10 +76,11 @@ public class NavigationActivity extends Activity implements OnClickListener {
     public static final int DEFAULT_STATE_RESPONSE = 99999;
     public static final int SET_A_RESPONSE = 40103;
     public static final int SET_B_RESPONSE = 40104;
-    public static final int LINE_NAVI_RESPONSE = 10010;
+    public static final int LINE_NAVIGATION_RESPONSE = 10010;
     public static final int TURNING_RIGHT_RESPONSE = 10020;
     public static final int TURNING_LEFT_RESPONSE = 10030;
 
+    /*调试时用到的一些指令状态*/
     public static final int HEADLAND_P1_RESPONSE = 50101;
     public static final int HEADLAND_P2_RESPONSE = 50102;
 
@@ -942,9 +942,10 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 }
 
                 /*启动导航后收到直线行驶响应则切换为默认发送指令*/
-                if (isStartNavigation == true && currentState == LINE_NAVI_RESPONSE) {
+                if (isStartNavigation == true && currentState == LINE_NAVIGATION_RESPONSE) {
                     isStartNavigation = false;
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
+                    ToastUtil.showToast(getString(R.string.line_navigating), true);
                 }
 
                 /*停止导航后收到默认响应则切换为默认发送指令*/
@@ -957,18 +958,21 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 if (isToTurnRight && currentState == TURNING_RIGHT_RESPONSE) {
                     isToTurnRight = false;
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
+                    ToastUtil.showToast(getString(R.string.turning_right_successfully), true);
+
                 }
 
                 /*左转后收到左转响应则切换为默认发送指令*/
                 if (isToTurnLeft && currentState == TURNING_LEFT_RESPONSE) {
                     isToTurnLeft = false;
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
+                    ToastUtil.showToast(getString(R.string.turning_left_successfully), true);
                 }
 
                 /*
                 //这一段本来是按照通信协议写的，加上去之后，下位机貌似不稳定（由于计算能力限制？）
                 if (!isStopNavigation) {
-                    if (currentState == LINE_NAVI_RESPONSE || currentState == HEADLAND_P1_RESPONSE
+                    if (currentState == LINE_NAVIGATION_RESPONSE || currentState == HEADLAND_P1_RESPONSE
                             || currentState == HEADLAND_P2_RESPONSE) {
                         myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                     }
