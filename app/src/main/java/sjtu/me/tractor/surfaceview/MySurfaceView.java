@@ -37,7 +37,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     private final static String TAG = "MySurfaceView";
     private final static boolean D = false;
-    private boolean isDrawing = true;
+    private boolean isDrawing = false;
     private boolean isDrawingAB = false;
     private boolean isOnHistoryDrawing = false;
     private boolean isDrawingPlannedPath = false;
@@ -213,16 +213,6 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         PathEffect effect2 = new DashPathEffect(new float[]{4, 4,}, 1);
         paintPlannedLines.setPathEffect(effect2);
         paintPlannedLines.setStrokeWidth(4);
-
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        new Thread(this).start();
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
     }
 
@@ -750,9 +740,19 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         return min;
     }
 
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        this.isDrawing = true; //设置绘制标志为true
+        new Thread(this).start(); //开启绘图线程
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        isDrawing = false;
+        isDrawing = false; //把线程运行标志设置为false;
     }
 }
