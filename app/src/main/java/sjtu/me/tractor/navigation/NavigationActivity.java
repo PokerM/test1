@@ -178,7 +178,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private ArrayList<GeoPoint> defaultFieldVertexList;    //定义地块顶点数组
     private double[] fieldBoundsLimits = new double[]{0, 1000000, 0, 10000000};
     private double linespacing = 2.5; //作业行间距
-    private GeoLine lineAB = new GeoLine();
+    private GeoLine lineAB;
     private double minTurning;
 
     /*创建消息处理器，处理通信线程发送过来的数据。*/

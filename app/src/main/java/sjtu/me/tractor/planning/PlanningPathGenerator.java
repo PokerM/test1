@@ -37,7 +37,11 @@ public class PlanningPathGenerator {
     public void planningField() {
         if (fieldVertices != null && fieldVertices.size() == 4 && lineSpacing > 0 && headLineWidth > 0) {
             int size = fieldVertices.size();
-            if (lineAB == null) {
+            if (lineAB == null
+                    || lineAB.getP1() == null
+                    || lineAB.getP2() == null
+                    || !GisAlgorithm.pointInPolygon(fieldVertices, lineAB.getP1())
+                    || !GisAlgorithm.pointInPolygon(fieldVertices, lineAB.getP2())) {
                 int index = getLongestEdge();
 
                 for (int i = 0; i < size; i++) {
@@ -91,7 +95,7 @@ public class PlanningPathGenerator {
                 GeoLine lineBeforeBottom = new GeoLine(fieldVertices.get((index - 2 + size) % size), fieldVertices.get((index - 1 + size) % size));
                 GeoPoint intersection3 = GisAlgorithm.intersectionPoint(lineBeforeBottom, bottomHeadLandLine);
                 GeoPoint intersection4 = GisAlgorithm.intersectionPoint(bottomHeadLandLine, longestEdge);
-                if (intersection3 == null || intersection4 == null){
+                if (intersection3 == null || intersection4 == null) {
                     return;
                 }
                 GeoPoint center2 = new GeoPoint((intersection3.getX() + intersection4.getX()) / 2,
@@ -229,7 +233,7 @@ public class PlanningPathGenerator {
         if (fieldVertices == null || fieldVertices.size() < 2) {
             return -1;
         }
-        double minIncludedAngle = 2* Math.PI;
+        double minIncludedAngle = 2 * Math.PI;
         int index = -1;
         for (int i = 0; i < fieldVertices.size(); i++) {
             GeoPoint p1 = fieldVertices.get(i);
