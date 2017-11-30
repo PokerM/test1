@@ -40,11 +40,13 @@ import sjtu.me.tractor.R;
 import sjtu.me.tractor.bluetooth.BluetoothService;
 import sjtu.me.tractor.database.DatabaseManager;
 import sjtu.me.tractor.field.FieldInfo;
+import sjtu.me.tractor.gis.GeoLine;
 import sjtu.me.tractor.gis.GeoPoint;
 import sjtu.me.tractor.gis.GisAlgorithm;
 import sjtu.me.tractor.hellochart.LineChart;
 import sjtu.me.tractor.main.MyApplication;
 import sjtu.me.tractor.planning.ABLine;
+import sjtu.me.tractor.planning.PlanningPathGenerator;
 import sjtu.me.tractor.surfaceview.MySurfaceView;
 import sjtu.me.tractor.tractorinfo.TractorInfo;
 import sjtu.me.tractor.util.AlertDialogUtil;
@@ -174,8 +176,11 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private String defaultFieldName;
     private String defaultTractorName;
     private ArrayList<GeoPoint> defaultFieldVertexList;    //定义地块顶点数组
-    private double[] fieldBoundsLimits = new double[] {0, 1000000, 0, 10000000};
+    private double[] fieldBoundsLimits = new double[]{0, 1000000, 0, 10000000};
     private double linespacing = 2.5; //作业行间距
+    private GeoLine lineAB = new GeoLine();
+    private double minTurning;
+
     /*创建消息处理器，处理通信线程发送过来的数据。*/
     MyNavigationHandler mNavigationHandler = new MyNavigationHandler(this);
 
@@ -280,6 +285,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
             txtLineSpacing.setText(map.get(TractorInfo.TRACTOR_OPERATION_LINESPACING) + "m");
             try {
                 linespacing = Double.parseDouble(map.get(TractorInfo.TRACTOR_OPERATION_LINESPACING));
+                minTurning = Double.parseDouble(map.get(TractorInfo.TRACTOR_MIN_TURNING_RADIUS));
             } catch (NumberFormatException e) {
                 ToastUtil.showToast("读取作业行间距数字格式错误!", true);
             }
@@ -473,6 +479,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                     txtLineSpacing.setText(map.get(TractorInfo.TRACTOR_OPERATION_LINESPACING) + " m");
                     try {
                         linespacing = Double.parseDouble(map.get(TractorInfo.TRACTOR_OPERATION_LINESPACING));
+                        minTurning = Double.parseDouble(map.get(TractorInfo.TRACTOR_MIN_TURNING_RADIUS));
                     } catch (NumberFormatException e) {
                         ToastUtil.showToast("读取作业行间距数字格式错误!", true);
                     }
@@ -481,9 +488,25 @@ public class NavigationActivity extends Activity implements OnClickListener {
 
             case REQUEST_SELECT_AB_LINE:
                 if (resultCode == RESULT_OK) {
+                    //将默认AB显示设置为用户选择的历史AB线
                     bundle = data.getExtras();
                     String name = (bundle == null ? null : bundle.getString(ABLine.AB_LINE_NAME_BY_DATE));
-                    // TODO
+                    Cursor cursor = myApp.getDatabaseManager().queryABlineByDate(name);
+                    Map<String, String> map = DatabaseManager.cursorToMap(cursor);
+                    try {
+                        double ax = Double.parseDouble(map.get(ABLine.A_POINT_X_COORDINATE));
+                        double ay = Double.parseDouble(map.get(ABLine.A_POINT_Y_COORDINATE));
+                        double bx = Double.parseDouble(map.get(ABLine.B_POINT_X_COORDINATE));
+                        double by = Double.parseDouble(map.get(ABLine.B_POINT_Y_COORDINATE));
+                        Log.e(TAG, "ax: " + ax);
+                        Log.e(TAG, "ay: " + ay);
+                        Log.e(TAG, "bx: " + bx);
+                        Log.e(TAG, "by: " + by);
+                        lineAB = new GeoLine(ax, ay, bx, by);
+                        myView.drawABline(ax, ay, bx, by, true);
+                    } catch (NumberFormatException e) {
+                        ToastUtil.showToast("读取AB线历史数据数字格式错误!", true);
+                    }
                 }
                 break;
 
@@ -611,7 +634,17 @@ public class NavigationActivity extends Activity implements OnClickListener {
                         .setPositiveButton(getString(R.string.affirm), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-
+                                if (defaultFieldVertexList != null) {
+                                    PlanningPathGenerator planningPathGenerator =
+                                            new PlanningPathGenerator(defaultFieldVertexList, lineAB, linespacing, minTurning);
+                                    planningPathGenerator.planningField();
+                                    List<GeoPoint> headland1 = planningPathGenerator.getHeadLand1();
+                                    List<GeoPoint> headland2 = planningPathGenerator.getHeadLand2();
+                                    List<GeoLine> plannedPaths = planningPathGenerator.getGeneratedPathList();
+                                    myView.drawHeadland1(headland1);
+                                    myView.drawHeadland2(headland2);
+                                    myView.drawPlannedPath(plannedPaths);
+                                }
                             }
                         })
                         .setNegativeButton(getString(R.string.cancel), null)
@@ -659,7 +692,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                             }
                             float average = totalLateral / mPointValues.size();
                             txtAverageLateral.setText("横向偏差绝对值平均值为：" + String.valueOf(average) + " m"
-                            + "            最大横向偏差绝对值为：" + maxLateral + " m");
+                                    + "            最大横向偏差绝对值为：" + maxLateral + " m");
                         }
                     } else {
                         if (historyPointValues.size() != 0) {
@@ -940,7 +973,9 @@ public class NavigationActivity extends Activity implements OnClickListener {
                             return;
                         } else {
                             ToastUtil.showToast(getString(R.string.b_point_already_set), true);
-                            myView.drawABline(aX, aY, bX, bY, true);
+                            lineAB = new GeoLine(aX, aY, bX, bY); //更新默认AB线（规划轨迹时用AB线作为基准线）
+                            myView.drawABline(aX, aY, bX, bY, true); //在界面上绘制AB线
+
                             currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
                             String fileABPoints = currentTime + "_ab_points.ab";
                             String abLine = new StringBuilder()

@@ -180,7 +180,7 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
                         lineAB = new GeoLine(ax, ay, bx, by);
                         myView.drawABline(ax, ay, bx, by, true);
                     } catch (NumberFormatException e) {
-                        ToastUtil.showToast("读取作业行间距数字格式错误!", true);
+                        ToastUtil.showToast("读取AB线历史数据数字格式错误!", true);
                     }
 
                 }

@@ -143,6 +143,16 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true" />
 
+
+            <ImageView
+                android:id="@+id/northSign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|right"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/north_indicator" />
+
         </FrameLayout>
 
     </LinearLayout>
