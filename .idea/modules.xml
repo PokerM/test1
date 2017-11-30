@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AutoTractor.iml" filepath="$PROJECT_DIR$/AutoTractor.iml" />
-      <module fileurl="file://D:\Workspace\AndroidStudio\AutoTractor\MyProject.iml" filepath="D:\Workspace\AndroidStudio\AutoTractor\MyProject.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

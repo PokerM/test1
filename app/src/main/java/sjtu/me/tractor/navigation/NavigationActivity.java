@@ -648,25 +648,37 @@ public class NavigationActivity extends Activity implements OnClickListener {
                         lineChart.setPointValues(mPointValues);
                         if (mPointValues != null && mPointValues.size() > 0) {
                             float totalLateral = 0.0f;
+                            float maxLateral = Float.MIN_VALUE;
                             for (PointValue mPointValue : mPointValues) {
-                                totalLateral += mPointValue.getY();
+                                float absLateral = Math.abs(mPointValue.getY());
+                                if (absLateral > maxLateral) {
+                                    maxLateral = absLateral;
+                                }
+                                totalLateral += absLateral;
+
                             }
                             float average = totalLateral / mPointValues.size();
-                            txtAverageLateral.setText("平均横向偏差为：" + String.valueOf(average) + " m");
+                            txtAverageLateral.setText("横向偏差绝对值平均值为：" + String.valueOf(average) + " m"
+                            + "            最大横向偏差绝对值为：" + maxLateral + " m");
                         }
                     } else {
                         if (historyPointValues.size() != 0) {
                             lineChart.setPointValues(historyPointValues);
-                            Log.e(TAG, "HISTORY LINECHART POINTVALUES SET");
+                            Log.e(TAG, "HISTORY LINE CHART POINT VALUES SET");
                             if (historyPointValues != null && historyPointValues.size() > 0) {
                                 float totalLateral = 0.0f;
+                                float maxLateral = Float.MIN_VALUE;
                                 for (PointValue mPointValue : historyPointValues) {
-                                    totalLateral += mPointValue.getY();
+                                    float absLateral = Math.abs(mPointValue.getY());
+                                    if (absLateral > maxLateral) {
+                                        maxLateral = absLateral;
+                                    }
+                                    totalLateral += absLateral;
+
                                 }
-                                float average = totalLateral / historyPathPoints.size();
-                                txtAverageLateral.setText("平均横向偏差为：" + String.valueOf(average) + " m");
-                                lineChart.setPointValues(historyPointValues);
-                                Log.e(TAG, "HISTORY AVERAGE SET");
+                                float average = totalLateral / historyPointValues.size();
+                                txtAverageLateral.setText("横向偏差绝对值平均值为：" + String.valueOf(average) + " m"
+                                        + "            最大横向偏差绝对值为：" + maxLateral + " m");
                             }
                         }
                     }
@@ -885,7 +897,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 }
 
                 /*绘制当前点*/
-                double THRESHOLD = 20;
+                double THRESHOLD = 10;
                 if ((locationX > fieldBoundsLimits[0] - THRESHOLD
                         && locationX < fieldBoundsLimits[1] + THRESHOLD
                         && locationY > fieldBoundsLimits[2] - THRESHOLD
