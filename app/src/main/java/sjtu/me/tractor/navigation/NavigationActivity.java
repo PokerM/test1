@@ -66,6 +66,10 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private static final int SURFACE_VIEW_WIDTH = 705;
     private static final int SURFACE_VIEW_HEIGHT = 660;
 
+    private double BOUNDS_THRESHOLD = 15; //为了过滤坐标跳动设置的边界阈值
+    private double LATERAL_THRESHOLD = 4; //为了过滤横向偏差的跳动设置的阈值
+
+
     private static final char END = '*'; // 串口通信字符串结束标志
     private static final char START = '#'; // 串口通信字符串开始标志
     private static final char SEPARATOR = ','; // 分隔符
@@ -143,7 +147,6 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private double aX, aY, bX, bY; //AB点XY坐标
     private double aLat, aLng, bLat, bLng; //AB点经纬度
     private long startNavigationTime; //每次导航启动时间
-    private long stopNavigationTime; //每次导航关闭时间
     private String fileNameToSave;
     private String currentTime;
 
@@ -518,29 +521,33 @@ public class NavigationActivity extends Activity implements OnClickListener {
                     String field = (map == null ? null : map.get(HistoryPath.FIELD_NAME));
                     Log.e(TAG, "HISTORY FIELD IS " + field);
 
-                    getHistoryDataFromFiles(name, historyPathPoints, historyPointValues); //读取历史记录；
+                    boolean b = getHistoryDataFromFiles(name, historyPathPoints, historyPointValues); //读取历史记录；
+                    if (b) {
+                        if (!TextUtils.isEmpty(field)) {
+                            Cursor resultCursor = myApp.getDatabaseManager().queryFieldWithPointsByName(field);
+                            List<Map<String, String>> resultList = DatabaseManager.cursorToList(resultCursor);
 
-                    if (!TextUtils.isEmpty(field)) {
-                        Cursor resultCursor = myApp.getDatabaseManager().queryFieldWithPointsByName(field);
-                        List<Map<String, String>> resultList = DatabaseManager.cursorToList(resultCursor);
+                            //获取历史轨迹所在地块；
+                            ArrayList<GeoPoint> hField = new ArrayList<>();
+                            for (int i = 0; i < resultList.size(); i++) {
+                                GeoPoint vertex = new GeoPoint(Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_X_COORDINATE)),
+                                        Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_Y_COORDINATE)));
+                                hField.add(vertex);
+                            }
 
-                        //获取历史轨迹所在地块；
-                        ArrayList<GeoPoint> hField = new ArrayList<>();
-                        for (int i = 0; i < resultList.size(); i++) {
-                            GeoPoint vertex = new GeoPoint(Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_X_COORDINATE)),
-                                    Double.valueOf(resultList.get(i).get(FieldInfo.FIELD_POINT_Y_COORDINATE)));
-                            hField.add(vertex);
+                            //设置历史轨迹地块;
+                            boolean b2 = myView.setFieldBoundary(hField, true);
+                            if (b2) {
+                                txtFieldName.setText(field);
+                            } else {
+                                ToastUtil.showToast("找不到历史数据记录对应的地块信息!", true);
+                            }
                         }
-
-                        //设置历史轨迹地块;
-                        boolean b = myView.setFieldBoundary(hField, true);
-                        if (b) {
-                            txtFieldName.setText(field);
-                        } else {
-                            ToastUtil.showToast("找不到地块数据!", true);
-                        }
+                        myView.drawHistoryPath(historyPathPoints);
+                    } else {
+                        ToastUtil.showToast("历史记录数据读取错误!", true);
                     }
-                    myView.drawHistoryPath(historyPathPoints);
+
                 }
                 break;
 
@@ -930,17 +937,16 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 if (!isStopNavigation) { //记录横向偏差
                     long timeMillis = System.currentTimeMillis();
                 /*以时间横轴，横向偏差为纵轴，添加偏差数据到集合*/
-                    if (Math.abs(lateral) < 3) {//不记录太大的横向偏差（计算错误产生的）
+                    if (Math.abs(lateral) < LATERAL_THRESHOLD) {//不记录太大的横向偏差（计算错误产生的）
                         mPointValues.add(new PointValue((float) ((timeMillis - startNavigationTime) / 1000.0), (float) lateral));
                     }
                 }
 
                 /*绘制当前点*/
-                double THRESHOLD = 10;
-                if ((locationX > fieldBoundsLimits[0] - THRESHOLD
-                        && locationX < fieldBoundsLimits[1] + THRESHOLD
-                        && locationY > fieldBoundsLimits[2] - THRESHOLD
-                        && locationY < fieldBoundsLimits[3] + THRESHOLD)) {
+                if ((locationX > fieldBoundsLimits[0] - BOUNDS_THRESHOLD
+                        && locationX < fieldBoundsLimits[1] + BOUNDS_THRESHOLD
+                        && locationY > fieldBoundsLimits[2] - BOUNDS_THRESHOLD
+                        && locationY < fieldBoundsLimits[3] + BOUNDS_THRESHOLD)) {
 //                    Log.e(TAG, "****" + fieldBoundsLimits[0]);
 //                    Log.e(TAG, "****" + fieldBoundsLimits[1]);
 //                    Log.e(TAG, "****" + fieldBoundsLimits[2]);
@@ -1053,7 +1059,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
      */
     private boolean parseReceivedMessage(String dataString) {
         String[] dataArray = dataString.split(String.valueOf(SEPARATOR), SEPARATOR_NUMBER + 1);
-        if (dataArray == null || dataArray.length < 13) {
+        if (dataArray.length < 13) {
             return false;
         }
         try {
@@ -1102,7 +1108,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
         lineChart.setPointValues(mPointValues); //将导航偏差数据集传到折线图
         Log.e(TAG, "VALUES SIZE() IS :" + mPointValues.size());
         isStopNavigation = true;
-        stopNavigationTime = System.currentTimeMillis();
+        long stopNavigationTime = System.currentTimeMillis();
 
         /*如果点击停止导航和点击开始导航时间差大于30秒则保存该次轨迹到数据库*/
         if ((stopNavigationTime - startNavigationTime) / 1000 > 30) {
@@ -1162,9 +1168,9 @@ public class NavigationActivity extends Activity implements OnClickListener {
      * @param historyPointValues 读取历史文件后保存历史横向偏差记录的缓存列表
      * @return 成功标志
      */
-    public static boolean getHistoryDataFromFiles(String fileName,
-                                                  List<GeoPoint> historyPathPoints,
-                                                  List<PointValue> historyPointValues) {
+    private boolean getHistoryDataFromFiles(String fileName,
+                                                   List<GeoPoint> historyPathPoints,
+                                                   List<PointValue> historyPointValues) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SSS", Locale.SIMPLIFIED_CHINESE);
         String dataDirectory = FileUtil.getAlbumStorageDir(NavigationActivity.DATA_DIRECTORY).toString();
         Log.e(TAG, "data dir is: " + dataDirectory);
@@ -1175,7 +1181,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
         }
         historyPathPoints.clear();
         historyPointValues.clear();
-        long startTime = 0;
+        long startTime;
         try {
             startTime = sdf.parse(lines[0].split(",")[13]).getTime();
             for (int i = 0; i < lines.length; i++) {
@@ -1187,7 +1193,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                         double hLateral = Double.parseDouble(arrays[10]);
                         long hTime = sdf.parse(arrays[13]).getTime();
                         historyPathPoints.add(new GeoPoint(hX, hY)); //添加历史轨迹各个点
-                        if (hLateral < 2.0) {
+                        if (Math.abs(hLateral) < LATERAL_THRESHOLD) {
                             /*忽略过大的横向偏差(接收数据跳动引起的)*/
                             historyPointValues.add(new PointValue((float) ((hTime - startTime) / 1000.0), (float) hLateral));
                         }
