@@ -187,7 +187,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         fieldBoundPaint.setAntiAlias(true);
         fieldBoundPaint.setColor(Color.RED);
         fieldBoundPaint.setStyle(Style.STROKE);
-        fieldBoundPaint.setStrokeWidth(28);
+        fieldBoundPaint.setStrokeWidth(30);
         PathEffect effect = new DashPathEffect(new float[]{4,4}, 1);
         fieldBoundPaint.setPathEffect(effect);
 
@@ -539,6 +539,16 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+    /**
+     * Òþ²Ø¹æ»®¹ì¼£
+     */
+    public void hidePlannedPath() {
+        this.isDrawingPlannedPath = false;
+    }
+
+    /**
+     * Òþ²ØÀúÊ·¹ì¼£
+     */
     public void hideHistoryPath() {
         this.isOnHistoryDrawing = false;
         historyPath.reset();

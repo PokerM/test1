@@ -78,7 +78,7 @@
 
 
     <string name="tractor_info_edit_hint">请输入数据</string>
-    <string name="carmessage_ecu3">ECU高度</string>
+    <string name="tractor_info_height">天线高度</string>
     <string name="alert_msg_tractor_info_tips">\t\t\t\t您确定要把车辆数据存储到数据库吗？\n\t</string>
     <string name="alert_msg_tractor_name_error">\t\t\t\t数据库存在同名车辆，若点击确定则会覆盖掉原数据\n\n若不希望覆盖原数据请点击返回按钮更改车辆名称</string>
     <string name="alert_title_tractor_name_error">重名警告</string>
@@ -183,9 +183,8 @@
     <string name="satellite_gps_rtk">差分定位</string>
     <string name="satellite_gps_rtk_fixed">RTK固定</string>
     <string name="satellite_gps_float">RTK浮点</string>
-    <string name="alert_message_navi_download">\t\t启动规划路径自动导航模式\n\n点击确定装载规划路径到下位机</string>
-    <string name="toast_set_defaut_tractor_tip">请设置车辆！</string>
-    <string name="toast_set_defaut_field_tip">请先设置地块！</string>
+    <string name="toast_set_default_tractor_tip">请设置车辆！</string>
+    <string name="toast_set_default_field_tip">请先设置地块！</string>
     <string name="toast_reset_field_tip">请先设置地块！</string>
     <string name="history_paths_list">历史轨迹列表</string>
     <string name="ab_lines_list">AB线列表</string>
@@ -196,6 +195,10 @@
     <string name="please_select_an_operation">请选择一个操作：</string>
     <string name="no_operation">取消操作</string>
     <string name="delete_this_entry">删除记录</string>
+    <string name="alert_message_navigation_download">\t\t启动规划路径导航模式\n\n请选择下一步操作...</string>
+    <string name="loading_planned_path">加载规划</string>
+    <string name="unloading_planned_path">隐藏规划</string>
+    <string name="select_no_operation">取消操作</string>
 
     <drawable name="color_normal">#69541b</drawable>
     <drawable name="color_pressed">#b2d235</drawable>

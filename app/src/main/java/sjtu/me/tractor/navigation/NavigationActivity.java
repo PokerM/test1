@@ -290,7 +290,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 ToastUtil.showToast("读取作业行间距数字格式错误!", true);
             }
         } else {
-            ToastUtil.showToast(getString(R.string.toast_set_defaut_tractor_tip), true);
+            ToastUtil.showToast(getString(R.string.toast_set_default_tractor_tip), true);
         }
 
         // ---CheckBox---
@@ -376,13 +376,13 @@ public class NavigationActivity extends Activity implements OnClickListener {
             if (b) {
                 txtFieldName.setText(defaultFieldName);
             } else {
-                ToastUtil.showToast(getString(R.string.toast_set_defaut_field_tip), true);
+                ToastUtil.showToast(getString(R.string.toast_set_default_field_tip), true);
             }
             if (D) {
                 Log.e(TAG, "set default field: " + defaultFieldName);
             }
         } else {
-            ToastUtil.showToast(getString(R.string.toast_set_defaut_field_tip), true);
+            ToastUtil.showToast(getString(R.string.toast_set_default_field_tip), true);
         }
     }
 
@@ -629,9 +629,9 @@ public class NavigationActivity extends Activity implements OnClickListener {
             case R.id.btnPlanningMode:
                 AlertDialog planningDialog = new AlertDialog.Builder(this)
                         .setTitle(getString(R.string.alert_title_field_tip))
-                        .setMessage(getString(R.string.alert_message_navi_download))
+                        .setMessage(getString(R.string.alert_message_navigation_download))
                         .setIcon(R.drawable.alert)
-                        .setPositiveButton(getString(R.string.affirm), new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.loading_planned_path, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 if (defaultFieldVertexList != null) {
@@ -647,7 +647,13 @@ public class NavigationActivity extends Activity implements OnClickListener {
                                 }
                             }
                         })
-                        .setNegativeButton(getString(R.string.cancel), null)
+                        .setNeutralButton(R.string.unloading_planned_path, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                myView.hidePlannedPath();
+                            }
+                        })
+                        .setNegativeButton(R.string.select_no_operation, null)
                         .create();
                 planningDialog.show();
                 AlertDialogUtil.changeDialogTheme(planningDialog);

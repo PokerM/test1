@@ -16,7 +16,7 @@
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:layout_gravity="center"
-             android:text="@string/carmessage_ecu3"
+             android:text="@string/tractor_info_height"
              android:textSize="32sp"
              android:textColor="#999999"/>
      </LinearLayout>
