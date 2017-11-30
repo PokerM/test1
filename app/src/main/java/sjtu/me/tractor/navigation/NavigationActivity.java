@@ -66,8 +66,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private static final int SURFACE_VIEW_WIDTH = 705;
     private static final int SURFACE_VIEW_HEIGHT = 660;
 
-    private double BOUNDS_THRESHOLD = 15; //为了过滤坐标跳动设置的边界阈值
-    private double LATERAL_THRESHOLD = 4; //为了过滤横向偏差的跳动设置的阈值
+    private double LATERAL_THRESHOLD = 5; //为了过滤横向偏差的跳动设置的阈值
 
 
     private static final char END = '*'; // 串口通信字符串结束标志
@@ -943,6 +942,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 }
 
                 /*绘制当前点*/
+                double BOUNDS_THRESHOLD = 10; //设置一个阈值
                 if ((locationX > fieldBoundsLimits[0] - BOUNDS_THRESHOLD
                         && locationX < fieldBoundsLimits[1] + BOUNDS_THRESHOLD
                         && locationY > fieldBoundsLimits[2] - BOUNDS_THRESHOLD
