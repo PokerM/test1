@@ -188,7 +188,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         fieldBoundPaint.setColor(Color.RED);
         fieldBoundPaint.setStyle(Style.STROKE);
         fieldBoundPaint.setStrokeWidth(30);
-        PathEffect effect = new DashPathEffect(new float[]{4,4}, 1);
+        PathEffect effect = new DashPathEffect(new float[]{4, 4}, 1);
         fieldBoundPaint.setPathEffect(effect);
 
         fieldShaderPaint = new Paint();
@@ -528,15 +528,61 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
                     if (flag) {
                         this.planedPath.lineTo(fieldToImage(line.getP2())[0], fieldToImage(line.getP2())[1]);
                         this.planedPath.lineTo(fieldToImage(line.getP1())[0], fieldToImage(line.getP1())[1]);
-                        flag = !flag;
                     } else {
                         this.planedPath.lineTo(fieldToImage(line.getP1())[0], fieldToImage(line.getP1())[1]);
                         this.planedPath.lineTo(fieldToImage(line.getP2())[0], fieldToImage(line.getP2())[1]);
-                        flag = !flag;
                     }
+                    flag = !flag;
                 }
             }
         }
+    }
+
+    public void drawPlannedPath2(List<GeoLine> lines) {
+        this.isDrawingPlannedPath = true;
+        boolean isFirst = true;
+        boolean flag = true;
+        GeoLine preLine = new GeoLine();
+        if (lines != null && lines.size() != 0) {
+            for (GeoLine line : lines) {
+                if (isFirst) {
+                    this.planedPath.reset();
+                    this.planedPath.moveTo(fieldToImage(line.getP1())[0], fieldToImage(line.getP1())[1]);
+                    this.planedPath.lineTo(fieldToImage(line.getP2())[0], fieldToImage(line.getP2())[1]);
+                    isFirst = false;
+                } else {
+                    if (flag) {
+                        float cx = getControlPoints(fieldToImage(preLine.getP2())[0], fieldToImage(preLine.getP2())[1],
+                                fieldToImage(line.getP2())[0], fieldToImage(line.getP2())[1])[0];
+                        float cy = getControlPoints(fieldToImage(preLine.getP2())[0], fieldToImage(preLine.getP2())[1],
+                                fieldToImage(line.getP2())[0], fieldToImage(line.getP2())[1])[1];
+                        this.planedPath.quadTo(cx, cy, fieldToImage(line.getP2())[0], fieldToImage(line.getP2())[1]);
+
+//                        this.planedPath.lineTo(fieldToImage(line.getP2())[0], fieldToImage(line.getP2())[1]);
+                        this.planedPath.lineTo(fieldToImage(line.getP1())[0], fieldToImage(line.getP1())[1]);
+                    } else {
+                        float cx = getControlPoints(fieldToImage(line.getP1())[0], fieldToImage(line.getP1())[1],
+                                fieldToImage(preLine.getP1())[0], fieldToImage(preLine.getP1())[1])[0];
+                        float cy = getControlPoints(fieldToImage(line.getP1())[0], fieldToImage(line.getP1())[1],
+                                fieldToImage(preLine.getP1())[0], fieldToImage(preLine.getP1())[1])[1];
+                        this.planedPath.quadTo(cx, cy, fieldToImage(line.getP1())[0], fieldToImage(line.getP1())[1]);
+
+//                        this.planedPath.lineTo(fieldToImage(line.getP1())[0], fieldToImage(line.getP1())[1]);
+                        this.planedPath.lineTo(fieldToImage(line.getP2())[0], fieldToImage(line.getP2())[1]);
+                    }
+                    flag = !flag;
+                }
+                preLine = line;
+            }
+        }
+    }
+
+    private float[] getControlPoints(float startX, float startY, float endX, float endY) {
+        float controlX1 = (startX + endX) / 2 - (endY - startY) / 2;
+        float controlY1 = (startY + endY) / 2 + (endX - startX) / 2;
+        float controlX = controlX1 * 2 - (startX + endX) / 2;
+        float controlY = controlY1 * 2 - (startY + endY) / 2;
+        return new float[]{controlX, controlY};
     }
 
     /**
