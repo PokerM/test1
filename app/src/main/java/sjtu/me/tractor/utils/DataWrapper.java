@@ -1,4 +1,4 @@
-package sjtu.me.tractor.util;
+package sjtu.me.tractor.utils;
 
 /**
  * Created by billhu on 2017/11/20.

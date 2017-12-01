@@ -28,10 +28,8 @@ import java.lang.ref.WeakReference;
 import java.util.Set;
 
 import sjtu.me.tractor.R;
-import sjtu.me.tractor.bluetooth.BluetoothService;
-import sjtu.me.tractor.bluetooth.DeviceListActivity;
 import sjtu.me.tractor.main.MyApplication;
-import sjtu.me.tractor.util.ToastUtil;
+import sjtu.me.tractor.utils.ToastUtil;
 
 /**
  * @author BillHu

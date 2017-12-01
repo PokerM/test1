@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding" native2AsciiForPropertiesFiles="true" defaultCharsetForPropertiesFiles="GBK">
-    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/bluetooth/BluetoothService.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/bluetooth/DeviceListActivity.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/connection/BluetoothService.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/connection/ConnectionFragment.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/connection/DeviceListActivity.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/database/DatabaseManager.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/database/MyDatabaseHelper.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/field/FieldAddingActivity.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/field/FieldInfo.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/field/FieldListAdapter.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/field/FieldSettingFragment.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/gis/GeoField.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/gis/GeoLine.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/gis/GeoPoint.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/gis/GisAlgorithm.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/hellochart/LineChart.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/main/HomeActivity.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/main/MyApplication.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/main/StartActivity.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/navigation/FieldResultActivity.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/navigation/LineChart.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/navigation/NavigationActivity.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/start/StartActivity.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/planning/GeoField.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/planning/GeoLine.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/planning/GeoPoint.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/planning/GisAlgorithm.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/surfaceview/MySurfaceView.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/tractorinfo/Info0Wheelbase.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/tractorinfo/Info1AntennaLateral.java" charset="GBK" />
@@ -37,9 +37,9 @@
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/tractorinfo/TractorListAdapter.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/tractorinfo/TractorPagerAdapter.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/tractorinfo/TractorSettingFragment.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/util/AlertDialogUtil.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/util/FileUtil.java" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/util/ToastUtil.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/utils/AlertDialogUtil.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/utils/FileUtil.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/utils/ToastUtil.java" charset="GBK" />
     <file url="PROJECT" charset="GBK" />
   </component>
 </project>

@@ -1,5 +1,5 @@
-package sjtu.me.tractor.gis;
-import sjtu.me.tractor.gis.GeoPoint;
+package sjtu.me.tractor.planning;
+import sjtu.me.tractor.planning.GeoPoint;
 
 /**
  * œﬂ¿‡

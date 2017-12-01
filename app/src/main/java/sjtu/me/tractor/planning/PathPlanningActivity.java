@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,12 +21,10 @@ import java.util.Map;
 import sjtu.me.tractor.R;
 import sjtu.me.tractor.database.DatabaseManager;
 import sjtu.me.tractor.field.FieldInfo;
-import sjtu.me.tractor.gis.GeoLine;
-import sjtu.me.tractor.gis.GeoPoint;
 import sjtu.me.tractor.main.MyApplication;
 import sjtu.me.tractor.surfaceview.MySurfaceView;
 import sjtu.me.tractor.tractorinfo.TractorInfo;
-import sjtu.me.tractor.util.ToastUtil;
+import sjtu.me.tractor.utils.ToastUtil;
 
 
 public class PathPlanningActivity extends Activity implements View.OnClickListener {
@@ -116,6 +115,10 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
                     }
                     isFieldSet = myView.setFieldBoundary(planningFieldVertices, true);
                 }
+
+                if (i == 0) {
+                    isFieldSet = false;
+                }
             }
 
             @Override
@@ -141,11 +144,19 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
                         linespacing = Double.parseDouble(map.get(TractorInfo.TRACTOR_OPERATION_LINESPACING));
                         minTurning = Double.parseDouble(map.get(TractorInfo.TRACTOR_MIN_TURNING_RADIUS));
                         isTractorSet = true;
-                        Log.e(TAG, "linespace: " + linespacing);
-                        Log.e(TAG, "min_turning " + minTurning);
+                        ((TextView) findViewById(R.id.txtMinTurning)).setText("最小拐弯半径：" + minTurning + " m");
+                        ((TextView) findViewById(R.id.txtLineSpacing)).setText("作业行间距：" + linespacing + " m");
+                        findViewById(R.id.txtMinTurning).setVisibility(View.VISIBLE);
+                        findViewById(R.id.txtLineSpacing).setVisibility(View.VISIBLE);
                     } catch (NumberFormatException e) {
                         ToastUtil.showToast("读取作业行间距数字格式错误!", true);
                     }
+                }
+
+                if (i == 0) {
+                    isTractorSet = false;
+                    findViewById(R.id.txtMinTurning).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.txtLineSpacing).setVisibility(View.INVISIBLE);
                 }
             }
 
@@ -184,6 +195,7 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
                     }
 
                 }
+
                 if (i == 0) {
                     lineAB = null;
                     myView.drawABline(0, 0, 0, 0, false);
@@ -278,7 +290,10 @@ public class PathPlanningActivity extends Activity implements View.OnClickListen
                     */
 
 
+                } else {
+                    ToastUtil.showToast(getString(R.string.please_select_a_field_and_a_tractor),true);
                 }
+
                 break;
 
             default:

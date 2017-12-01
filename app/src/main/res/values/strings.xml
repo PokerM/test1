@@ -199,6 +199,7 @@
     <string name="loading_planned_path">加载规划</string>
     <string name="unloading_planned_path">隐藏规划</string>
     <string name="select_no_operation">取消操作</string>
+    <string name="please_select_a_field_and_a_tractor">请先选择车辆和地块！</string>
 
     <drawable name="color_normal">#69541b</drawable>
     <drawable name="color_pressed">#b2d235</drawable>

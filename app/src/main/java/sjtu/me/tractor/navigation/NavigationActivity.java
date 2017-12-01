@@ -37,22 +37,21 @@ import java.util.Map;
 import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.view.LineChartView;
 import sjtu.me.tractor.R;
-import sjtu.me.tractor.bluetooth.BluetoothService;
+import sjtu.me.tractor.connection.BluetoothService;
 import sjtu.me.tractor.database.DatabaseManager;
 import sjtu.me.tractor.field.FieldInfo;
-import sjtu.me.tractor.gis.GeoLine;
-import sjtu.me.tractor.gis.GeoPoint;
-import sjtu.me.tractor.gis.GisAlgorithm;
-import sjtu.me.tractor.hellochart.LineChart;
+import sjtu.me.tractor.planning.GeoLine;
+import sjtu.me.tractor.planning.GeoPoint;
+import sjtu.me.tractor.planning.GisAlgorithm;
 import sjtu.me.tractor.main.MyApplication;
 import sjtu.me.tractor.planning.ABLine;
 import sjtu.me.tractor.planning.PlanningPathGenerator;
 import sjtu.me.tractor.surfaceview.MySurfaceView;
 import sjtu.me.tractor.tractorinfo.TractorInfo;
-import sjtu.me.tractor.util.AlertDialogUtil;
-import sjtu.me.tractor.util.FileUtil;
-import sjtu.me.tractor.util.SysUtil;
-import sjtu.me.tractor.util.ToastUtil;
+import sjtu.me.tractor.utils.AlertDialogUtil;
+import sjtu.me.tractor.utils.FileUtil;
+import sjtu.me.tractor.utils.SysUtil;
+import sjtu.me.tractor.utils.ToastUtil;
 
 /**
  * @author billhu
@@ -66,7 +65,9 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private static final int SURFACE_VIEW_WIDTH = 705;
     private static final int SURFACE_VIEW_HEIGHT = 660;
 
-    private double LATERAL_THRESHOLD = 5; //为了过滤横向偏差的跳动设置的阈值
+    private double LATERAL_THRESHOLD = 10; //设置横向偏差的阈值
+    private double BOUNDS_THRESHOLD = 10; //设置一个阈值
+
 
 
     private static final char END = '*'; // 串口通信字符串结束标志
@@ -936,13 +937,12 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 if (!isStopNavigation) { //记录横向偏差
                     long timeMillis = System.currentTimeMillis();
                 /*以时间横轴，横向偏差为纵轴，添加偏差数据到集合*/
-                    if (Math.abs(lateral) < LATERAL_THRESHOLD) {//不记录太大的横向偏差（计算错误产生的）
+                    if (Math.abs(lateral) < LATERAL_THRESHOLD) {//过滤掉计算错误产生的过大横向偏差
                         mPointValues.add(new PointValue((float) ((timeMillis - startNavigationTime) / 1000.0), (float) lateral));
                     }
                 }
 
                 /*绘制当前点*/
-                double BOUNDS_THRESHOLD = 10; //设置一个阈值
                 if ((locationX > fieldBoundsLimits[0] - BOUNDS_THRESHOLD
                         && locationX < fieldBoundsLimits[1] + BOUNDS_THRESHOLD
                         && locationY > fieldBoundsLimits[2] - BOUNDS_THRESHOLD
@@ -1192,12 +1192,17 @@ public class NavigationActivity extends Activity implements OnClickListener {
                         double hY = Double.parseDouble(arrays[3]);
                         double hLateral = Double.parseDouble(arrays[10]);
                         long hTime = sdf.parse(arrays[13]).getTime();
-                        historyPathPoints.add(new GeoPoint(hX, hY)); //添加历史轨迹各个点
-                        if (Math.abs(hLateral) < LATERAL_THRESHOLD) {
-                            /*忽略过大的横向偏差(接收数据跳动引起的)*/
-                            historyPointValues.add(new PointValue((float) ((hTime - startTime) / 1000.0), (float) hLateral));
+                        if ((hX > fieldBoundsLimits[0] - BOUNDS_THRESHOLD
+                                && hX < fieldBoundsLimits[1] + BOUNDS_THRESHOLD
+                                && hY > fieldBoundsLimits[2] - BOUNDS_THRESHOLD
+                                && hY < fieldBoundsLimits[3] + BOUNDS_THRESHOLD)) {
+                            historyPathPoints.add(new GeoPoint(hX, hY)); //添加历史轨迹各个点}
                         }
-                    } catch (NumberFormatException e) {
+                            if (Math.abs(hLateral) < LATERAL_THRESHOLD) {
+                            /*忽略过大的横向偏差(接收数据跳动引起的)*/
+                                historyPointValues.add(new PointValue((float) ((hTime - startTime) / 1000.0), (float) hLateral));
+                            }
+                        } catch (NumberFormatException e) {
                         ToastUtil.showToast("历史数据数字格式不对!", true);
                         return false;
                     } catch (java.text.ParseException e) {

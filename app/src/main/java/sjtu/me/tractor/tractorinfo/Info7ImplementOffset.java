@@ -32,10 +32,10 @@ public class Info7ImplementOffset extends Fragment implements TextWatcher {
 	public View onCreateView(LayoutInflater inflater,
 			 ViewGroup container,  Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		final View view = inflater.inflate(R.layout.tractor_fragment_7_implement_width, container, false);
-		editTextImplementOffset = (EditText)view.findViewById(R.id.edit7);
+		final View view = inflater.inflate(R.layout.tractor_fragment_7_implement_offset, container, false);
+		editTextImplementOffset = (EditText)view.findViewById(R.id.editTractorImplementOffset);
 		editTextImplementOffset.addTextChangedListener(this);
-		btnHelpImplementOffset = (ImageButton)view.findViewById(R.id.help7);
+		btnHelpImplementOffset = (ImageButton)view.findViewById(R.id.helpImplementOffset);
 		
 		//为问号图标设置监听器，弹出提示信息
 		btnHelpImplementOffset.setOnClickListener(new OnClickListener() {

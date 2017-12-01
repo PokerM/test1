@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     
-    <!-- 小车设置页面1：轴距 -->
+    <!-- 小车设置页面2：天线纵向偏移 -->
     <LinearLayout 
          android:layout_width="wrap_content"
          android:layout_height="0dp"
@@ -16,7 +16,7 @@
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:layout_gravity="center"
-             android:text="@string/info_fragment1_wheelbase"
+             android:text="@string/info_fragment2_antenna_lateral"
              android:textSize="32sp"
              android:textColor="#999999"/>
      </LinearLayout>
@@ -30,25 +30,26 @@
              android:layout_width="500dp"
              android:layout_height="400dp"
              android:layout_marginLeft="100dp"
-             android:src="@drawable/tractor_info_wheelbase"
+             android:src="@drawable/car02"
              android:layout_centerInParent="true"/>
 		
          <LinearLayout 
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-             android:layout_alignParentBottom="true"
+             android:layout_marginTop="10dp"
+             android:layout_alignParentTop="true"
              android:layout_centerHorizontal="true"
              >
              
              <EditText 
-	             android:id="@+id/editTractorWheelbase"
+	             android:id="@+id/editTractorAntennaLateralDeviation"
 	             android:maxLength="6"
 	             android:layout_width="wrap_content"
 	             android:layout_height="wrap_content"
 	             android:layout_gravity="center_vertical"
-	             android:layout_marginLeft="60dp"
+	             android:layout_marginLeft="120dp"
 	             android:hint="@string/tractor_info_edit_hint"
-				 android:inputType="numberDecimal|numberSigned"
+				 android:inputType="numberDecimal"
 	             android:textSize="24sp"
 	             android:textColor="#999999"/>
 	         
@@ -72,7 +73,7 @@
          android:layout_gravity="center">
          
          <ImageButton 
-             android:id="@+id/help_tractor_info_wheelbase"
+             android:id="@+id/help_tractor_antenna_lateral_deviation"
              style="@style/tractor_info_help_style"/>
      </LinearLayout>
 

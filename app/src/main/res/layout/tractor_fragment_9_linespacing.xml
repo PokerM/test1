@@ -4,8 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     
-    <!-- 小车设置页面1：轴距 -->
-    <LinearLayout 
+    <LinearLayout
          android:layout_width="wrap_content"
          android:layout_height="0dp"
          android:layout_weight="2"
@@ -16,7 +15,7 @@
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:layout_gravity="center"
-             android:text="@string/info_fragment1_wheelbase"
+             android:text="@string/info_fragment10_linespacing"
              android:textSize="32sp"
              android:textColor="#999999"/>
      </LinearLayout>
@@ -30,7 +29,7 @@
              android:layout_width="500dp"
              android:layout_height="400dp"
              android:layout_marginLeft="100dp"
-             android:src="@drawable/tractor_info_wheelbase"
+             android:src="@drawable/car07"
              android:layout_centerInParent="true"/>
 		
          <LinearLayout 
@@ -41,15 +40,14 @@
              >
              
              <EditText 
-	             android:id="@+id/editTractorWheelbase"
+	             android:id="@+id/editTractorLinespacing"
 	             android:maxLength="6"
 	             android:layout_width="wrap_content"
 	             android:layout_height="wrap_content"
 	             android:layout_gravity="center_vertical"
 	             android:layout_marginLeft="60dp"
 	             android:hint="@string/tractor_info_edit_hint"
-				 android:inputType="numberDecimal|numberSigned"
-	             android:textSize="24sp"
+				 android:inputType="numberDecimal"
 	             android:textColor="#999999"/>
 	         
 	         <TextView 
@@ -72,7 +70,7 @@
          android:layout_gravity="center">
          
          <ImageButton 
-             android:id="@+id/help_tractor_info_wheelbase"
+             android:id="@+id/helpLinespacing"
              style="@style/tractor_info_help_style"/>
      </LinearLayout>
 

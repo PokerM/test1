@@ -32,19 +32,19 @@ public class Info4MinTurning extends Fragment implements TextWatcher {
 	public View onCreateView(LayoutInflater inflater,
 			 ViewGroup container,  Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		final View view = inflater.inflate(R.layout.tractor_fragment_5_min_turning_radius, container, false);
-		editTextMinTurning = (EditText)view.findViewById(R.id.edit5);
+		final View view = inflater.inflate(R.layout.tractor_fragment_4_min_turning_radius, container, false);
+		editTextMinTurning = (EditText)view.findViewById(R.id.editTractorMinTurning);
 		editTextMinTurning.addTextChangedListener(this);
-		btnHelpMinTurning = (ImageButton)view.findViewById(R.id.help5);
+		btnHelpMinTurning = (ImageButton)view.findViewById(R.id.helpMinTurning);
 		
 		//为问号图标设置监听器，弹出提示信息
 		btnHelpMinTurning.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				final AlertDialog ad = new AlertDialog.Builder(getActivity()).create();
-				ad.show();
-				Window window = ad.getWindow();
+				final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+				alertDialog.show();
+				Window window = alertDialog.getWindow();
 				window.setContentView(R.layout.window_dialog);
 				TextView tv_title = (TextView)window.findViewById(R.id.dialog_title);
 				tv_title.setText(getString(R.string.info_fragment5_min_turning));
@@ -57,7 +57,7 @@ public class Info4MinTurning extends Fragment implements TextWatcher {
 					
 					@Override
 					public void onClick(View v) {
-						ad.dismiss();
+						alertDialog.dismiss();
 					}
 				});
 			}

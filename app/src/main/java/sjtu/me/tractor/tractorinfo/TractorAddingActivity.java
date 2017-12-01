@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 import sjtu.me.tractor.R;
 import sjtu.me.tractor.database.DatabaseManager;
 import sjtu.me.tractor.main.MyApplication;
-import sjtu.me.tractor.util.AlertDialogUtil;
+import sjtu.me.tractor.utils.AlertDialogUtil;
 
 public class TractorAddingActivity extends FragmentActivity implements OnClickListener {
 

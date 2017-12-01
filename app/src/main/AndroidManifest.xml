@@ -48,7 +48,7 @@
             android:process=":remote" />
 
         <activity
-            android:name=".start.StartActivity"
+            android:name=".main.StartActivity"
             android:screenOrientation="landscape"
             android:theme="@style/MyStartTheme">
             <intent-filter>
@@ -95,7 +95,7 @@
         </activity>
 
         <activity
-            android:name=".bluetooth.DeviceListActivity"
+            android:name=".connection.DeviceListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/connection_setting"
             android:theme="@android:style/Theme.Dialog">

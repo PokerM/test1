@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import sjtu.me.tractor.R;
-import sjtu.me.tractor.gis.GeoLine;
-import sjtu.me.tractor.gis.GeoPoint;
+import sjtu.me.tractor.planning.GeoLine;
+import sjtu.me.tractor.planning.GeoPoint;
 
 import android.content.Context;
 import android.content.res.Resources;

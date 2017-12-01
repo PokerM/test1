@@ -33,9 +33,9 @@ public class Info3AntennaHeight extends Fragment implements TextWatcher {
 			 ViewGroup container,  Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		final View view = inflater.inflate(R.layout.tractor_fragment_3_antenna_height, container, false);
-		editTextAntennaHeight = (EditText)view.findViewById(R.id.edit4);
+		editTextAntennaHeight = (EditText)view.findViewById(R.id.editTractorAntennaHeight);
 		editTextAntennaHeight.addTextChangedListener(this);
-		btnHelpAntennaHeight = (ImageButton)view.findViewById(R.id.help4);
+		btnHelpAntennaHeight = (ImageButton)view.findViewById(R.id.helpAntennaHeight);
 		
 		//为问号图标设置监听器，弹出提示信息
 		btnHelpAntennaHeight.setOnClickListener(new OnClickListener() {

@@ -40,14 +40,14 @@
              >
              
              <EditText 
-	             android:id="@+id/edit3"
+	             android:id="@+id/editTractorAntennaRearDeviation"
 	             android:maxLength="6"
 	             android:layout_width="wrap_content"
 	             android:layout_height="wrap_content"
 	             android:layout_gravity="center_vertical"
 	             android:layout_marginLeft="98dp"
 	             android:hint="@string/tractor_info_edit_hint"
-	             android:numeric="decimal|signed"
+	             android:inputType="numberDecimal"
 	             android:textSize="24sp"
 	             android:textColor="#999999"/>
 	         
@@ -71,7 +71,7 @@
          android:layout_gravity="center">
          
          <ImageButton 
-             android:id="@+id/help3"
+             android:id="@+id/helpAntennaRear"
              style="@style/tractor_info_help_style"/>
      </LinearLayout>
 

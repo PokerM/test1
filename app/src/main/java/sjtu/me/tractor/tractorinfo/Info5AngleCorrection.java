@@ -32,10 +32,10 @@ public class Info5AngleCorrection extends Fragment implements TextWatcher {
 	public View onCreateView(LayoutInflater inflater,
 			 ViewGroup container,  Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		final View view = inflater.inflate(R.layout.tractor_fragment_6_angle_correction, container, false);
-		editTextAngleCorrection = (EditText)view.findViewById(R.id.edit6);
+		final View view = inflater.inflate(R.layout.tractor_fragment_5_angle_correction, container, false);
+		editTextAngleCorrection = (EditText)view.findViewById(R.id.editTractorAngleCorrection);
 		editTextAngleCorrection.addTextChangedListener(this);
-		btnHelpAngleCorrection = (ImageButton)view.findViewById(R.id.help6);
+		btnHelpAngleCorrection = (ImageButton)view.findViewById(R.id.helpAngleCorrection);
 		
 		//为问号图标设置监听器，弹出提示信息
 		btnHelpAngleCorrection.setOnClickListener(new OnClickListener() {

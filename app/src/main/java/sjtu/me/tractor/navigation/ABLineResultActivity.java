@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -21,8 +20,7 @@ import java.util.Map;
 import sjtu.me.tractor.R;
 import sjtu.me.tractor.main.MyApplication;
 import sjtu.me.tractor.planning.ABLine;
-import sjtu.me.tractor.tractorinfo.TractorInfo;
-import sjtu.me.tractor.util.AlertDialogUtil;
+import sjtu.me.tractor.utils.AlertDialogUtil;
 
 public class ABLineResultActivity extends Activity {
 

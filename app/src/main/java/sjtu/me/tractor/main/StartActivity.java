@@ -1,4 +1,4 @@
-package sjtu.me.tractor.start;
+package sjtu.me.tractor.main;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -243,8 +243,8 @@ public class DatabaseManager {
         values.put(TractorInfo.TRACTOR_ANTENNA_LATERAL, tractorInfo[5]);
         values.put(TractorInfo.TRACTOR_ANTENNA_REAR, tractorInfo[6]);
         values.put(TractorInfo.TRACTOR_ANTENNA_HEIGHT, tractorInfo[7]);
-        values.put(TractorInfo.TRACTOR_ANGLE_CORRECTION, tractorInfo[8]);
-        values.put(TractorInfo.TRACTOR_MIN_TURNING_RADIUS, tractorInfo[9]);
+        values.put(TractorInfo.TRACTOR_MIN_TURNING_RADIUS, tractorInfo[8]);
+        values.put(TractorInfo.TRACTOR_ANGLE_CORRECTION, tractorInfo[9]);
         values.put(TractorInfo.TRACTOR_IMPLEMENT_WIDTH, tractorInfo[10]);
         values.put(TractorInfo.TRACTOR_IMPLEMENT_OFFSET, tractorInfo[11]);
         values.put(TractorInfo.TRACTOR_IMPLEMENT_LENGTH, tractorInfo[12]);
@@ -274,8 +274,8 @@ public class DatabaseManager {
         values.put(TractorInfo.TRACTOR_ANTENNA_LATERAL, tractorInfo[5]);
         values.put(TractorInfo.TRACTOR_ANTENNA_REAR, tractorInfo[6]);
         values.put(TractorInfo.TRACTOR_ANTENNA_HEIGHT, tractorInfo[7]);
-        values.put(TractorInfo.TRACTOR_ANGLE_CORRECTION, tractorInfo[8]);
-        values.put(TractorInfo.TRACTOR_MIN_TURNING_RADIUS, tractorInfo[9]);
+        values.put(TractorInfo.TRACTOR_MIN_TURNING_RADIUS, tractorInfo[8]);
+        values.put(TractorInfo.TRACTOR_ANGLE_CORRECTION, tractorInfo[9]);
         values.put(TractorInfo.TRACTOR_IMPLEMENT_WIDTH, tractorInfo[10]);
         values.put(TractorInfo.TRACTOR_IMPLEMENT_OFFSET, tractorInfo[11]);
         values.put(TractorInfo.TRACTOR_IMPLEMENT_LENGTH, tractorInfo[12]);

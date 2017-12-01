@@ -34,6 +34,17 @@ public class TractorPagerAdapter extends PagerAdapter implements OnPageChangeLis
         this.viewPager.setAdapter(this);
         this.tractorAddingActivity = (TractorAddingActivity) context;
         this.viewPager.setOnPageChangeListener(this);
+        /*先得到10个圆点代表10个页面，然后将即将被翻过的页面对应的圆点变白，翻到的圆点变蓝*/
+            imageView[0] = (ImageView) tractorAddingActivity.findViewById(R.id.page1);
+            imageView[1] = (ImageView) tractorAddingActivity.findViewById(R.id.page2);
+            imageView[2] = (ImageView) tractorAddingActivity.findViewById(R.id.page3);
+            imageView[3] = (ImageView) tractorAddingActivity.findViewById(R.id.page4);
+            imageView[4] = (ImageView) tractorAddingActivity.findViewById(R.id.page5);
+            imageView[5] = (ImageView) tractorAddingActivity.findViewById(R.id.page6);
+            imageView[6] = (ImageView) tractorAddingActivity.findViewById(R.id.page7);
+            imageView[7] = (ImageView) tractorAddingActivity.findViewById(R.id.page8);
+            imageView[8] = (ImageView) tractorAddingActivity.findViewById(R.id.page9);
+            imageView[9] = (ImageView) tractorAddingActivity.findViewById(R.id.page10);
     }
 
     //复写移除布局的方法（把布局从容器中移除）
@@ -73,10 +84,7 @@ public class TractorPagerAdapter extends PagerAdapter implements OnPageChangeLis
     @SuppressLint("NewApi")
     @Override
     public void onPageSelected(int i) {
-        /*先得到10个圆点代表10个页面，然后将即将被翻过的页面对应的圆点变白，翻到的圆点变蓝*/
-        for (int j = 0; j < 10; j++) {
-            imageView[j] = (ImageView) tractorAddingActivity.findViewById(R.id.page1 + j);
-        }
+
         Drawable bulletBlue = tractorAddingActivity.getResources().getDrawable(R.drawable.bullet_blue, null);
         Drawable bulletWhite = tractorAddingActivity.getResources().getDrawable(R.drawable.bullet_white, null);
         imageView[i].setImageDrawable(bulletBlue);

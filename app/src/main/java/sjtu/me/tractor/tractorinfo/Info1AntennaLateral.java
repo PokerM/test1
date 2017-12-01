@@ -32,19 +32,19 @@ public class Info1AntennaLateral extends Fragment implements TextWatcher {
 	public View onCreateView(LayoutInflater inflater,
 			 ViewGroup container,  Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		final View view = inflater.inflate(R.layout.tf1_antenna_lateral_deviation, container, false);
-		editTextAntennaLateral = (EditText)view.findViewById(R.id.edit2);
+		final View view = inflater.inflate(R.layout.tractor_fragment_1_antenna_lateral_deviation, container, false);
+		editTextAntennaLateral = (EditText)view.findViewById(R.id.editTractorAntennaLateralDeviation);
 		editTextAntennaLateral.addTextChangedListener(this);
-		btnHelpAntennaLateral = (ImageButton)view.findViewById(R.id.help2);
+		btnHelpAntennaLateral = (ImageButton)view.findViewById(R.id.help_tractor_antenna_lateral_deviation);
 		
 		//为问号图标设置监听器，弹出提示信息
 		btnHelpAntennaLateral.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				final AlertDialog ad = new AlertDialog.Builder(getActivity()).create();
-				ad.show();
-				Window window = ad.getWindow();
+				final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+				alertDialog.show();
+				Window window = alertDialog.getWindow();
 				window.setContentView(R.layout.window_dialog);
 				TextView tv_title = (TextView)window.findViewById(R.id.dialog_title);
 				tv_title.setText(getString(R.string.info_fragment2_antenna_lateral));
@@ -57,7 +57,7 @@ public class Info1AntennaLateral extends Fragment implements TextWatcher {
 					
 					@Override
 					public void onClick(View v) {
-						ad.dismiss();
+						alertDialog.dismiss();
 					}
 				});
 			}

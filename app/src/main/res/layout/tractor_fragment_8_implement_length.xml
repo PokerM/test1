@@ -4,8 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     
-    <!-- 小车设置页面5：ECU纵向偏移 -->
-    <LinearLayout 
+    <LinearLayout
          android:layout_width="wrap_content"
          android:layout_height="0dp"
          android:layout_weight="2"
@@ -16,7 +15,7 @@
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:layout_gravity="center"
-             android:text="@string/info_fragment5_min_turning"
+             android:text="@string/info_fragment9_implement_length"
              android:textSize="32sp"
              android:textColor="#999999"/>
      </LinearLayout>
@@ -30,26 +29,26 @@
              android:layout_width="500dp"
              android:layout_height="400dp"
              android:layout_marginLeft="100dp"
-             android:src="@drawable/car05"
+             android:src="@drawable/car07"
              android:layout_centerInParent="true"/>
 		
          <LinearLayout 
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
+             android:layout_alignParentBottom="true"
              android:layout_centerHorizontal="true"
-             android:layout_marginTop="66dp"
              >
              
              <EditText 
-	             android:id="@+id/edit5"
+	             android:id="@+id/editTractorImplementLength"
 	             android:maxLength="6"
 	             android:layout_width="wrap_content"
 	             android:layout_height="wrap_content"
 	             android:layout_gravity="center_vertical"
-	             android:layout_marginLeft="340dp"
+	             android:layout_marginLeft="60dp"
 	             android:hint="@string/tractor_info_edit_hint"
-	             android:numeric="decimal|signed"
 	             android:textSize="24sp"
+				 android:inputType="numberDecimal"
 	             android:textColor="#999999"/>
 	         
 	         <TextView 
@@ -72,7 +71,7 @@
          android:layout_gravity="center">
          
          <ImageButton 
-             android:id="@+id/help5"
+             android:id="@+id/helpImplementLength"
              style="@style/tractor_info_help_style"/>
      </LinearLayout>
 

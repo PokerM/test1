@@ -1,4 +1,4 @@
-package sjtu.me.tractor.util;
+package sjtu.me.tractor.utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

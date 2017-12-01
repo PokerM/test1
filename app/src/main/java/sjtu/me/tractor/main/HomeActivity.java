@@ -22,11 +22,10 @@ import sjtu.me.tractor.R;
 import sjtu.me.tractor.connection.ConnectionFragment;
 import sjtu.me.tractor.database.MyDatabaseHelper;
 import sjtu.me.tractor.field.FieldSettingFragment;
-import sjtu.me.tractor.planning.ABLine;
 import sjtu.me.tractor.tractorinfo.TractorSettingFragment;
-import sjtu.me.tractor.util.FileUtil;
-import sjtu.me.tractor.util.SysUtil;
-import sjtu.me.tractor.util.ToastUtil;
+import sjtu.me.tractor.utils.FileUtil;
+import sjtu.me.tractor.utils.SysUtil;
+import sjtu.me.tractor.utils.ToastUtil;
 
 /**
  * @author billhu 程序主界面和功能区

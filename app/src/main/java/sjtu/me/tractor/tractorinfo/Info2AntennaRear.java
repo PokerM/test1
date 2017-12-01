@@ -33,18 +33,18 @@ public class Info2AntennaRear extends Fragment implements TextWatcher {
 			 ViewGroup container,  Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		final View view = inflater.inflate(R.layout.tractor_fragment_2_antenna_rear_axle, container, false);
-		editTextAntennaRear = (EditText)view.findViewById(R.id.edit3);
+		editTextAntennaRear = (EditText)view.findViewById(R.id.editTractorAntennaRearDeviation);
 		editTextAntennaRear.addTextChangedListener(this);
-		btnHelpAntennaRear = (ImageButton)view.findViewById(R.id.help3);
+		btnHelpAntennaRear = (ImageButton)view.findViewById(R.id.helpAntennaRear);
 		
 		//为问号图标设置监听器，弹出提示信息
 		btnHelpAntennaRear.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				final AlertDialog ad = new AlertDialog.Builder(getActivity()).create();
-				ad.show();
-				Window window = ad.getWindow();
+				final AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+				alertDialog.show();
+				Window window = alertDialog.getWindow();
 				window.setContentView(R.layout.window_dialog);
 				TextView tv_title = (TextView)window.findViewById(R.id.dialog_title);
 				tv_title.setText(getString(R.string.info_fragment3_antenna_rear));
@@ -57,7 +57,7 @@ public class Info2AntennaRear extends Fragment implements TextWatcher {
 					
 					@Override
 					public void onClick(View v) {
-						ad.dismiss();
+						alertDialog.dismiss();
 					}
 				});
 			}

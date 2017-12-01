@@ -42,12 +42,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import sjtu.me.tractor.R;
-import sjtu.me.tractor.bluetooth.BluetoothService;
-import sjtu.me.tractor.gis.GeoPoint;
+import sjtu.me.tractor.connection.BluetoothService;
+import sjtu.me.tractor.planning.GeoPoint;
 import sjtu.me.tractor.main.MyApplication;
-import sjtu.me.tractor.util.FileUtil;
-import sjtu.me.tractor.util.SysUtil;
-import sjtu.me.tractor.util.ToastUtil;
+import sjtu.me.tractor.utils.FileUtil;
+import sjtu.me.tractor.utils.SysUtil;
+import sjtu.me.tractor.utils.ToastUtil;
 
 
 /**

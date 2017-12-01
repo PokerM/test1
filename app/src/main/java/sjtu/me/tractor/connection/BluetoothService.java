@@ -1,4 +1,4 @@
-package sjtu.me.tractor.bluetooth;
+package sjtu.me.tractor.connection;
 
 import java.io.IOException;
 import java.io.InputStream;

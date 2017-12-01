@@ -1,4 +1,4 @@
-package sjtu.me.tractor.hellochart;
+package sjtu.me.tractor.navigation;
 
 import java.util.ArrayList;
 import java.util.List;

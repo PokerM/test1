@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     
-    <!-- 小车设置页面7：ECU高度 -->
+    <!-- 小车设置页面5：ECU纵向偏移 -->
     <LinearLayout 
          android:layout_width="wrap_content"
          android:layout_height="0dp"
@@ -16,7 +16,7 @@
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:layout_gravity="center"
-             android:text="@string/tractor_info_height"
+             android:text="@string/info_fragment6_angle_correction"
              android:textSize="32sp"
              android:textColor="#999999"/>
      </LinearLayout>
@@ -30,25 +30,25 @@
              android:layout_width="500dp"
              android:layout_height="400dp"
              android:layout_marginLeft="100dp"
-             android:src="@drawable/car07"
+             android:src="@drawable/car05"
              android:layout_centerInParent="true"/>
 		
          <LinearLayout 
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-             android:layout_alignParentBottom="true"
              android:layout_centerHorizontal="true"
+             android:layout_marginTop="66dp"
              >
              
              <EditText 
-	             android:id="@+id/edit7"
+	             android:id="@+id/editTractorAngleCorrection"
 	             android:maxLength="6"
 	             android:layout_width="wrap_content"
 	             android:layout_height="wrap_content"
 	             android:layout_gravity="center_vertical"
-	             android:layout_marginLeft="60dp"
+	             android:layout_marginLeft="340dp"
 	             android:hint="@string/tractor_info_edit_hint"
-	             android:numeric="decimal|signed"
+				 android:inputType="numberDecimal"
 	             android:textSize="24sp"
 	             android:textColor="#999999"/>
 	         
@@ -72,7 +72,7 @@
          android:layout_gravity="center">
          
          <ImageButton 
-             android:id="@+id/help7"
+             android:id="@+id/helpAngleCorrection"
              style="@style/tractor_info_help_style"/>
      </LinearLayout>
 

@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.pm.FeatureInfo;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,7 +29,7 @@ import java.util.Map;
 import sjtu.me.tractor.R;
 import sjtu.me.tractor.database.DatabaseManager;
 import sjtu.me.tractor.main.MyApplication;
-import sjtu.me.tractor.util.AlertDialogUtil;
+import sjtu.me.tractor.utils.AlertDialogUtil;
 
 /**
  * @author BillHu ¡¨Ω”Fragment ”Õº

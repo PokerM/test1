@@ -5,10 +5,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import sjtu.me.tractor.gis.GeoLine;
-import sjtu.me.tractor.gis.GeoPoint;
-import sjtu.me.tractor.gis.GisAlgorithm;
-
 /**
  * 用于规划路径生成
  * Created by billhu on 2017/11/23.

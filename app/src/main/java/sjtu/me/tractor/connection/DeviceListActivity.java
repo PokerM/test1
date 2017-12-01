@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package sjtu.me.tractor.bluetooth;
+package sjtu.me.tractor.connection;
 
 import java.util.Set;
 
