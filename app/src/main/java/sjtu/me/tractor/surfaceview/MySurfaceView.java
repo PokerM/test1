@@ -390,7 +390,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         this.fieldOriginX = oX;
         this.fieldOriginY = oY;
 
-        Log.e("fOx,fOy", fieldOriginX + "," + fieldOriginY);
+        if (D) {
+            Log.e(TAG, "fOx,fOy: " + fieldOriginX + "," + fieldOriginY);
+        }
     }
 
     /**
@@ -711,14 +713,14 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
                     canvas.drawPath(fieldBoundPath, fieldShaderPaint);
                 }
 
-                if (!isOnHistoryDrawing) {
+                //绘制规划路径及地头区域
+                if (isDrawingPlannedPath) {
+                    canvas.drawPath(headlandPath1, paintHeadland);
+                    canvas.drawPath(headlandPath2, paintHeadland);
+                    canvas.drawPath(planedPath, paintPlannedLines);
+                }
 
-                    //绘制规划路径及地头区域
-                    if (isDrawingPlannedPath) {
-                        canvas.drawPath(headlandPath1, paintHeadland);
-                        canvas.drawPath(headlandPath2, paintHeadland);
-                        canvas.drawPath(planedPath, paintPlannedLines);
-                    }
+                if (!isOnHistoryDrawing) {
 
                     //绘制AB线以及A、B标记
                     if (isDrawingAB) {
@@ -735,15 +737,15 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
                         canvas.drawPath(lastPath, prePathPaint);
                     }
 
-                    //绘制拖拉机即时位置标志
-                    canvas.drawCircle(viewX, viewY, 7, endCirclePaint);
-                    canvas.drawBitmap(tractorMarker, viewX - markerWidth / 2, viewY - markerHeight, null);
-
                 } else {
 
                     canvas.drawPath(historyPath, historyPathPaint);
 //                    canvas.drawPath(historyPath, operationPathPaint);
                 }
+
+                //绘制拖拉机即时位置标志
+                canvas.drawCircle(viewX, viewY, 7, endCirclePaint);
+                canvas.drawBitmap(tractorMarker, viewX - markerWidth / 2, viewY - markerHeight, null);
 
             }
         } catch (Exception e) {

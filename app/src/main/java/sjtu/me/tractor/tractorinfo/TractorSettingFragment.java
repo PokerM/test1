@@ -146,7 +146,7 @@ public class TractorSettingFragment extends Fragment implements OnClickListener,
             }
         }
         if (!flag) {
-            String[] tractor = {SJTU, "悬挂式", "联适", "700", "2.20", "0.95", "-0.15", "2.12", "0.05", "2.0", "2.50", "0.0", "0.85", "2.50"};
+            String[] tractor = {SJTU, "悬挂式", "联适", "700", "2.20", "0.95", "-0.15", "2.12", "2.0", "0.05", "2.50", "0.0", "0.85", "2.50"};
             mApp.getDatabaseManager().insertDataToTractor(tractor);
         }
 

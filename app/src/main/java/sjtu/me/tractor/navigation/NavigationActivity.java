@@ -521,6 +521,8 @@ public class NavigationActivity extends Activity implements OnClickListener {
                     Log.e(TAG, "HISTORY FIELD IS " + field);
 
                     boolean b = getHistoryDataFromFiles(name, historyPathPoints, historyPointValues); //读取历史记录；
+                    Log.e(TAG, "Read history successfully? " + b);
+
                     if (b) {
                         if (!TextUtils.isEmpty(field)) {
                             Cursor resultCursor = myApp.getDatabaseManager().queryFieldWithPointsByName(field);
@@ -543,6 +545,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                             }
                         }
                         myView.drawHistoryPath(historyPathPoints);
+                        Log.e(TAG, "points number: " + historyPathPoints.size());
                     } else {
                         ToastUtil.showToast("历史记录数据读取错误!", true);
                     }
@@ -878,7 +881,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
             return;
         }
 
-        /*如果 ","的个数不为13，或者字符串开始和结束字符不是指定字符，则数据无效*/
+        /*如果 ","的个数不为12，或者字符串开始和结束字符不是指定字符，则数据无效*/
 //        if ((SysUtil.countCharacter(stringBuilder, SEPARATOR) != SEPARATOR_NUMBER)
         if ((SysUtil.countCharacter(stringBuilder, SEPARATOR) != 8)
                 || (stringBuilder.charAt(0) != START) || (stringBuilder.charAt(stringBuilder.length() - 1) != END)) {
@@ -937,7 +940,8 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 if (!isStopNavigation) { //记录横向偏差
                     long timeMillis = System.currentTimeMillis();
                 /*以时间横轴，横向偏差为纵轴，添加偏差数据到集合*/
-                    if (Math.abs(lateral) < LATERAL_THRESHOLD) {//过滤掉计算错误产生的过大横向偏差
+                    if (Math.abs(lateral) < LATERAL_THRESHOLD
+                            && currentState == LINE_NAVIGATION_RESPONSE) {//只统计直线阶段的横向偏差并过滤掉计算错误产生的过大横向偏差
                         mPointValues.add(new PointValue((float) ((timeMillis - startNavigationTime) / 1000.0), (float) lateral));
                     }
                 }
@@ -1128,8 +1132,8 @@ public class NavigationActivity extends Activity implements OnClickListener {
         isStopNavigation = true;
         long stopNavigationTime = System.currentTimeMillis();
 
-        /*如果点击停止导航和点击开始导航时间差大于30秒则保存该次轨迹到数据库*/
-        if ((stopNavigationTime - startNavigationTime) / 1000 > 30) {
+        /*如果点击停止导航和点击开始导航时间差大于20秒则保存该次轨迹到数据库*/
+        if ((stopNavigationTime - startNavigationTime) / 1000 > 20) {
             myApp.getDatabaseManager().insertHistoryEntry(fileNameToSave, defaultFieldName);
         }
     }
@@ -1191,31 +1195,40 @@ public class NavigationActivity extends Activity implements OnClickListener {
                                             List<PointValue> historyPointValues) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SSS", Locale.SIMPLIFIED_CHINESE);
         String dataDirectory = FileUtil.getAlbumStorageDir(NavigationActivity.DATA_DIRECTORY).toString();
-        Log.e(TAG, "data dir is: " + dataDirectory);
         String filePath = dataDirectory + File.separator + fileName;
         String[] lines = FileUtil.readFileFromExternalStorage(filePath, null);
         if (lines == null || lines.length == 0) {
             return false;
         }
+        Log.e(TAG, "LINES LENGTH IS :" + lines.length);
         historyPathPoints.clear();
         historyPointValues.clear();
         long startTime;
         try {
-            startTime = sdf.parse(lines[0].split(",")[13]).getTime();
+            startTime = sdf.parse(lines[0].split(",")[9]).getTime();
+//            startTime = sdf.parse(lines[0].split(",")[13]).getTime();
             for (int i = 0; i < lines.length; i++) {
                 String[] arrays = lines[i].split(",");
-                if (arrays.length == 14) {
+//                if (arrays.length == 14) {
+                if (arrays.length == 10) {
                     try {
-                        double hX = Double.parseDouble(arrays[2]);
-                        double hY = Double.parseDouble(arrays[3]);
-                        double hLateral = Double.parseDouble(arrays[10]);
-                        long hTime = sdf.parse(arrays[13]).getTime();
-                        if ((hX > fieldBoundsLimits[0] - BOUNDS_THRESHOLD
-                                && hX < fieldBoundsLimits[1] + BOUNDS_THRESHOLD
-                                && hY > fieldBoundsLimits[2] - BOUNDS_THRESHOLD
-                                && hY < fieldBoundsLimits[3] + BOUNDS_THRESHOLD)) {
-                            historyPathPoints.add(new GeoPoint(hX, hY)); //添加历史轨迹各个点}
-                        }
+//                        double hX = Double.parseDouble(arrays[2]);
+//                        double hY = Double.parseDouble(arrays[3]);
+//                        double hLateral = Double.parseDouble(arrays[10]);
+//                        long hTime = sdf.parse(arrays[13]).getTime();
+
+                       /* 如果下位机发过来的数据只有9个字段，就用下面这段*/
+                        double hX = Double.parseDouble(arrays[0]);
+                        double hY = Double.parseDouble(arrays[1]);
+                        double hLateral = Double.parseDouble(arrays[7]);
+                        long hTime = sdf.parse(arrays[9]).getTime();
+//                        if ((hX > fieldBoundsLimits[0] - BOUNDS_THRESHOLD
+//                                && hX < fieldBoundsLimits[1] + BOUNDS_THRESHOLD
+//                                && hY > fieldBoundsLimits[2] - BOUNDS_THRESHOLD
+//                                && hY < fieldBoundsLimits[3] + BOUNDS_THRESHOLD)) {
+//                            historyPathPoints.add(new GeoPoint(hX, hY)); //添加历史轨迹各个点}
+//                        }
+                        historyPathPoints.add(new GeoPoint(hX, hY)); //添加历史轨迹各个点}
                         if (Math.abs(hLateral) < LATERAL_THRESHOLD) {
                             /*忽略过大的横向偏差(接收数据跳动引起的)*/
                             historyPointValues.add(new PointValue((float) ((hTime - startTime) / 1000.0), (float) hLateral));

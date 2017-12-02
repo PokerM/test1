@@ -22,6 +22,7 @@ import sjtu.me.tractor.R;
 import sjtu.me.tractor.connection.ConnectionFragment;
 import sjtu.me.tractor.database.MyDatabaseHelper;
 import sjtu.me.tractor.field.FieldSettingFragment;
+import sjtu.me.tractor.planning.ABLine;
 import sjtu.me.tractor.tractorinfo.TractorSettingFragment;
 import sjtu.me.tractor.utils.FileUtil;
 import sjtu.me.tractor.utils.SysUtil;
@@ -80,6 +81,7 @@ public class HomeActivity extends Activity implements OnClickListener {
 
 //        ((MyApplication) getApplication()).getDatabaseManager().insertHistoryEntry("data_20171120_145451.txt", "SONGJIANG_S01");
 //        ((MyApplication) getApplication()).getDatabaseManager().deleteHistoryEntries("data_20171120_145451.txt");
+//        ((MyApplication) getApplication()).getDatabaseManager().insertABline("20171202_161218_ab", new ABLine(622495.894255, 3423831.776486, 622489.26359, 3423831.763582), "SONGJIANG_SO2");
 //       /* *******************************************≤‚ ‘ ˝æ›ø‚”√*********************************************/
 
         if (D) {
