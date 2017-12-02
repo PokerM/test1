@@ -69,7 +69,6 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private double BOUNDS_THRESHOLD = 10; //设置一个阈值
 
 
-
     private static final char END = '*'; // 串口通信字符串结束标志
     private static final char START = '#'; // 串口通信字符串开始标志
     private static final char SEPARATOR = ','; // 分隔符
@@ -880,7 +879,8 @@ public class NavigationActivity extends Activity implements OnClickListener {
         }
 
         /*如果 ","的个数不为13，或者字符串开始和结束字符不是指定字符，则数据无效*/
-        if ((SysUtil.countCharacter(stringBuilder, SEPARATOR) != SEPARATOR_NUMBER)
+//        if ((SysUtil.countCharacter(stringBuilder, SEPARATOR) != SEPARATOR_NUMBER)
+        if ((SysUtil.countCharacter(stringBuilder, SEPARATOR) != 8)
                 || (stringBuilder.charAt(0) != START) || (stringBuilder.charAt(stringBuilder.length() - 1) != END)) {
             stringBuilder.delete(0, stringBuilder.length()); //清除无效内容
         } else {
@@ -1059,27 +1059,45 @@ public class NavigationActivity extends Activity implements OnClickListener {
      */
     private boolean parseReceivedMessage(String dataString) {
         String[] dataArray = dataString.split(String.valueOf(SEPARATOR), SEPARATOR_NUMBER + 1);
-        if (dataArray.length < 13) {
-            return false;
-        }
+//        if (dataArray.length < 13) {
+//            return false;
+//        }
         try {
-            lat = Double.parseDouble(dataArray[0]);
-            lng = Double.parseDouble(dataArray[1]);
-            xx = Double.parseDouble(dataArray[2]);
-            yy = Double.parseDouble(dataArray[3]);
-            satellite = Integer.parseInt(dataArray[4]);
-            gps = Integer.parseInt(dataArray[5]);
-            direction = Double.parseDouble(dataArray[6]);
-            velocity = Double.parseDouble(dataArray[7]);
-            command = Integer.parseInt(dataArray[8]);
-            sensor = Double.parseDouble(dataArray[9]);
-            lateral = Double.parseDouble(dataArray[10]);
-            if ("nan".equalsIgnoreCase(dataArray[11])) {
-                turnning = 99999.999;
-            } else {
-                turnning = Double.parseDouble(dataArray[11]);
-            }
-            seeding = Double.parseDouble(dataArray[12]);
+
+//            lat = Double.parseDouble(dataArray[0]);
+//            lng = Double.parseDouble(dataArray[1]);
+//            xx = Double.parseDouble(dataArray[2]);
+//            yy = Double.parseDouble(dataArray[3]);
+//            satellite = Integer.parseInt(dataArray[4]);
+//            gps = Integer.parseInt(dataArray[5]);
+//            direction = Double.parseDouble(dataArray[6]);
+//            velocity = Double.parseDouble(dataArray[7]);
+//            command = Integer.parseInt(dataArray[8]);
+//            sensor = Double.parseDouble(dataArray[9]);
+//            lateral = Double.parseDouble(dataArray[10]);
+//            if ("nan".equalsIgnoreCase(dataArray[11])) {
+//                turnning = 99999.999;
+//            } else {
+//                turnning = Double.parseDouble(dataArray[11]);
+//            }
+//            seeding = Double.parseDouble(dataArray[12]);
+
+
+            lat = 30.557573;
+            lng = 121.169113;
+
+            xx = Double.parseDouble(dataArray[0]);
+            yy = Double.parseDouble(dataArray[1]);
+            satellite = 17;
+            gps = Integer.parseInt(dataArray[2]);
+            direction = Double.parseDouble(dataArray[3]);
+            velocity = Double.parseDouble(dataArray[4]);
+            command = Integer.parseInt(dataArray[5]);
+            sensor = Double.parseDouble(dataArray[6]);
+            lateral = Double.parseDouble(dataArray[7]);
+            turnning = Double.parseDouble(dataArray[8]);
+            seeding = 0;
+
             return true;
 
         } catch (NumberFormatException e) {
@@ -1169,8 +1187,8 @@ public class NavigationActivity extends Activity implements OnClickListener {
      * @return 成功标志
      */
     private boolean getHistoryDataFromFiles(String fileName,
-                                                   List<GeoPoint> historyPathPoints,
-                                                   List<PointValue> historyPointValues) {
+                                            List<GeoPoint> historyPathPoints,
+                                            List<PointValue> historyPointValues) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SSS", Locale.SIMPLIFIED_CHINESE);
         String dataDirectory = FileUtil.getAlbumStorageDir(NavigationActivity.DATA_DIRECTORY).toString();
         Log.e(TAG, "data dir is: " + dataDirectory);
@@ -1198,11 +1216,11 @@ public class NavigationActivity extends Activity implements OnClickListener {
                                 && hY < fieldBoundsLimits[3] + BOUNDS_THRESHOLD)) {
                             historyPathPoints.add(new GeoPoint(hX, hY)); //添加历史轨迹各个点}
                         }
-                            if (Math.abs(hLateral) < LATERAL_THRESHOLD) {
+                        if (Math.abs(hLateral) < LATERAL_THRESHOLD) {
                             /*忽略过大的横向偏差(接收数据跳动引起的)*/
-                                historyPointValues.add(new PointValue((float) ((hTime - startTime) / 1000.0), (float) hLateral));
-                            }
-                        } catch (NumberFormatException e) {
+                            historyPointValues.add(new PointValue((float) ((hTime - startTime) / 1000.0), (float) hLateral));
+                        }
+                    } catch (NumberFormatException e) {
                         ToastUtil.showToast("历史数据数字格式不对!", true);
                         return false;
                     } catch (java.text.ParseException e) {
