@@ -257,7 +257,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.navi_activity);
+        setContentView(R.layout.navigation_activity);
         if (D) {
             Log.e(TAG, "+++ ON CREATE +++");
         }
@@ -1220,6 +1220,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                        /* 如果下位机发过来的数据只有9个字段，就用下面这段*/
                         double hX = Double.parseDouble(arrays[0]);
                         double hY = Double.parseDouble(arrays[1]);
+                        int hCommand = Integer.parseInt(arrays[5]);
                         double hLateral = Double.parseDouble(arrays[7]);
                         long hTime = sdf.parse(arrays[9]).getTime();
 //                        if ((hX > fieldBoundsLimits[0] - BOUNDS_THRESHOLD
@@ -1229,7 +1230,8 @@ public class NavigationActivity extends Activity implements OnClickListener {
 //                            historyPathPoints.add(new GeoPoint(hX, hY)); //添加历史轨迹各个点}
 //                        }
                         historyPathPoints.add(new GeoPoint(hX, hY)); //添加历史轨迹各个点}
-                        if (Math.abs(hLateral) < LATERAL_THRESHOLD) {
+                        if (hCommand == 10010 &&
+                                Math.abs(hLateral) < LATERAL_THRESHOLD) {
                             /*忽略过大的横向偏差(接收数据跳动引起的)*/
                             historyPointValues.add(new PointValue((float) ((hTime - startTime) / 1000.0), (float) hLateral));
                         }

@@ -130,6 +130,7 @@ public class DeviceListActivity extends Activity {
     public void onCancel(View v){
     	finish();
     }
+
     /**
      * 开始服务和设备查找
      */

@@ -113,7 +113,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_HISTORY_TABLE);
     }
 
-    /*当版本号发生改变时即会执行onUpgrade方法，该方法主要用来增/删一列或多列的大幅度修改工作*/
+    /*onUpgrade()方法当数据库进行版本升级时被调用。当版本号发生改变时即会执行onUpgrade方法，该方法主要用来增/删一列或多列的大幅度修改工作*/
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // TODO Auto-generated method stub
@@ -121,7 +121,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onOpen(SQLiteDatabase db) {
-        /*onUpgrade()方法当数据库进行版本升级时被调用。当有时候需要补充建表时，可以把建表语句写在这里。
+        /*当程序有时候需要补充建表时，可以把建表语句写在这里。
         可以避免android.database.sqlite.SQLiteException:no such table ... 异常。*/
         super.onOpen(db);
 //        db.execSQL(CREATE_FIELD_TABLE);

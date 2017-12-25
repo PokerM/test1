@@ -464,7 +464,7 @@
         <lecho.lib.hellocharts.view.LineChartView
             android:id="@+id/lineChartView"
             android:layout_width="fill_parent"
-            android:layout_height="360dp"
+            android:layout_height="420dp"
             android:background="@drawable/navi_statistics_pane_background" />
 
         <TextView
