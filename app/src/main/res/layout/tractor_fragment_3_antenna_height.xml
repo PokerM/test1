@@ -36,8 +36,7 @@
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:layout_alignParentLeft="true"
-             android:layout_marginTop="250dp"
-			 android:id="@+id/linearLayout">
+             android:layout_marginTop="250dp">
 
 			 <EditText
 				 android:id="@+id/editTractorAntennaHeight"

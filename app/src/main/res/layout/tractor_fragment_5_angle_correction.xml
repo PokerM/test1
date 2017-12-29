@@ -27,8 +27,7 @@
          android:layout_weight="15">
 
 		 <ImageView
-			 android:id="@+id/imageView"
-			 android:layout_width="500dp"
+             android:layout_width="500dp"
 			 android:layout_height="400dp"
 			 android:layout_marginLeft="100dp"
 			 android:layout_centerHorizontal="true"
@@ -36,8 +35,7 @@
 			 android:src="@drawable/angle_correction" />
 
 		 <LinearLayout
-			 android:id="@+id/linearLayout2"
-			 android:layout_width="wrap_content"
+             android:layout_width="wrap_content"
 			 android:layout_height="wrap_content"
 			 android:layout_alignParentBottom="true"
 			 android:layout_centerHorizontal="true">

@@ -43,15 +43,8 @@
     </style>
 
     <!-- icon风格，用于显示规划页的button风格 -->
-    <style name="button_planning">
-        <item name="android:layout_width">180dp</item>
-        <item name="android:layout_height">90dp</item>
-        <item name="android:layout_marginBottom">3dp</item>
-        <item name="android:layout_marginTop">3dp</item>
-        <item name="android:layout_gravity">center_horizontal</item>
-    </style>
 
-	<!-- circle风格，用于显示车辆设置主页的八个圆圈风格风格 -->
+    <!-- circle风格，用于显示车辆设置主页的八个圆圈风格风格 -->
     <style name="circle_page">
         <item name="android:background">#00000000</item>
         <item name="android:layout_height">23dp</item>

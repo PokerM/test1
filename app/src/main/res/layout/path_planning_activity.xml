@@ -162,7 +162,6 @@
                 android:visibility="invisible"/>
 
             <ImageView
-                android:id="@+id/northSign"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|right"
