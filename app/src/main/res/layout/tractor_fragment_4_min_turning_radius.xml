@@ -30,7 +30,7 @@
              android:layout_width="500dp"
              android:layout_height="400dp"
              android:layout_marginLeft="100dp"
-             android:src="@drawable/car05"
+             android:src="@drawable/min_turning"
              android:layout_centerInParent="true"/>
 		
          <LinearLayout 

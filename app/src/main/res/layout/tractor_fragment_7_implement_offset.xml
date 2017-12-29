@@ -29,15 +29,16 @@
              android:layout_width="500dp"
              android:layout_height="400dp"
              android:layout_marginLeft="100dp"
-             android:src="@drawable/car07"
+             android:src="@drawable/implement_offset"
              android:layout_centerInParent="true"/>
 		
          <LinearLayout 
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:layout_alignParentBottom="true"
-             android:layout_centerHorizontal="true"
-             >
+             android:layout_alignParentRight="true"
+			 android:layout_marginRight="10dp"
+			 >
              
              <EditText 
 	             android:id="@+id/editTractorImplementOffset"

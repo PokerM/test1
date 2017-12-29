@@ -30,29 +30,27 @@
              android:layout_width="500dp"
              android:layout_height="400dp"
              android:layout_marginLeft="50dp"
-             android:src="@drawable/car04"/>
+             android:src="@drawable/antenna_height"/>
 		
          <LinearLayout 
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-             android:layout_alignParentBottom="true"
-             android:layout_marginBottom="25dp"
-             android:layout_centerHorizontal="true"
-             >
-             
-             <EditText 
-	             android:id="@+id/editTractorAntennaHeight"
-	             android:maxLength="6"
-	             android:layout_width="wrap_content"
-	             android:layout_height="wrap_content"
-	             android:layout_gravity="center_vertical"
-	             android:layout_marginLeft="60dp"
-	             android:hint="@string/tractor_info_edit_hint"
+             android:layout_alignParentLeft="true"
+             android:layout_marginTop="250dp"
+			 android:id="@+id/linearLayout">
+
+			 <EditText
+				 android:id="@+id/editTractorAntennaHeight"
+				 android:layout_width="wrap_content"
+				 android:layout_height="wrap_content"
+				 android:layout_gravity="center_vertical"
+				 android:hint="@string/tractor_info_edit_hint"
 				 android:inputType="numberDecimal"
-	             android:textSize="24sp"
-	             android:textColor="#999999"/>
-	         
-	         <TextView 
+				 android:maxLength="6"
+				 android:textColor="#999999"
+				 android:textSize="24sp" />
+
+			 <TextView
 	             android:layout_width="wrap_content"
 	             android:layout_height="wrap_content"
 	             android:layout_gravity="center_vertical"
@@ -61,8 +59,8 @@
 	             android:text="@string/unit_meter"
 	             android:textColor="#999999"/>
          </LinearLayout>
-         
-     </RelativeLayout>
+
+	 </RelativeLayout>
      
      <LinearLayout 
          android:layout_width="match_parent"

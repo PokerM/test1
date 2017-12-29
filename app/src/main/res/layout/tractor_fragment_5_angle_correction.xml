@@ -25,44 +25,47 @@
          android:layout_width="wrap_content"
          android:layout_height="0dp"
          android:layout_weight="15">
-         
-         <ImageView 
-             android:layout_width="500dp"
-             android:layout_height="400dp"
-             android:layout_marginLeft="100dp"
-             android:src="@drawable/car05"
-             android:layout_centerInParent="true"/>
-		
-         <LinearLayout 
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_centerHorizontal="true"
-             android:layout_marginTop="66dp"
-             >
-             
-             <EditText 
-	             android:id="@+id/editTractorAngleCorrection"
-	             android:maxLength="6"
-	             android:layout_width="wrap_content"
-	             android:layout_height="wrap_content"
-	             android:layout_gravity="center_vertical"
-	             android:layout_marginLeft="340dp"
-	             android:hint="@string/tractor_info_edit_hint"
+
+		 <ImageView
+			 android:id="@+id/imageView"
+			 android:layout_width="500dp"
+			 android:layout_height="400dp"
+			 android:layout_marginLeft="100dp"
+			 android:layout_centerHorizontal="true"
+			 android:layout_centerVertical="true"
+			 android:src="@drawable/angle_correction" />
+
+		 <LinearLayout
+			 android:id="@+id/linearLayout2"
+			 android:layout_width="wrap_content"
+			 android:layout_height="wrap_content"
+			 android:layout_alignParentBottom="true"
+			 android:layout_centerHorizontal="true">
+
+			 <EditText
+				 android:id="@+id/editTractorAngleCorrection"
+				 android:layout_width="wrap_content"
+				 android:layout_height="wrap_content"
+				 android:layout_gravity="center_vertical"
+				 android:hint="@string/tractor_info_edit_hint"
 				 android:inputType="numberDecimal"
-	             android:textSize="24sp"
-	             android:textColor="#999999"/>
-	         
-	         <TextView 
-	             android:layout_width="wrap_content"
-	             android:layout_height="wrap_content"
-	             android:layout_gravity="center_vertical"
-	             android:layout_marginBottom="3dp"
-	             android:textSize="24sp"
-	             android:text="@string/unit_meter"
-	             android:textColor="#999999"/>
-         </LinearLayout>
-         
-     </RelativeLayout>
+				 android:maxLength="6"
+				 android:textColor="#999999"
+				 android:textSize="24sp" />
+
+			 <TextView
+				 android:layout_width="wrap_content"
+				 android:layout_height="wrap_content"
+				 android:layout_gravity="center_vertical"
+				 android:layout_marginBottom="3dp"
+				 android:text="@string/unit_meter"
+				 android:textColor="#999999"
+				 android:textSize="24sp" />
+		 </LinearLayout>
+
+
+
+	 </RelativeLayout>
      
      <LinearLayout 
          android:layout_width="match_parent"

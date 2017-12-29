@@ -122,6 +122,7 @@
             android:name=".navigation.TractorResultActivity"
             android:label="@string/tractors_list"
             android:theme="@android:style/Theme.Dialog"
+            android:screenOrientation="landscape"
             tools:targetApi="lollipop">
             <intent-filter>
                 <action android:name="sjtu.me.tractor.navigation.TractorResultActivity" />
@@ -134,6 +135,7 @@
             android:name=".navigation.ABLineResultActivity"
             android:label="@string/ab_lines_list"
             android:theme="@android:style/Theme.Dialog"
+            android:screenOrientation="landscape"
             tools:targetApi="lollipop">
             <intent-filter>
                 <action android:name="sjtu.me.tractor.navigation.ABLineResultActivity" />
@@ -146,6 +148,7 @@
             android:name=".navigation.HistoryPathResultActivity"
             android:label="@string/history_paths_list"
             android:theme="@android:style/Theme.Dialog"
+            android:screenOrientation="landscape"
             tools:targetApi="lollipop">
             <intent-filter>
                 <action android:name="sjtu.me.tractor.navigation.HistoryPathResultActivity" />
@@ -154,7 +157,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".field.FieldAddingActivity">
+        <activity android:name=".field.FieldAddingActivity"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="sjtu.me.tractor.field.FieldAddingActivity" />
 
@@ -162,7 +166,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".planning.PathPlanningActivity">
+        <activity android:name=".planning.PathPlanningActivity"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="sjtu.me.tractor.planning.PathPlanningActivity" />
 
