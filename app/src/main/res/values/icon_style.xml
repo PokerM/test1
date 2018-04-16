@@ -33,7 +33,7 @@
      <!-- icon风格，用于显示导航页的button风格 -->
     <style name="navi_menu_button_style">
         <item name="android:layout_width">90dp</item>
-        <item name="android:layout_height">90dp</item>
+        <item name="android:layout_height">72dp</item>
     </style>
 
     <style name="navi_secondary_menu_button_style">

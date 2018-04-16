@@ -34,7 +34,7 @@ import sjtu.me.tractor.utils.ToastUtil;
 public class HomeActivity extends Activity implements OnClickListener {
 
     private static final String TAG = "HomeActivity";
-    private static final boolean D = false; // 日志入口开关
+    private static final boolean D = true; // 日志入口开关
 
     private boolean isExitApplication = false;  //是否退出应用程序标志
 
@@ -56,6 +56,8 @@ public class HomeActivity extends Activity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+        Log.d(TAG,"onCreate");
         setContentView(R.layout.home_activity);
         initViews();
         mFragmentManager = getFragmentManager();
@@ -94,7 +96,7 @@ public class HomeActivity extends Activity implements OnClickListener {
         super.onStart();
 
         if (D) {
-            Log.e(TAG, "+++ ON START +++");
+            Log.d(TAG, "+++ ON START +++");
         }
     }
 
@@ -111,7 +113,7 @@ public class HomeActivity extends Activity implements OnClickListener {
 //        }
 
         if (D) {
-            Log.e(TAG, "+++ ON RESTART +++");
+            Log.d(TAG, "+++ ON RESTART +++");
         }
     }
 
@@ -122,7 +124,7 @@ public class HomeActivity extends Activity implements OnClickListener {
         * 在restart中重启通信，这样会降低程序启动速度。
         */
         if (!SysUtil.isAppOnForeground(this)) {
-            Log.e("APP", "ON BACK GROUDN");
+            Log.d("APP", "ON BACK GROUDN");
 //		    MyApplication myApp = (MyApplication) getApplication();
 //		    if (myApp.getBluetoothService().getState() != BluetoothService.STATE_NONE) {
 //		        myApp.getBluetoothService().stopConnection();
@@ -142,7 +144,7 @@ public class HomeActivity extends Activity implements OnClickListener {
         super.onResume();
 
         if (D) {
-            Log.e(TAG, "+++ ON RESUME +++");
+            Log.d(TAG, "+++ ON RESUME +++");
         }
     }
 
@@ -152,7 +154,7 @@ public class HomeActivity extends Activity implements OnClickListener {
         super.onPause();
 
         if (D) {
-            Log.e(TAG, "+++ ON PAUSE +++");
+            Log.d(TAG, "+++ ON PAUSE +++");
         }
     }
 
@@ -169,7 +171,7 @@ public class HomeActivity extends Activity implements OnClickListener {
         }.start();
 
         if (D) {
-            Log.e(TAG, "+++ ON DESTROY +++");
+            Log.d(TAG, "+++ ON DESTROY +++");
         }
         super.onDestroy();
     }
@@ -293,7 +295,7 @@ public class HomeActivity extends Activity implements OnClickListener {
                 if (mConnectionFragment == null) {
                     // 如果MessageFragment为空，则创建一个并添加到界面上
                     mConnectionFragment = new ConnectionFragment();
-                    mFragmentTransaction.add(R.id.home_content, mConnectionFragment);
+                    mFragmentTransaction.add(R.id.home_content, mConnectionFragment,mConnectionFragment.getClass().getName());
                 } else {
                     // 如果MessageFragment不为空，则直接将它显示出来
                     mFragmentTransaction.show(mConnectionFragment);
@@ -306,7 +308,7 @@ public class HomeActivity extends Activity implements OnClickListener {
                 if (mTractorSettingFragment == null) {
                     // 如果MessageFragment为空，则创建一个并添加到界面上
                     mTractorSettingFragment = new TractorSettingFragment();
-                    mFragmentTransaction.add(R.id.home_content, mTractorSettingFragment);
+                    mFragmentTransaction.add(R.id.home_content, mTractorSettingFragment, mTractorSettingFragment.getClass().getName());
                 } else {
                     // 如果MessageFragment不为空，则直接将它显示出来
                     mFragmentTransaction.show(mTractorSettingFragment);
@@ -319,7 +321,7 @@ public class HomeActivity extends Activity implements OnClickListener {
                 if (mFieldSettingFragment == null) {
                     // 如果NewsFragment为空，则创建一个并添加到界面上
                     mFieldSettingFragment = new FieldSettingFragment();
-                    mFragmentTransaction.add(R.id.home_content, mFieldSettingFragment);
+                    mFragmentTransaction.add(R.id.home_content, mFieldSettingFragment, mFieldSettingFragment.getClass().getName());
                 } else {
                     // 如果NewsFragment不为空，则直接将它显示出来
                     mFragmentTransaction.show(mFieldSettingFragment);
@@ -362,5 +364,13 @@ public class HomeActivity extends Activity implements OnClickListener {
         }
     }
 
+    /**
+     * duan 18.4.9
+     *重写该方法解决fragement重影问题
+     *
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
 
+    }
 }

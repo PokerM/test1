@@ -3,6 +3,7 @@ package sjtu.me.tractor.connection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
@@ -10,6 +11,8 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 import android.util.Log;
+
+import sjtu.me.tractor.utils.FileUtil;
 
 /**
  * @author billhu
@@ -28,12 +31,14 @@ public class BluetoothService {
     // private static final String NAME = "BluetoothService"; //定义蓝牙服务的名字
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); // 蓝牙的UUID号
 
+    private static final boolean BLUETOOTH = true;
+    private static final String SENDMESSAGE = "sendmessage";
     // 蓝牙连接当前状态类型
     public static final int STATE_NONE = 0; // 未连接蓝牙设备
     public static final int STATE_LISTEN = 1; // 未连接蓝牙设备
     public static final int STATE_CONNECTING = 2; // 启动外发的连接
-    private static final int STATE_CONNECTED = 3; // 已连接蓝牙设备
-    private static final int STATE_COMMUNICATING = 4; // 蓝牙设备正在通信中
+    public static final int STATE_CONNECTED = 3; // 已连接蓝牙设备
+    public static final int STATE_COMMUNICATING = 4; // 蓝牙设备正在通信中
 
     // handler消息类型
     public static final int MESSAGE_RECEIVED = 0;
@@ -53,6 +58,17 @@ public class BluetoothService {
     public static final int COMMAND_SPECIFIED = 20;
     public static final int COMMAND_DEFAULT = 30;
 
+    //新增命令
+    public static final int COMMAND_ACCELERATOR = 30004;
+    public static final int COMMAND_DIRECTION = 30003;
+    //public static final int COMMAND_TURN_RIGHT2 = 30005;
+    public static final int COMMAND_CLEAR_WARN = 30005;
+    public static final int COMMAND_RECOVER = 30006;
+    public static final int COMMAND_DIRECTION_RECOVER = 30007;
+    public static final int COMMAND_ACCELERATOR_RECOVER = 30008;
+    public static final int COMMAND_CLEAR_WARN_RECEIVED = 30009;
+
+
     public static final int COMMAND_HEADLAND_POINT_1 = 9;
     public static final int COMMAND_HEADLAND_POINT_2 = 10;
 
@@ -65,6 +81,16 @@ public class BluetoothService {
     public static final String STOP_NAVI = "20000"; // 停止导航指令
     public static final String TURN_RIGHT = "30001"; // 右转指令
     public static final String TURN_LEFT = "30002"; // 左转指令
+
+    //新增发送指令
+    public static final String ACCELERATOR = "30003"; // 油门
+    public static final String TURN_LEFT2 = "30004"; // 左转指令2
+    //public static final String TURN_RIGHT2 = "30005"; // 右转指令2
+    public static final String CLEAR_WHEEL_WARN = "30005"; // 右转指令2
+    public static final String RECOVER = "30006"; // 恢复
+    public static final String DIRECTION_RECOVER = "30007"; // 方向盘回正
+    public static final String ACCELERATOR_RECOVER = "30008"; // 油门回零
+
     public static final String SET_A_REQUEST = "40003"; // 请求设置A点指令
     public static final String SET_A_AFFIRM = "40013"; // 确认收到A点指令
     public static final String SET_B_REQUEST = "40004"; // 请求设置B点指令
@@ -84,6 +110,13 @@ public class BluetoothService {
     private int commandType;
     private int mState; // 蓝牙连接状态
     private String sendCommand; // 自定义发送指令
+
+    private boolean controlCommand = false;//定义是否为控制指令
+
+    private int angle ;
+    private int speed ;
+    private boolean angleChanged = false;
+    private boolean speedChanged = false;
 
 
     /**
@@ -128,7 +161,7 @@ public class BluetoothService {
     /**
      * @return
      */
-    public synchronized String getSendCommand() {
+    public String getSendCommand() {
         return sendCommand;
     }
 
@@ -465,7 +498,7 @@ public class BluetoothService {
 //
 //        public ConnectThread(BluetoothDevice device) {
 //            Log.e(TAG, "*** create a ConnectThread ***");
-//            
+//
 //            mmDevice = device;
 //        }
 //
@@ -478,7 +511,7 @@ public class BluetoothService {
 //                Log.e(TAG, "create() failed", e);
 //                String CONNECTION_BROKEN_MESSAGE = "无法创建长连接！";
 //                mHandler.obtainMessage(MESSAGE_CONNECT_RESULT, -1, -1, CONNECTION_BROKEN_MESSAGE).sendToTarget();
-//                
+//
 //            }
 //            mSocket = tmp;
 //
@@ -589,7 +622,7 @@ public class BluetoothService {
 
                     /*
                      * 保证接收字符串以“#”开头，如果不是则删除“#”前面字符 例如“9*#01”变为“#012”
-                     * （如果开启线程收到的第一个数据丢失"*"，则忽略不处理，例如收到"#12345#12345*"，不要 
+                     * （如果开启线程收到的第一个数据丢失"*"，则忽略不处理，例如收到"#12345#12345*"，不要
                      *  使用if (readMsg.ndexOf("#") > 0) { readMsg.delete(0, readMsg.lastIndexOf("#")); } 删除，
                      *  否则会丢失数据，例如收到"#12345*#12345*"。）
                      */
@@ -669,62 +702,107 @@ public class BluetoothService {
             String sendingMessage;
             byte[] writeBuffer;
 
+            String currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
+            String fileSendMessage = currentTime + "message.ab";
+            sendingMessage = "#0," + HEARTBEAT + ",*\n";
             while (!isCancel) {
+//                if(controlCommand){
+//                    if(angleChanged) {
+//                        sendingMessage = "#0,30003," + String.valueOf(angle) +",*\n";
+//                        angleChanged = false;
+//                    }else if(speedChanged){
+//                        sendingMessage = "#0,30004," + String.valueOf(speed) +",*\n";
+//                        speedChanged = false;
+//                    }
+//                }else {
+                    switch (commandType) {
+                        case COMMAND_START_NAVI:
+                            sendingMessage = "#0," + START_NAVI + ",*\n";
+                            break;
 
-                switch (commandType) {
-                    case COMMAND_START_NAVI:
-                        sendingMessage = "#0," + START_NAVI + ",*\n";
-                        break;
+                        case COMMAND_STOP_NAVI:
+                            sendingMessage = "#0," + STOP_NAVI + ",*\n";
+                            break;
 
-                    case COMMAND_STOP_NAVI:
-                        sendingMessage = "#0," + STOP_NAVI + ",*\n";
-                        break;
+                        case COMMAND_SET_A_REQUEST:
+                            sendingMessage = "#0," + SET_A_REQUEST + ",*\n";
+                            break;
 
-                    case COMMAND_SET_A_REQUEST:
-                        sendingMessage = "#0," + SET_A_REQUEST + ",*\n";
-                        break;
+                        case COMMAND_SET_A_AFFIRM:
+                            sendingMessage = "#0," + SET_A_AFFIRM + ",*\n";
+                            break;
 
-                    case COMMAND_SET_A_AFFIRM:
-                        sendingMessage = "#0," + SET_A_AFFIRM + ",*\n";
-                        break;
+                        case COMMAND_SET_B_REQUEST:
+                            sendingMessage = "#0," + SET_B_REQUEST + ",*\n";
+                            break;
 
-                    case COMMAND_SET_B_REQUEST:
-                        sendingMessage = "#0," + SET_B_REQUEST + ",*\n";
-                        break;
+                        case COMMAND_SET_B_AFFIRM:
+                            sendingMessage = "#0," + SET_B_AFFIRM + ",*\n";
+                            break;
 
-                    case COMMAND_SET_B_AFFIRM:
-                        sendingMessage = "#0," + SET_B_AFFIRM + ",*\n";
-                        break;
+                        case COMMAND_TURN_LEFT:
+                            sendingMessage = "#0," + TURN_LEFT + ",*\n";
+                            break;
 
-                    case COMMAND_TURN_LEFT:
-                        sendingMessage = "#0," + TURN_LEFT + ",*\n";
-                        break;
+                        case COMMAND_TURN_RIGHT:
+                            sendingMessage = "#0," + TURN_RIGHT + ",*\n";
+                            break;
 
-                    case COMMAND_TURN_RIGHT:
-                        sendingMessage = "#0," + TURN_RIGHT + ",*\n";
-                        break;
+                        case COMMAND_HEADLAND_POINT_1:
+                            sendingMessage = "#0," + HEADLAND_POINT_1 + ",*\n";
+                            break;
 
-                    case COMMAND_HEADLAND_POINT_1:
-                        sendingMessage = "#0," + HEADLAND_POINT_1 + ",*\n";
-                        break;
+                        case COMMAND_HEADLAND_POINT_2:
+                            sendingMessage = "#0," + HEADLAND_POINT_2 + ",*\n";
+                            break;
 
-                    case COMMAND_HEADLAND_POINT_2:
-                        sendingMessage = "#0," + HEADLAND_POINT_2 + ",*\n";
-                        break;
+                        case COMMAND_SPECIFIED:
+                            sendingMessage = "#0," + sendCommand + ",*\n";
+                            break;
 
-                    case COMMAND_SPECIFIED:
-                        sendingMessage = "#0," + sendCommand + ",*\n";
-                        break;
-
-                    case COMMAND_DEFAULT:
-                        sendingMessage = "#0," + HEARTBEAT + ",*\n";
-                        break;
-
-                    default:
-                        sendingMessage = "#0," + HEARTBEAT + ",*\n";
-                        break;
+                        case COMMAND_DEFAULT:
+                            sendingMessage = "#0," + HEARTBEAT + ",*\n";
+                            break;
+                        case COMMAND_ACCELERATOR:
+                            sendingMessage = "#0," + String.valueOf(COMMAND_ACCELERATOR) + ","
+                                              + String.valueOf(speed) + ",*\n";
+                            Log.e(TAG, ACCELERATOR);
+                            break;
+                        case COMMAND_DIRECTION:
+                            sendingMessage = "#0," + String.valueOf(COMMAND_DIRECTION) + ","
+                                              + String.valueOf(angle) + ",*\n";
+                            break;
+                        case COMMAND_CLEAR_WARN:
+                            sendingMessage = "#0," + CLEAR_WHEEL_WARN+",*\n";
+                            break;
+                        case COMMAND_CLEAR_WARN_RECEIVED:
+                            sendingMessage = "#0," + String.valueOf(COMMAND_CLEAR_WARN_RECEIVED) +",*\n";
+                            break;
+//                        case COMMAND_TURN_LEFT2:
+//                            sendingMessage = "#0," + TURN_LEFT2 + ",*\n";
+//                            Log.e(TAG, TURN_LEFT2);
+//                            break;
+//                        case COMMAND_TURN_RIGHT2:
+//                            sendingMessage = "#0," + TURN_RIGHT2 + ",*\n";
+//                            Log.e(TAG, TURN_RIGHT2);
+//                            break;
+//                        case COMMAND_RECOVER:
+//                            sendingMessage = "#0," + RECOVER + ",*\n";
+//                            Log.e(TAG, RECOVER);
+//                            break;
+//                        case COMMAND_DIRECTION_RECOVER:
+//                            sendingMessage = "#0," + DIRECTION_RECOVER + ",*\n";
+//                            Log.e(TAG, DIRECTION_RECOVER);
+//                            break;
+//                        case COMMAND_ACCELERATOR_RECOVER:
+//                            sendingMessage = "#0," + ACCELERATOR_RECOVER + ",*\n";
+//                            Log.e(TAG, ACCELERATOR_RECOVER);
+//                            break;
+                        default:
+                            sendingMessage = "#0," + HEARTBEAT + ",*\n";
+                            break;
                 }
-
+                Log.e(TAG,sendingMessage);
                 writeBuffer = sendingMessage.getBytes();
 
                 long start = System.currentTimeMillis();
@@ -733,7 +811,8 @@ public class BluetoothService {
                     // mmOutStream.flush();
                     mmOutStream.write(writeBuffer);
                     mmOutStream.flush();
-
+                    FileUtil.writeDataToExternalStorage(SENDMESSAGE,fileSendMessage,sendingMessage,
+                            true,false);
                     // 将已发送的信息分享给UI程序组件
                     mHandler.obtainMessage(MESSAGE_SENT, -1, -1, sendingMessage).sendToTarget();
                 } catch (IOException e) {
@@ -787,4 +866,21 @@ public class BluetoothService {
         }
     }
 
+    public void setControlCommand(boolean tof){
+        controlCommand = tof;
+    }
+
+    public void setAngle(int ang){
+        angle = ang;
+        angleChanged = true;
+    }
+
+    public void setSpeed(int spe){
+        speed = spe;
+        speedChanged = true;
+    }
+
+    public boolean getBluetoothState(){
+        return BLUETOOTH;
+    }
 }

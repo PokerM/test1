@@ -134,6 +134,26 @@
                     android:layout_gravity="top|left"
                     android:background="@drawable/checkbox_navi_remote_mode"
                     android:button="@null" />
+
+                <CheckBox
+                    android:id="@+id/chkboxControl"
+                    style="@style/navi_menu_button_style"
+                    android:layout_gravity="top|left"
+                    android:background="@drawable/checkbox_control"
+                    android:button="@null" />
+
+                <Button
+                    android:id="@+id/btnTemp"
+                    style="@style/navi_menu_button_style"
+                    android:background="@drawable/imgbtn_navi_planning_mode" />
+
+                <CheckBox
+                    android:id="@+id/chkboxUp_Down"
+                    style="@style/navi_menu_button_style"
+                    android:layout_gravity="top|left"
+                    android:background="@drawable/updown_checkbox"
+                    android:button="@null"
+                    android:visibility="invisible"/>
             </LinearLayout>
 
             <FrameLayout
@@ -307,10 +327,22 @@
                     android:id="@+id/imgbtnEmergencyStop"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/txtPrecsionSeeding"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:layout_marginBottom="5dp"
+                    android:layout_marginTop="20dp"
                     android:background="@drawable/imgbtn_navi_emegency_stop" />
+
+                <ImageButton
+                    android:id="@+id/imgbtnDirectionRecover"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_toRightOf="@+id/imgbtnEmergencyStop"
+                    android:layout_below="@+id/txtPrecsionSeeding"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/imgbtn_navi_direction_recover" />
             </RelativeLayout>
 
         </LinearLayout>
@@ -416,6 +448,7 @@
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
+            android:visibility="visible"
             android:background="@drawable/imgbtn_navi_remote_accelerate" />
 
         <LinearLayout
@@ -449,6 +482,91 @@
                 android:background="@drawable/imgbtn_navi_remote_right" />
         </LinearLayout>
     </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/layoutControlPane"
+        android:layout_width="705dp"
+        android:layout_height="250dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="25dp"
+        android:layout_marginLeft="100dp"
+        android:background="@drawable/navi_remote_pane_background"
+        android:orientation="horizontal"
+        android:visibility="invisible">
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            style="@style/CustomSeekbarStyle"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="10dp"
+            android:max="60"
+            android:progress="30" />
+
+        <sjtu.me.tractor.navigation.VerticalSeekBar
+            android:id="@+id/verticalSeekBarAccelerator"
+            style="@style/CustomSeekbarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="330dp"
+            android:max="30"
+            android:progress="0" />
+    </LinearLayout>
+
+    <!--<LinearLayout-->
+        <!--android:id="@+id/layoutControlPane"-->
+        <!--android:layout_width="300dp"-->
+        <!--android:layout_height="170dp"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--android:layout_marginBottom="25dp"-->
+        <!--android:layout_marginLeft="100dp"-->
+        <!--android:background="@drawable/control_pane_background"-->
+        <!--android:orientation="vertical"-->
+        <!--android:visibility="invisible">-->
+
+        <!--<Button-->
+            <!--android:id="@+id/btnAccelerator"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:layout_marginTop="5dp"-->
+            <!--android:background="@drawable/imgbtn_navi_remote_accelerate" />-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="120dp"-->
+            <!--android:layout_gravity="center_horizontal">-->
+
+            <!--<Button-->
+                <!--android:id="@+id/btnTurnLeft2"-->
+                <!--android:layout_width="100dp"-->
+                <!--android:layout_height="100dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@drawable/imgbtn_navi_remote_left" />-->
+
+            <!--<Button-->
+                <!--android:id="@+id/btnRecover"-->
+                <!--android:layout_width="70dp"-->
+                <!--android:layout_height="70dp"-->
+                <!--android:layout_gravity="bottom"-->
+                <!--android:layout_marginBottom="10dp"-->
+                <!--android:layout_marginLeft="15dp"-->
+                <!--android:layout_marginRight="15dp"-->
+                <!--android:background="@drawable/checkbox_navi_remote_switch" />-->
+
+            <!--<Button-->
+                <!--android:id="@+id/btnTurnRight2"-->
+                <!--android:layout_width="100dp"-->
+                <!--android:layout_height="100dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@drawable/imgbtn_navi_remote_right" />-->
+        <!--</LinearLayout>-->
+    <!--</LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/statisticView"

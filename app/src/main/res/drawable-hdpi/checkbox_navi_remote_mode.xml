@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:drawable="@drawable/remote_mode_selected" android:state_checked="true" />
-    <item android:drawable="@drawable/remote_mode" android:state_checked="false" />
-    <item android:drawable="@drawable/remote_mode" />
+    <item android:drawable="@drawable/return_selected" android:state_checked="true" />
+    <item android:drawable="@drawable/return_mode" android:state_checked="false" />
+    <item android:drawable="@drawable/return_mode" />
 
 </selector>

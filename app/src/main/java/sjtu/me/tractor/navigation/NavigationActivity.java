@@ -14,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -22,6 +23,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.io.File;
@@ -36,6 +38,7 @@ import java.util.Map;
 
 import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.view.LineChartView;
+import sjtu.me.tractor.BuildConfig;
 import sjtu.me.tractor.R;
 import sjtu.me.tractor.connection.BluetoothService;
 import sjtu.me.tractor.database.DatabaseManager;
@@ -56,9 +59,10 @@ import sjtu.me.tractor.utils.ToastUtil;
 /**
  * @author billhu
  */
-@SuppressLint("UseSparseArrays")
+@SuppressLint("UseSparseArrays")//??????
 public class NavigationActivity extends Activity implements OnClickListener {
 
+    private static final boolean BLUETOOTH = true;
     private static final String TAG = "NavigationActivity";        //调试日志标签
     private static final boolean D = true;
 
@@ -86,12 +90,30 @@ public class NavigationActivity extends Activity implements OnClickListener {
     public static final int TURNING_RIGHT_RESPONSE = 10020;
     public static final int TURNING_LEFT_RESPONSE = 10030;
 
+    public static final int ACCELERATOR_RESPONSE = 30103;
+    public static final int TURN_LEFT2_RESPONSE = 30104;
+    //public static final int TURN_RIGHT2_RESPONSE = 30105;
+    public static final int RECOVER_RESPONSE = 30106;
+    public static final int DIRECTION_RECOVER_RESPONSE = 30107;
+    public static final int ACCELERATOR_RECOVER_RESPONSE = 30108;
+    public static final int CLEAR_WHEEL_WARN_RESPONSE =30105;
+
+    public static final int COMMAND_ACCELERATOR = 30003;
+    public static final int COMMAND_TURN_LEFT2 = 30004;
+    //public static final int COMMAND_TURN_RIGHT2 = 30005;
+    public static final int COMMAND_CLEAR_WARN = 30005;
+    public static final int COMMAND_RECOVER = 30006;
+    public static final int COMMAND_DIRECTION_RECOVER = 30007;
+    public static final int COMMAND_ACCELERATOR_RECOVER = 30008;
+
+
     /*调试时用到的一些指令状态*/
     public static final int HEADLAND_P1_RESPONSE = 50101;
     public static final int HEADLAND_P2_RESPONSE = 50102;
 
     private static final String DATA_DIRECTORY = "data";
     private static final String AB_LINE_DIRECTORY = "ab_lines";
+    private static final String RESPONSE = "response";
 
     private static final String QUERY_ALL = "%%";
 
@@ -100,6 +122,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
 
     ImageButton imgbtnBack;  //返回按钮
     ImageButton imgbtnConnectionStatus;  //连接状态显示按钮
+    ImageButton imgbtnDirectionRecover;
     Button btnSetField;  //设置田地按钮
     Button btnSetTractor;  //设置田地按钮
     CheckBox checkboxABMode;  //AB线导航模式按钮
@@ -107,17 +130,28 @@ public class NavigationActivity extends Activity implements OnClickListener {
     CheckBox checkboxHistory;  //历史记录按钮
     CheckBox checkboxStatistics; //统计数据按钮
     CheckBox checkboxRemoteMode; //遥控器模式按钮
+    CheckBox checkboxUpdown;
     LinearLayout layoutABModePane;
     Button btnHistoryAB;  //历史AB线按钮
     Button btnSetA;  //设置A点按钮
     Button btnSetB;  //设置B点按钮
     CheckBox checkboxStartNavigation; //启动导航
     LinearLayout layoutRemotePane;
+    LinearLayout layoutControlPane;
     Button btnAccelerate; //加速按钮
     Button btnTurnLeft;  //左转按钮
     CheckBox checkboxStartSwitch;  //启动开关按钮
     Button btnTurnRight;  //右转按钮
     ImageButton imgbtnEmergencyStop;    //急停按钮
+
+    CheckBox checkBoxControl;
+    Button btnAccelerator;
+    Button btnTurnLeft2;
+    Button btnTurnRight2;
+    Button btnRecover;
+    SeekBar seekBar;
+    VerticalSeekBar verticalSeekBarAccelerator;
+    Button btnTemp;
 
     TextView txtDeviance;  //横向偏差文本
     TextView txtSatellite;  //卫星数目文本
@@ -149,6 +183,8 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private String fileNameToSave;
     private String currentTime;
 
+    private String responseFileName;
+
     private boolean isDataToSave = false;
     private boolean isPointASet = false;
     private boolean isPointBSet = false;
@@ -157,11 +193,22 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private boolean isBoundP3Set = false;
     private boolean isBoundP4Set = false;
     private boolean isStartNavigation = false;
+    private boolean isNavigating = false;
+    private boolean isAutoNavigation=false;//zy autoNavi
+    private boolean isAutoTurnRight=false;
+    private boolean isAutoTurnLeft=false;
     private boolean isStopNavigation = false;
     private boolean isToTurnRight = false;
     private boolean isToTurnLeft = false;
     private boolean isOnQueryingHistory = false; //是否历史记录
 
+    private boolean isToAcceletor = false;
+    private boolean isToTurnLeft2 = false;
+    private boolean isToTurnRight2 = false;
+    private boolean isToRecover = false;
+    private boolean isToDirectionRecover = false;
+    private boolean isToAcceletorRecover = false;
+    private boolean isToClearWarn=false;
 
     private MyApplication myApp; // 程序全局变量
 
@@ -204,6 +251,9 @@ public class NavigationActivity extends Activity implements OnClickListener {
     private static double lateral;
     private static double turnning;
     private static double seeding;
+
+//    ButtonListener buttonListener = new ButtonListener();
+
 
     public NavigationActivity() {
         super();
@@ -253,6 +303,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
         }
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -268,7 +319,9 @@ public class NavigationActivity extends Activity implements OnClickListener {
         //获取全局类实例
         myApp = (MyApplication) getApplication();
         //设置蓝牙连接的消息处理器为当前界面处理器
-        myApp.getBluetoothService().setHandler(mNavigationHandler);
+        if(myApp.getBluetoothService().getBluetoothState()) {
+            myApp.getBluetoothService().setHandler(mNavigationHandler);
+        }
         if (D) {
             Log.e(TAG, "+++ setHandler: mNavigationHandler +++");
         }
@@ -277,6 +330,9 @@ public class NavigationActivity extends Activity implements OnClickListener {
         myPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         initViews(); //初始化各个控件
+
+        currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
+        responseFileName = currentTime + "_responses.ab";
 
          /* 读取默认偏车辆设置 */
         defaultTractorName = myPreferences.getString(DEFAULT_TRACTOR, null);
@@ -319,9 +375,14 @@ public class NavigationActivity extends Activity implements OnClickListener {
         CheckBox checkBox4 = (CheckBox) findViewById(R.id.starBottomRight2);
         checkBox4.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (((CheckBox) v).isChecked()) {
-                    isBoundP3Set = true;
-                }
+//                if (((CheckBox) v).isChecked()) {
+//                    isBoundP4Set = true;
+//                    Log.d(TAG,"checkBox4 checked!");
+//                }
+//                else
+//                    Log.d(TAG,"checkBox4 unchecked!");
+                isToClearWarn=true;
+                myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_CLEAR_WARN);
             }
         });
 
@@ -329,8 +390,14 @@ public class NavigationActivity extends Activity implements OnClickListener {
         checkBox3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (((CheckBox) v).isChecked()) {
-                    isBoundP4Set = true;
+                    isBoundP3Set = true;
+                    //Log.d(TAG,"checkBox3 checked!");
                 }
+                else {
+                    isBoundP3Set=false;
+                    //Log.d(TAG, "checkBox3 unchecked!");
+                }
+                //Log.d("isBoundP3Set:",Boolean.toString(isBoundP3Set));
             }
         });
 
@@ -347,11 +414,12 @@ public class NavigationActivity extends Activity implements OnClickListener {
         if (D) {
             Log.e(TAG, "+++ ON START +++");
         }
-
-        if (myApp.getBluetoothService().getState() == BluetoothService.STATE_NONE) {
-            imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_broken);
-        } else {
-            imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_ok);
+        if(myApp.getBluetoothService().getBluetoothState()) {
+            if (myApp.getBluetoothService().getState() == BluetoothService.STATE_NONE) {
+                imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_broken);
+            } else {
+                imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_ok);
+            }
         }
     }
 
@@ -405,13 +473,15 @@ public class NavigationActivity extends Activity implements OnClickListener {
             Log.e(TAG, "+++ ON RESTART +++");
         }
 
-        // 重新进入界面时设置消息处理器为当前处理器
-        myApp.getBluetoothService().setHandler(mNavigationHandler);
+        if(myApp.getBluetoothService().getBluetoothState()) {
+            // 重新进入界面时设置消息处理器为当前处理器
+            myApp.getBluetoothService().setHandler(mNavigationHandler);
 
-        if (myApp.getBluetoothService().getState() == BluetoothService.STATE_NONE) {
-            imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_broken);
-        } else {
-            imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_ok);
+            if (myApp.getBluetoothService().getState() == BluetoothService.STATE_NONE) {
+                imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_broken);
+            } else {
+                imgbtnConnectionStatus.setBackgroundResource(R.drawable.connection_ok);
+            }
         }
     }
 
@@ -563,11 +633,16 @@ public class NavigationActivity extends Activity implements OnClickListener {
 
         switch (v.getId()) {
             case R.id.imgbtnBack:
-                Runtime runtime = Runtime.getRuntime();
-                try {
-                    runtime.exec("input keyevent " + KeyEvent.KEYCODE_BACK);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (isNavigating) {
+                    ToastUtil.showToast("正在导航，请勿退出当前界面！",false);
+                }
+                else {
+                    Runtime runtime = Runtime.getRuntime();
+                    try {
+                        runtime.exec("input keyevent " + KeyEvent.KEYCODE_BACK);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
 
@@ -620,6 +695,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 if (((CheckBox) v).isChecked()) {
                     startNavigation();
                     startPlotAndSavePath();
+                    isNavigating = true;
                     isStartNavigation = true;
                     isStopNavigation = false;
                     /*导航过程中设置历史查询按钮为不可点击状态*/
@@ -628,6 +704,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 } else {
                     stopNavigation();
                     stopPlotAndSavePath();
+                    isNavigating = false;
                     isStartNavigation = false;
                     isStopNavigation = true;
                     /*导航结束后设置历史查询按钮为可点击状态*/
@@ -739,6 +816,12 @@ public class NavigationActivity extends Activity implements OnClickListener {
             case R.id.chkboxRemoteMode:
                 if (((CheckBox) v).isChecked()) {
                     layoutRemotePane.setVisibility(View.VISIBLE);
+                    layoutControlPane.setVisibility(View.INVISIBLE);
+//                    seekBar.setVisibility(View.INVISIBLE);
+//                    verticalSeekBarAccelerator.setVisibility(View.INVISIBLE);
+                    myApp.getBluetoothService().setControlCommand(false);
+//                    layoutControlPane.setVisibility(View.INVISIBLE);
+                    checkBoxControl.setChecked(false);
                 } else {
                     layoutRemotePane.setVisibility(View.INVISIBLE);
                 }
@@ -770,7 +853,47 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_STOP_NAVI);
                 break;
 
-            default:
+//            case R.id.btnRecover:
+//                Log.e(TAG,"btnRecover");
+//                isToRecover = true;
+//                myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_RECOVER);
+//                break;
+
+            case R.id.chkboxControl:
+                if (((CheckBox) v).isChecked()) {
+                    layoutRemotePane.setVisibility(View.INVISIBLE);
+                    layoutControlPane.setVisibility(View.VISIBLE);
+//                    seekBar.setVisibility(View.VISIBLE);
+//                    verticalSeekBarAccelerator.setVisibility(View.VISIBLE);
+                    myApp.getBluetoothService().setControlCommand(true);
+                    myApp.getBluetoothService().setAngle(30);
+                    myApp.getBluetoothService().setSpeed(0);
+//                    layoutControlPane.setVisibility(View.VISIBLE);
+                    checkboxRemoteMode.setChecked(false);
+                } else {
+//                    seekBar.setVisibility(View.INVISIBLE);
+//                    verticalSeekBarAccelerator.setVisibility(View.INVISIBLE);
+//                    myApp.getBluetoothService().setControlCommand(false);
+//                    layoutControlPane.setVisibility(View.INVISIBLE);
+                      layoutControlPane.setVisibility(View.INVISIBLE);
+                }
+                break;
+            case R.id.imgbtnDirectionRecover:
+                isToClearWarn = true;
+                myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_CLEAR_WARN);
+                break;
+            case R.id.chkboxUp_Down:
+                if (((CheckBox) v).isChecked()) {
+                    ToastUtil.showToast("正在下降...",true);
+                    //TODO
+                } else {
+                    ToastUtil.showToast("正在提升...",true);
+                    //TODO
+                }
+            case R.id.btnTemp:
+                //TODO
+                break;
+                    default:
                 break;
         }
     }
@@ -833,6 +956,9 @@ public class NavigationActivity extends Activity implements OnClickListener {
         checkboxRemoteMode = (CheckBox) findViewById(R.id.chkboxRemoteMode);
         checkboxRemoteMode.setOnClickListener(this);
 
+        checkboxUpdown = (CheckBox) findViewById(R.id.chkboxUp_Down);
+        checkboxUpdown.setOnClickListener(this);
+
         layoutABModePane = (LinearLayout) findViewById(R.id.layoutABMode);
 
         btnHistoryAB = (Button) findViewById(R.id.btnHistoryAB);
@@ -848,6 +974,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
         checkboxStartNavigation.setOnClickListener(this);
 
         layoutRemotePane = (LinearLayout) findViewById(R.id.layoutRemotePane);
+        layoutControlPane = (LinearLayout) findViewById(R.id.layoutControlPane);
 
         btnAccelerate = (Button) findViewById(R.id.btnAccelerate);
         btnAccelerate.setOnClickListener(this);
@@ -863,6 +990,71 @@ public class NavigationActivity extends Activity implements OnClickListener {
 
         imgbtnEmergencyStop = (ImageButton) findViewById(R.id.imgbtnEmergencyStop);
         imgbtnEmergencyStop.setOnClickListener(this);
+
+        imgbtnDirectionRecover = (ImageButton) findViewById(R.id.imgbtnDirectionRecover);
+        imgbtnDirectionRecover.setOnClickListener(this);
+
+        checkBoxControl = (CheckBox)findViewById(R.id.chkboxControl);
+        checkBoxControl.setOnClickListener(this);
+
+        btnTemp = (Button) findViewById(R.id.btnTemp);
+        btnTemp.setOnClickListener(this);
+//        btnAccelerator =(Button) findViewById(R.id.btnAccelerator);
+//        btnAccelerator.setOnTouchListener(buttonListener);
+//        btnTurnLeft2 = (Button) findViewById(R.id.btnTurnLeft2);
+//        btnTurnLeft2.setOnTouchListener(buttonListener);
+//        btnTurnRight2 = (Button) findViewById(R.id.btnTurnRight2);
+//        btnTurnRight2.setOnTouchListener(buttonListener);
+//        btnRecover = (Button) findViewById(R.id.btnRecover);
+//        btnRecover.setOnClickListener(this);
+
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                textView.setText(String.valueOf(progress));
+//                int command;
+//                command = 31000+progress;
+//                Log.e(TAG,String.valueOf(command));
+//                myApp.getBluetoothService().setCommandType(command);
+                myApp.getBluetoothService().setAngle(progress);
+                myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DIRECTION);
+                //Log.d(TAG,"wheel angle:"+(progress-30));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                seekBar.setProgress(30);
+                //Log.d(TAG,"wheel recover:0");
+                //myApp.getBluetoothService().setCommandType(31036);
+            }
+        });
+
+        verticalSeekBarAccelerator = (VerticalSeekBar) findViewById(R.id.verticalSeekBarAccelerator);
+        verticalSeekBarAccelerator.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+               // Log.d(TAG,"velocity changed:"+progress);
+                myApp.getBluetoothService().setSpeed(progress);
+                myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_ACCELERATOR);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+//        layoutControlPane = (LinearLayout) findViewById(R.id.layoutControlPane);
+
 
     }
 
@@ -928,7 +1120,7 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 }
                 txtLocationX.setText(String.valueOf(xx));
                 txtLocationY.setText(String.valueOf(yy));
-                txtVelocity.setText(String.valueOf(velocity) + "Km/h");
+                txtVelocity.setText(String.valueOf(velocity) + "m/s");
                 txtDirectionAngle.setText(String.valueOf(direction) + "°");
                 txtTurningAngle.setText(String.valueOf(turnning));
                 txtPrecisionSeeding.setText(String.valueOf(seeding));
@@ -1014,14 +1206,54 @@ public class NavigationActivity extends Activity implements OnClickListener {
                 /*启动导航后收到直线行驶响应则切换为默认发送指令*/
                 if (isStartNavigation == true && currentState == LINE_NAVIGATION_RESPONSE) {
                     isStartNavigation = false;
+
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                     ToastUtil.showToast(getString(R.string.line_navigating), true);
+
+                    if(isBoundP3Set)
+                    {
+                        isAutoTurnRight=true;
+                        isAutoTurnLeft=false;
+                    }
+                    else
+                    {
+                        isAutoTurnRight=false;
+                        isAutoTurnLeft=true;
+                    }
+                    isAutoNavigation=true;
+
                 }
 
                 /*停止导航后收到默认响应则切换为默认发送指令*/
                 if (isStopNavigation == true && currentState == DEFAULT_STATE_RESPONSE) {
                     isStopNavigation = false;
+
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
+
+                    isAutoNavigation=false;
+                    isAutoTurnRight=true;
+                    isAutoTurnLeft=true;
+                }
+
+                if(isAutoNavigation)
+                {
+                    if(defaultFieldVertexList.size()==4)
+                    {
+                        if((!isAutoTurnRight)&&(GisAlgorithm.distanceFromPointToLine(defaultFieldVertexList.get(1).getX(),defaultFieldVertexList.get(1).getY(),defaultFieldVertexList.get(2).getX(),defaultFieldVertexList.get(2).getY(),xx,yy)<2.7))
+                        {
+                            isToTurnRight = true;
+                            //isAutoTurnRight=true;
+                            //isAutoTurnLeft=false;
+                            myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_TURN_RIGHT);
+                        }
+                        else if((!isAutoTurnLeft)&&(GisAlgorithm.distanceFromPointToLine(defaultFieldVertexList.get(0).getX(),defaultFieldVertexList.get(0).getY(),defaultFieldVertexList.get(3).getX(),defaultFieldVertexList.get(3).getY(),xx,yy)<2.7))
+                        {
+                            isToTurnLeft = true;
+                            //isAutoTurnLeft=true;
+                            //isAutoTurnRight=false;
+                            myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_TURN_LEFT);
+                        }
+                    }
                 }
 
                 /*右转后收到右转响应则切换为默认发送指令*/
@@ -1029,6 +1261,8 @@ public class NavigationActivity extends Activity implements OnClickListener {
                     isToTurnRight = false;
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                     ToastUtil.showToast(getString(R.string.turning_right_successfully), true);
+                    isAutoTurnRight=true;
+                    isAutoTurnLeft=false;
 
                 }
 
@@ -1037,8 +1271,70 @@ public class NavigationActivity extends Activity implements OnClickListener {
                     isToTurnLeft = false;
                     myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
                     ToastUtil.showToast(getString(R.string.turning_left_successfully), true);
+                    isAutoTurnLeft=true;
+                    isAutoTurnRight=false;
                 }
 
+                if (isToAcceletor && currentState ==ACCELERATOR_RESPONSE
+                        &&  myApp.getBluetoothService().getCommandType()== COMMAND_ACCELERATOR) {
+                    isToAcceletor = false;
+                    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
+                    FileUtil.writeDataToExternalStorage(RESPONSE,responseFileName,String.valueOf(ACCELERATOR_RESPONSE),
+                            true,false);
+                }
+
+                if (isToTurnLeft2 && currentState == TURN_LEFT2_RESPONSE
+                        &&  myApp.getBluetoothService().getCommandType()== COMMAND_TURN_LEFT2) {
+                    isToTurnLeft2 = false;
+                    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
+                    FileUtil.writeDataToExternalStorage(RESPONSE,responseFileName,String.valueOf(TURN_LEFT2_RESPONSE),
+                            true,false);
+                }
+
+//                if (isToTurnRight2 && currentState == TURN_RIGHT2_RESPONSE
+//                        &&  myApp.getBluetoothService().getCommandType()== COMMAND_TURN_RIGHT2) {
+//                    isToTurnRight2 = false;
+//                    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
+//                    FileUtil.writeDataToExternalStorage(RESPONSE,responseFileName,String.valueOf(TURN_RIGHT2_RESPONSE),
+//                            true,false);
+//                }
+
+                if (isToDirectionRecover && currentState == DIRECTION_RECOVER_RESPONSE
+                        &&  myApp.getBluetoothService().getCommandType()== COMMAND_DIRECTION_RECOVER) {
+                    isToDirectionRecover = false;
+                    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
+                    FileUtil.writeDataToExternalStorage(RESPONSE,responseFileName,String.valueOf(DIRECTION_RECOVER_RESPONSE),
+                            true,false);
+                }
+
+                if (isToRecover && currentState == RECOVER_RESPONSE
+                        &&  myApp.getBluetoothService().getCommandType()== COMMAND_RECOVER) {
+                    isToRecover = false;
+                    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
+                    FileUtil.writeDataToExternalStorage(RESPONSE,responseFileName,String.valueOf(RECOVER_RESPONSE),
+                            true,false);
+                }
+
+                if (isToAcceletorRecover && currentState == ACCELERATOR_RECOVER_RESPONSE
+                        &&  myApp.getBluetoothService().getCommandType()== COMMAND_ACCELERATOR_RECOVER) {
+                    isToAcceletorRecover = false;
+                    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
+                    FileUtil.writeDataToExternalStorage(RESPONSE,responseFileName,String.valueOf(ACCELERATOR_RECOVER_RESPONSE),
+                            true,false);
+                }
+
+                if(isToClearWarn && currentState == CLEAR_WHEEL_WARN_RESPONSE
+                        &&  myApp.getBluetoothService().getCommandType()== COMMAND_CLEAR_WARN)
+                {
+                    isToClearWarn=false;
+                    Log.e(TAG,"clear warn");
+                    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_CLEAR_WARN_RECEIVED);
+                }
+
+                if(!isToClearWarn && currentState == DEFAULT_STATE_RESPONSE)
+                {
+                    myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_DEFAULT);
+                }
                 /*
                 //这一段本来是按照通信协议写的，加上去之后，下位机貌似不稳定（由于计算能力限制？）
                 if (!isStopNavigation) {
@@ -1092,12 +1388,13 @@ public class NavigationActivity extends Activity implements OnClickListener {
 
             xx = Double.parseDouble(dataArray[0]);
             yy = Double.parseDouble(dataArray[1]);
-            satellite = 17;
+//            satellite = 17;
             gps = Integer.parseInt(dataArray[2]);
             direction = Double.parseDouble(dataArray[3]);
             velocity = Double.parseDouble(dataArray[4]);
+            velocity = velocity / 3.6;
             command = Integer.parseInt(dataArray[5]);
-            sensor = Double.parseDouble(dataArray[6]);
+            satellite = Integer.parseInt(dataArray[6]);
             lateral = Double.parseDouble(dataArray[7]);
             turnning = Double.parseDouble(dataArray[8]);
             seeding = 0;
@@ -1250,6 +1547,42 @@ public class NavigationActivity extends Activity implements OnClickListener {
         }
 
         return true;
+    }
+
+//    class ButtonListener implements View.OnTouchListener {
+//        public boolean onTouch(View v, MotionEvent event) {
+//            switch (v.getId()){
+//
+//                case R.id.btnAccelerator:
+//                    if(event.getAction() == MotionEvent.ACTION_UP){
+//                        Log.e(TAG,"btnAccelerator up");
+//                        isToAcceletorRecover = true;
+//                        myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_ACCELERATOR_RECOVER);
+//                    }else if(event.getAction() == MotionEvent.ACTION_DOWN){
+//                        Log.e(TAG,"btnAccelerator down");
+//                        isToAcceletor = true;
+//                        myApp.getBluetoothService().setCommandType(BluetoothService.COMMAND_ACCELERATOR);
+//                    }
+//                    break;
+//
+//                default:
+//                    break;
+//            }
+////            if(v.getId() == R.id.TouchButton){
+//
+////            }
+//            return false;
+//        }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (isNavigating) {
+            ToastUtil.showToast("正在导航，请勿退出当前界面！",false);
+            return true;
+        }
+        else {
+                //TODO something
+                return super.onKeyDown(keyCode, event);
+        }
     }
 
 }

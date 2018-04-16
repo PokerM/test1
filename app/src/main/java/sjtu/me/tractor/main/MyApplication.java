@@ -13,8 +13,9 @@ public class MyApplication extends Application{
     private static Context context; //定义全局环境
     public BluetoothService bluetoothService; //全局蓝牙服务对象
     public String bluetoothAddress = ADDRESS_NULL;
+    public String currentDeviceName ="";
     public DatabaseManager databaseManager; //全局数据库管理器
-
+    public boolean serviceInitialized = false;
     /**
      * 构造函数
      */
@@ -57,6 +58,7 @@ public class MyApplication extends Application{
      */
     public void setBluetoothService(BluetoothService bluetooth) {
         this.bluetoothService = bluetooth;
+        serviceInitialized = true;
     }
 
     /**
@@ -73,6 +75,17 @@ public class MyApplication extends Application{
         this.bluetoothAddress = mBluetoothAddress;
     }
 
+    public void setBluetoothName(String name){
+        currentDeviceName = name;
+    }
+
+    public String getCurrentDeviceName(){
+        return currentDeviceName;
+    }
+
+    public boolean getServiceState(){
+        return serviceInitialized;
+    }
 }
 
 

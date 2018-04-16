@@ -63,6 +63,7 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
     private Button btnStartConnection;
     private Button btnScan;
     private Button btnCancel;
+    private static final boolean BLUETOOTH = true;
 
     // 消息处理器
     Handler mHomeHandler = new MyHomeHandler(this);
@@ -158,6 +159,8 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
+        // 获取Application全局变量
+        myApp = (MyApplication) getActivity().getApplication();
         super.onCreate(savedInstanceState);
         if (D) {
             Log.e(TAG, "++++ ON CREATE ++++");
@@ -184,9 +187,10 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
             Log.e(TAG, "++++ ON CREATE VIEW ++++");
         }
 
-        // 获取Application全局变量
-        myApp = (MyApplication) getActivity().getApplication();
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        //18.4.11duan 获取设备
+        mBluetoothService = myApp.getBluetoothService();
 
         // 检查设备是否存在蓝牙设备
         if (mBluetoothAdapter == null) {
@@ -329,15 +333,18 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
     public void onDestroy() {
         // 关闭服务查找
         if (mBluetoothAdapter != null) {
+
             mBluetoothAdapter.cancelDiscovery();
         }
 
         // 注销action接收器
         getActivity().unregisterReceiver(mReceiver);
 
-        // 关闭蓝牙连接
-        myApp.getBluetoothService().stopConnection();
-
+        //18.04.11 duan debug 关掉在回收蓝牙服务
+//        if(BLUETOOTH) {
+//            // 关闭蓝牙连接
+//            myApp.getBluetoothService().stopConnection();
+//        }
         // 清除MessageQueue里面消息
         mHomeHandler.removeCallbacksAndMessages(null);
 
@@ -372,6 +379,13 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
         txtSentMessage = (TextView) view.findViewById(R.id.txtSentMessage);
         txtCurrentDevice = (TextView) view.findViewById(R.id.txtCurrentDevice);
 
+        //修改界面初始化
+        String name = myApp.getCurrentDeviceName();
+        String address = myApp.getBluetoothAddress();
+        if (!TextUtils.isEmpty(name)) {
+            txtCurrentDevice.setText(name + " (" + address + " )");
+        }
+
         btnScan = (Button) view.findViewById(R.id.button_scan);
         btnScan.setOnClickListener(this);
 
@@ -380,6 +394,20 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
 
         btnStartConnection = (Button) view.findViewById(R.id.btnStartConnection);
         btnStartConnection.setOnClickListener(this);
+        if (myApp.getServiceState()) {
+//            int state = myApp.getBluetoothService().getState();
+//            ToastUtil.showToast(String.valueOf(state),false);
+            if (myApp.getBluetoothService().getState() == BluetoothService.STATE_COMMUNICATING) {
+                btnStartConnection.setText(R.string.close_connection);
+            }
+        }
+//        if (!TextUtils.isEmpty(name)) {
+//            ToastUtil.showToast("not null",false);
+//            int state = mBluetoothService.getState();
+//            if (state == BluetoothService.STATE_CONNECTED){
+//
+//            }
+//        }
 
         mPairedDevicesArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.device_list_cell);
         mNewDevicesArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.device_list_cell);
@@ -402,21 +430,24 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
         filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         getActivity().registerReceiver(mReceiver, filter);
 
+        if(BLUETOOTH){
         // 得到本地蓝牙句柄
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        // 得到已配对蓝牙设备列表
-        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+                // 得到已配对蓝牙设备列表
+                Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
 
-        // 添加已配对设备到列表并显示 
-        if (pairedDevices.size() > 0) {
-            for (BluetoothDevice device : pairedDevices) {
-                mPairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                // 添加已配对设备到列表并显示
+                if (pairedDevices.size() > 0) {
+                    for (BluetoothDevice device : pairedDevices) {
+                        mPairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                    }
+                } else {
+                    String noPairedDevices = getString(R.string.no_paired_devices);
+                    mPairedDevicesArrayAdapter.add(noPairedDevices);
+                }
             }
-        } else {
-            String noPairedDevices = getString(R.string.no_paired_devices);
-            mPairedDevicesArrayAdapter.add(noPairedDevices);
-        }
+
     }
 
     //选择设备响应函数
@@ -433,6 +464,7 @@ public class ConnectionFragment extends Fragment implements OnClickListener {
             if (!noPairedDevices.equals(info) && !noNewDevices.equals(info)) {
                 String address = info.substring(info.length() - 17);
                 String name = info.substring(0, info.length() - 18);
+                myApp.setBluetoothName(name);
 
                 if (!TextUtils.isEmpty(address)) {
                     myApp.setBluetoothAddress(address);

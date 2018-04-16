@@ -57,6 +57,7 @@ import sjtu.me.tractor.utils.ToastUtil;
  */
 public class FieldAddingActivity extends Activity implements View.OnClickListener {
 
+    private static final boolean BLUETOOTH = true;
     private static final LatLng SHANGHAI = new LatLng(31.238068, 121.501654);
     private static final LatLng SJTU = new LatLng(31.031866, 121.452982);
     private static final String TAG = "FieldAddingActivity";
@@ -64,14 +65,16 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
     private static final char END = '*'; // 串口通信字符串结束标志
     private static final char START = '#'; // 串口通信字符串开始标志
     private static final char SEPARATOR = ','; // 分隔符
-    private static final int SEPARATOR_NUMBER = 12; // 分隔符个数
+    private static final int SEPARATOR_NUMBER = 8; // 分隔符个数
     private static final String FIELD_DIRECTORY = "fields";
 
     private MyApplication myApp; // 程序全局变量
     private ArrayList<GeoPoint> fieldVerticesList = new ArrayList<>(); // 定义地块顶点列表
     private HashMap<Integer, GeoPoint> fieldMap = new HashMap<>();
+
     private List<LatLng> points = new ArrayList<>();//多边形的点,点的记录
     private List<LatLng> pointsTemporary = new ArrayList<>();//暂时存放的点
+
 
     private BitmapDescriptor bitmap;
     public static int CALIBRATION_FLAG = 0;
@@ -128,27 +131,35 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                         String dataString;
                         String message = (String) msg.obj;
                         readMessageSB.append(message);
+                        Log.e(TAG,"received");
 
                         // 如果 ","的个数不为12，或者字符串开始和结束字符不是指定的，则数据无效
                         if (!((SysUtil.countCharacter(readMessageSB, SEPARATOR) == SEPARATOR_NUMBER)
                                 && (readMessageSB.charAt(0) == START)
                                 && (readMessageSB.charAt(readMessageSB.length() - 1) == END))) {
                             readMessageSB.delete(0, readMessageSB.length());
+                            Log.e(TAG,"no");
                         } else {
                             dataString = readMessageSB.substring(1, readMessageSB.length() - 1); // 提取字符串
-                            String[] dataArray = dataString.split(",", 11);
+                            String[] dataArray = dataString.split(",", 8);
                             try {
-                                String strLatitude = dataArray[0];
-                                String strLongitude = dataArray[1];
-                                String strXCoordinate = dataArray[2];
-                                String strYCoordinate = dataArray[3];
-                                double latitude = Double.parseDouble(strLatitude); // x坐标
-                                double longitude = Double.parseDouble(strLongitude); // y坐标
+//                                String strLatitude = dataArray[0];
+//                                String strLongitude = dataArray[1];
+
+                                Log.e(TAG,"ok");
+                                String strXCoordinate = dataArray[0];
+                                String strYCoordinate = dataArray[1];
+//                                double latitude = Double.parseDouble(strLatitude); // x坐标
+//                                double longitude = Double.parseDouble(strLongitude); // y坐标
                                 double xCoordinate = Double.parseDouble(strXCoordinate); // x坐标
                                 double yCoordinate = Double.parseDouble(strYCoordinate); // y坐标
 
-                                activity.txtLat.setText(strLatitude);
-                                activity.txtLong.setText(strLongitude);
+                                double[] temp = GaussToBL(xCoordinate,yCoordinate);
+                                double longitude = temp[0];
+                                double latitude = temp[1];
+
+                                activity.txtLat.setText(String.valueOf(latitude));
+                                activity.txtLong.setText(String.valueOf(longitude));
 
                                 /*地图中心转到当前点,不断地在地图上显示当前点*/
                                 activity.navigateTo(latitude, longitude);
@@ -175,16 +186,19 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
         }
     }
 
+    //增加田地顶点
     private void addFieldVertex(double lat, double lng, double xx, double yy) {
 
-        points.add(new LatLng(lat, lng));
+        points.add(new LatLng(lat, lng));//存顶点经纬度的列表
         fieldVerticesList.add(new GeoPoint(lat, lng, xx, yy));  //添加田地顶点
 
+        //在地图上添加Marker，并显示当前点
         OverlayOptions option = new MarkerOptions()
                 .position(new LatLng(lat, lng))
                 .icon(bitmap);
-        markerList.add((Marker) baiduMap.addOverlay(option));//在地图上添加Marker，并显示
+        markerList.add((Marker) baiduMap.addOverlay(option));
 
+        //pointsTemporary用于画线，当其等于2时说明已经画过线了，然后接着画
         if ((points.size() >= 2) && (pointsTemporary.size() == 2)) {
             LatLng ll = pointsTemporary.get(1);
             pointsTemporary.clear();
@@ -195,6 +209,7 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
                     .points(pointsTemporary);
             polyLines.add((Polyline) baiduMap.addOverlay(ooPolyline));
         }
+
         if ((points.size() == 2) && (pointsTemporary.size() == 1)) {
             pointsTemporary.add(new LatLng(lat, lng));
             OverlayOptions ooPolyline = new PolylineOptions()
@@ -233,7 +248,9 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
         // 初始化全局变量
         myApp = (MyApplication) getApplication();
         // 设置蓝牙连接的消息处理器为当前界面处理器
-        myApp.getBluetoothService().setHandler(mFieldHandler);
+        if(myApp.getBluetoothService().getBluetoothState()) {
+            myApp.getBluetoothService().setHandler(mFieldHandler);
+        }
 
     }
 
@@ -550,8 +567,10 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
             Log.e(TAG, "*** ON RESTART ***");
         }
 
-        // 重新进入界面时设置消息处理器为当前处理器
-        myApp.getBluetoothService().setHandler(mFieldHandler);
+        if(myApp.getBluetoothService().getBluetoothState()) {
+            // 重新进入界面时设置消息处理器为当前处理器
+            myApp.getBluetoothService().setHandler(mFieldHandler);
+        }
     }
 
     @Override
@@ -584,7 +603,7 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
         if (polyLines.size() >= 1) {
             for (int i = 0; i < polyLines.size(); i++) {
                 Polyline polyline = polyLines.get(i);
-                polyline.remove();
+                polyline.remove();//?????
             }
         }
         if (mPolygon != null) {
@@ -610,6 +629,60 @@ public class FieldAddingActivity extends Activity implements View.OnClickListene
         // 退出Activity，清除MessageQueue还没处理的消息
         mFieldHandler.removeCallbacksAndMessages(null);
         super.onDestroy();
+    }
+
+    public static double[] GaussToBL(double X, double Y) {
+        int ProjNo;
+        int ZoneWide; // 带宽
+        double[] output = new double[2];
+        double longitude1, latitude1, longitude0, X0, Y0, xval, yval;// latitude0,
+        double e1, e2, f, a, ee, NN, T, C, M, D, R, u, fai, iPI;
+        iPI = 0.0174532925199433; // 3.1415926535898/180.0;
+
+        // 54年北京坐标系参数
+        a = 6378245.0;
+        f = 1.0 / 298.3;
+
+		/*
+		 * // 80年西安坐标系参数
+		 * a = 6378140.0;
+		 * f = 1 / 298.257;
+		 */
+
+        ZoneWide = 6; // 6度带宽
+        ProjNo = (int) (X / 1000000L); // 查找带号
+        longitude0 = (ProjNo - 1) * ZoneWide + ZoneWide / 2;
+        longitude0 = longitude0 * iPI; // 中央经线
+
+        X0 = ProjNo * 1000000L + 500000L;
+        Y0 = 0;
+        xval = X - X0;
+        yval = Y - Y0; // 带内大地坐标
+        e2 = 2 * f - f * f;
+        e1 = (1.0 - Math.sqrt(1 - e2)) / (1.0 + Math.sqrt(1 - e2));
+        ee = e2 / (1 - e2);
+        M = yval;
+        u = M / (a * (1 - e2 / 4 - 3 * e2 * e2 / 64 - 5 * e2 * e2 * e2 / 256));
+        fai = u + (3 * e1 / 2 - 27 * e1 * e1 * e1 / 32) * Math.sin(2 * u)
+                + (21 * e1 * e1 / 16 - 55 * e1 * e1 * e1 * e1 / 32) * Math.sin(4 * u)
+                + (151 * e1 * e1 * e1 / 96) * Math.sin(6 * u) + (1097 * e1 * e1 * e1 * e1 / 512) * Math.sin(8 * u);
+        C = ee * Math.cos(fai) * Math.cos(fai);
+        T = Math.tan(fai) * Math.tan(fai);
+        NN = a / Math.sqrt(1.0 - e2 * Math.sin(fai) * Math.sin(fai));
+        R = a * (1 - e2) / Math.sqrt((1 - e2 * Math.sin(fai) * Math.sin(fai)) * (1 - e2 * Math.sin(fai) * Math.sin(fai))
+                * (1 - e2 * Math.sin(fai) * Math.sin(fai)));
+        D = xval / NN;
+        // 计算经度(Longitude) 纬度(Latitude)
+        longitude1 = longitude0 + (D - (1 + 2 * T + C) * D * D * D / 6
+                + (5 - 2 * C + 28 * T - 3 * C * C + 8 * ee + 24 * T * T) * D * D * D * D * D / 120) / Math.cos(fai);
+        latitude1 = fai
+                - (NN * Math.tan(fai) / R) * (D * D / 2 - (5 + 3 * T + 10 * C - 4 * C * C - 9 * ee) * D * D * D * D / 24
+                + (61 + 90 * T + 298 * C + 45 * T * T - 256 * ee - 3 * C * C) * D * D * D * D * D * D / 720);
+        // 转换为度 DD
+        output[0] = longitude1 / iPI;
+        output[0] = 120 - output[0];
+        output[1] = latitude1 / iPI;
+        return output;
     }
 }
 

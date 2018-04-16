@@ -40,6 +40,11 @@
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/utils/AlertDialogUtil.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/utils/FileUtil.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/sjtu/me/tractor/utils/ToastUtil.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable-hdpi/seek_progress_drawable.xml" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/mipmap/thumb.png" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/mipmap/thumb.png" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/values/CustomSeekbarStyle.xml" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/values/colors.xml" charset="UTF-8" />
     <file url="PROJECT" charset="GBK" />
   </component>
 </project>

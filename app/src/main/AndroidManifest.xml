@@ -7,7 +7,9 @@
 
     <uses-sdk
         android:minSdkVersion="19"
-        android:targetSdkVersion="24" />
+        android:targetSdkVersion="22" />
+
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <!-- 获取蓝牙连接服务权限 -->
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -37,7 +39,8 @@
         android:theme="@android:style/Theme.Light.NoTitleBar">
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="Wjpzs2ZxrYY9byQq1fTwuhmG6KHvfSZB" />
+            android:value="bskFOjYWzkF4UHcEwFXHDmlw1zY4Ss3B" />
+            <!--android:value="Wjpzs2ZxrYY9byQq1fTwuhmG6KHvfSZB" />-->
         <!--<meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="YMLlPjHbhKkU27UqqWv3983XISHqu9DI" />-->
